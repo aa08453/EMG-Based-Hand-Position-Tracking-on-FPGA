@@ -1,7 +1,6 @@
 #ifndef RELU_H
 #define RELU_H
 
-#include <algorithm>
 
 // Template parameters:
 // T: Data type
@@ -14,10 +13,10 @@ public:
     // Forward pass: y = max(0, x)
     // inplace: if true, modifies input array directly
     void forward(T input[DIM], T output[DIM]) {
-        #pragma HLS PIPELINE
+        #pragma HLS INLINE off
         
         for (int i = 0; i < DIM; ++i) {
-            #pragma HLS UNROLL
+            #pragma HLS PIPELINE
             if (input[i] > 0) {
                 output[i] = input[i];
             } else {
@@ -28,9 +27,9 @@ public:
 
     // In-place version
     void forward(T data[DIM]) {
-        #pragma HLS PIPELINE
+        #pragma HLS INLINE off
         for (int i = 0; i < DIM; ++i) {
-            #pragma HLS UNROLL
+            #pragma HLS PIPELINE
             if (data[i] < 0) {
                 data[i] = 0;
             }
