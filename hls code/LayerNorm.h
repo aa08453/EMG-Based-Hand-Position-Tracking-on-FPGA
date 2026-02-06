@@ -1,10 +1,12 @@
 #ifndef LAYERNORM_H
 #define LAYERNORM_H
 #ifdef __SYNTHESIS__
-#include "hls_math.h"
+#include <hls_math.h>
 #else
+#include "mock_hls_math.h"
 #include <cmath>
 #include <iostream>
+
 namespace hls {
 // Fallback for rsqrt in standard C++
 template <typename T> T rsqrt(T x) { return 1.0 / std::sqrt(x); }

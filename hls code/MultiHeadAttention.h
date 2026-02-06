@@ -6,7 +6,7 @@
 #ifdef __SYNTHESIS__
 #include <hls_math.h>
 #else
-#include "hls_math.h"
+#include "mock_hls_math.h"
 #endif
 
 // T: Data type
@@ -94,7 +94,7 @@ public:
     }
 
     // 2. Scaled Dot-Product Attention
-    T scale = 1.0 / hls::sqrt((T)HEAD_DIM);
+    T scale = (T)1.0 / hls::sqrt((T)HEAD_DIM);
 
     for (int h = 0; h < NUM_HEADS; ++h) {
       // For each query position

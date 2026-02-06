@@ -3,7 +3,7 @@
 #ifdef __SYNTHESIS__
 #include <ap_fixed.h>
 #else
-#include "ap_fixed.h"
+#include "mock_ap_fixed.h"
 #endif
 
 // Define fixed-point type: 16 bits total, 6 bits integer

@@ -4,7 +4,7 @@
 #ifdef __SYNTHESIS__
 #include <hls_math.h>
 #else
-#include "hls_math.h"
+#include "mock_hls_math.h"
 #endif
 
 template <typename T, int DIM> class Softmax {
