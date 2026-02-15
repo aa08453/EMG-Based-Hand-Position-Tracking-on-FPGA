@@ -2,7 +2,6 @@
 #define FEEDFORWARD_H
 
 #include "FCLayer.h"
-#include "ReLU.h"
 
 // T: Data type
 // D_MODEL: Input/Output dimension
@@ -10,12 +9,10 @@
 template <typename T, int D_MODEL, int D_FF> class FeedForward {
 private:
   FCLayer<T, D_MODEL, D_FF> fc1;
-  ReLU<T, D_FF> relu;
   FCLayer<T, D_FF, D_MODEL> fc2;
 
   // Buffer for hidden state
   T hidden[D_FF];
-  T hidden_activated[D_FF];
 
 public:
   FeedForward() {}
@@ -34,18 +31,22 @@ public:
   // Forward pass
   // input: [D_MODEL]
   // output: [D_MODEL]
-  void forward(const T input[D_MODEL], T output[D_MODEL]) {
+  void ff_forward(const T input[D_MODEL], T output[D_MODEL]) {
 #pragma HLS INLINE off
-#pragma HLS DATAFLOW
 
     // 1. FC1: D_MODEL -> D_FF
     fc1.forward(input, hidden);
 
-    // 2. ReLU
-    relu.forward(hidden, hidden_activated);
+  // 2. ReLU (inline): y = max(0, x)
+  FF_RELU:
+    for (int i = 0; i < D_FF; ++i) {
+#pragma HLS PIPELINE
+      if (hidden[i] < (T)0)
+        hidden[i] = (T)0;
+    }
 
     // 3. FC2: D_FF -> D_MODEL
-    fc2.forward(hidden_activated, output);
+    fc2.forward(hidden, output);
   }
 };
 

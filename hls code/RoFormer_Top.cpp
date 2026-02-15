@@ -64,5 +64,5 @@ void RoFormer_Top(const data_t input[IN_CH][SEQ_LEN], data_t output[OUT_DIM]) {
 #pragma HLS INTERFACE mode = s_axilite port = return
 
   // Call the class method
-  roformer_inst.forward(input, output);
+  roformer_inst.roformer_forward(input, output);
 }

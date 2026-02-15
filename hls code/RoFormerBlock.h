@@ -20,19 +20,15 @@ private:
   LayerNorm<T, D_MODEL> ln2;
   RotaryEmbedding<T, D_MODEL, SEQ_LEN> rope;
 
-  // Intermediate Buffers
+  // Intermediate Buffers (minimized)
+  // q_rot doubles as attn_out (safe: MHA streaming reads q_rot[i] before
+  // writing output[i])
   T q_rot[SEQ_LEN][D_MODEL];
   T k_rot[SEQ_LEN][D_MODEL];
-  T attn_out[SEQ_LEN][D_MODEL];
-  T ff_out[SEQ_LEN][D_MODEL];
-  T temp[SEQ_LEN][D_MODEL]; // For residual calculations
+  // Removed: attn_out (reuse q_rot), temp, ff_out
 
 public:
   RoFormerBlock() {}
-
-  // Expose setters for weights
-  // (In a real implementation, we would grouping these better, e.g., struct
-  // params)
 
   // MHA Weights
   void set_mha_q(const T w[D_MODEL][D_MODEL], const T b[D_MODEL]) {
@@ -69,77 +65,68 @@ public:
   // Forward pass
   // input_seq: [SEQ_LEN][D_MODEL] (src)
   // output_seq: [SEQ_LEN][D_MODEL]
-  void forward(T input_seq[SEQ_LEN][D_MODEL], T output_seq[SEQ_LEN][D_MODEL]) {
-// Disable inlining to synthesize this block as a separate module.
-// This drastically reduces synthesis time for deep networks.
+  void block_forward(T input_seq[SEQ_LEN][D_MODEL],
+                     T output_seq[SEQ_LEN][D_MODEL]) {
 #pragma HLS INLINE off
 
-    // REMOVED DATAFLOW to allow in-place buffer modification (output_seq)
-    // without hazards.
-
     // 1. RoPE Application (Q, K)
-    // In PyTorch code: q = k = src. apply_rope(q, k).
-    // Note: We use the local 'rope' instance which has its own cos/sin cache.
-    rope.forward(input_seq, q_rot);
-    rope.forward(input_seq, k_rot);
+    rope.rope_forward(input_seq, q_rot);
+    rope.rope_forward(input_seq, k_rot);
 
     // 2. Multi-Head Attention
-    // src2 = self_attn(q_rot, k_rot, src)
-    mha.forward(q_rot, k_rot, input_seq, attn_out);
+    // Output written to q_rot (reused — safe because streaming MHA
+    // reads q_rot[i] before writing output[i] for each timestep)
+    mha.mha_forward(q_rot, k_rot, input_seq, q_rot);
 
-    // 3. Add & Norm 1 (Post-Norm)
-    // src = norm1(src + dropout(src2))
-    // We omit dropout for inference/synthesis usually, or treat as Identity.
+  // 3. Add & Norm 1 (Post-Norm) — no temp buffer needed
+  BLOCK_ADD_NORM1:
     for (int t = 0; t < SEQ_LEN; ++t) {
-#pragma HLS PIPELINE
-      for (int i = 0; i < D_MODEL; ++i) {
-        temp[t][i] = input_seq[t][i] + attn_out[t][i];
-      }
-      // Norm in place (reads from temp, writes to output_seq momentarily to
-      // save space or use distinct buffer) Let's use 'output_seq' as
-      // intermediate 'src' buffer logic
       T ln_in[D_MODEL];
       T ln_out[D_MODEL];
-      for (int i = 0; i < D_MODEL; i++)
-        ln_in[i] = temp[t][i];
 
-      ln1.forward(ln_in, ln_out);
+    BLOCK_RESIDUAL1:
+      for (int i = 0; i < D_MODEL; ++i) {
+#pragma HLS PIPELINE
+        ln_in[i] = input_seq[t][i] + q_rot[t][i]; // q_rot now holds attn_out
+      }
 
-      for (int i = 0; i < D_MODEL; i++)
+      ln1.ln_forward(ln_in, ln_out);
+
+    BLOCK_LN1_COPY_OUT:
+      for (int i = 0; i < D_MODEL; i++) {
+#pragma HLS PIPELINE
         output_seq[t][i] = ln_out[i];
+      }
     }
 
-    // Current state of 'src' is in 'output_seq'
-
-    // 4. Feed Forward
-    // src2 = linear2(activation(linear1(src)))
+  // 4+5. Feed Forward + Add & Norm 2 (fused per-timestep — no ff_out buffer)
+  BLOCK_FF_AND_NORM2:
     for (int t = 0; t < SEQ_LEN; ++t) {
-#pragma HLS PIPELINE
       T ff_in[D_MODEL];
       T ff_res[D_MODEL];
-      for (int i = 0; i < D_MODEL; i++)
-        ff_in[i] = output_seq[t][i];
-
-      ff.forward(ff_in, ff_res);
-
-      for (int i = 0; i < D_MODEL; i++)
-        ff_out[t][i] = ff_res[i];
-    }
-
-    // 5. Add & Norm 2 (Post-Norm)
-    // src = norm2(src + src2)
-    for (int t = 0; t < SEQ_LEN; ++t) {
-#pragma HLS PIPELINE
       T ln_in[D_MODEL];
       T ln_out[D_MODEL];
 
-      for (int i = 0; i < D_MODEL; ++i) {
-        ln_in[i] = output_seq[t][i] + ff_out[t][i];
+    BLOCK_FF_COPY_IN:
+      for (int i = 0; i < D_MODEL; i++) {
+#pragma HLS PIPELINE
+        ff_in[i] = output_seq[t][i];
       }
 
-      ln2.forward(ln_in, ln_out);
+      ff.ff_forward(ff_in, ff_res);
 
+    // Fused: residual add + LayerNorm2 immediately (no ff_out storage)
+    BLOCK_RESIDUAL2:
       for (int i = 0; i < D_MODEL; ++i) {
+#pragma HLS PIPELINE
+        ln_in[i] = output_seq[t][i] + ff_res[i];
+      }
+
+      ln2.ln_forward(ln_in, ln_out);
+
+    BLOCK_LN2_COPY_OUT:
+      for (int i = 0; i < D_MODEL; ++i) {
+#pragma HLS PIPELINE
         output_seq[t][i] = ln_out[i];
       }
     }

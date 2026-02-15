@@ -24,7 +24,7 @@ private:
 
 public:
   LayerNorm(T eps = (T)1e-5) : epsilon(eps) {
-    // Initialize gamma to 1 and beta to 0 (params usually loaded later)
+  LN_INIT:
     for (int i = 0; i < DIM; ++i) {
       gamma[i] = (T)1.0;
       beta[i] = (T)0.0;
@@ -32,17 +32,19 @@ public:
   }
 
   void setGamma(const T g[DIM]) {
+  LN_SET_GAMMA:
     for (int i = 0; i < DIM; ++i)
       gamma[i] = g[i];
   }
 
   void setBeta(const T b[DIM]) {
+  LN_SET_BETA:
     for (int i = 0; i < DIM; ++i)
       beta[i] = b[i];
   }
 
   // Forward pass: y = ((x - mean) / sqrt(var + eps)) * gamma + beta
-  void forward(T input[DIM], T output[DIM]) {
+  void ln_forward(T input[DIM], T output[DIM]) {
 #pragma HLS INLINE off
 
     T sum = 0;
@@ -53,14 +55,16 @@ public:
 
     const T inv_DIM = (T)1.0 / (T)DIM;
 
-    // 1. Calculate Mean
+  // 1. Calculate Mean
+  LN_CALC_MEAN:
     for (int i = 0; i < DIM; ++i) {
 #pragma HLS PIPELINE
       sum += input[i];
     }
     T mean = sum * inv_DIM;
 
-    // 2. Calculate Variance
+  // 2. Calculate Variance
+  LN_CALC_VAR:
     for (int i = 0; i < DIM; ++i) {
 #pragma HLS PIPELINE
       T diff = input[i] - mean;
@@ -68,10 +72,9 @@ public:
     }
     T variance = sum_sq * inv_DIM;
     T std_dev_inv = hls::rsqrt(variance + epsilon);
-    // If rsqrt is unstable, fallback:
-    // T inv_std = (T)1 / hls::sqrt(var + epsilon);
 
-    // 3. Normalize and Scale/Shift
+  // 3. Normalize and Scale/Shift
+  LN_NORMALIZE:
     for (int i = 0; i < DIM; ++i) {
 #pragma HLS PIPELINE
       T norm = (input[i] - mean) * std_dev_inv;
