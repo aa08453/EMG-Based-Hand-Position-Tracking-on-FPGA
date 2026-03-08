@@ -6,7 +6,8 @@
 #include "mock_ap_fixed.h"
 #endif
 
-// Define fixed-point type: 16 bits total, 6 bits integer
-typedef ap_fixed<16, 6> data_t;
+// Define fixed-point type: 8 bits total, 4 bits integer
+// Range: [-16, 16), precision: 0.0625
+typedef ap_fixed<8, 4> data_t;
 
 #endif

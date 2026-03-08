@@ -21,11 +21,10 @@ private:
   RotaryEmbedding<T, D_MODEL, SEQ_LEN> rope;
 
   // Intermediate Buffers (minimized)
-  // q_rot doubles as attn_out (safe: MHA streaming reads q_rot[i] before
-  // writing output[i])
+  // q_rot doubles as attn_out AND shared for both Q/K RoPE
+  // (q_rot == k_rot because same rotation applied to same input_seq)
   T q_rot[SEQ_LEN][D_MODEL];
-  T k_rot[SEQ_LEN][D_MODEL];
-  // Removed: attn_out (reuse q_rot), temp, ff_out
+  // Removed: k_rot (identical to q_rot), attn_out, temp, ff_out
 
 public:
   RoFormerBlock() {}
@@ -69,14 +68,14 @@ public:
                      T output_seq[SEQ_LEN][D_MODEL]) {
 #pragma HLS INLINE off
 
-    // 1. RoPE Application (Q, K)
+    // 1. RoPE Application — called ONCE (q_rot == k_rot for same input)
     rope.rope_forward(input_seq, q_rot);
-    rope.rope_forward(input_seq, k_rot);
 
     // 2. Multi-Head Attention
+    // Pass q_rot for both Q and K (identical RoPE output)
     // Output written to q_rot (reused — safe because streaming MHA
     // reads q_rot[i] before writing output[i] for each timestep)
-    mha.mha_forward(q_rot, k_rot, input_seq, q_rot);
+    mha.mha_forward(q_rot, q_rot, input_seq, q_rot);
 
   // 3. Add & Norm 1 (Post-Norm) — no temp buffer needed
   BLOCK_ADD_NORM1:

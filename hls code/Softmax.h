@@ -14,7 +14,6 @@
 // Values below -8 clamp to 0 (exp(-8) ≈ 0.000335, negligible for softmax)
 template <typename T> T exp_approx(T x) {
 #pragma HLS INLINE
-#pragma HLS PIPELINE
 
   const int LUT_SIZE = 64;
 

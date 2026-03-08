@@ -10,14 +10,14 @@ template <typename T, int DIM, int MAX_SEQ_LEN> class RotaryEmbedding {
 public:
   RotaryEmbedding() {}
 
-  // Forward Pass — uses precomputed ROM tables (no runtime trig)
+  // Forward Pass — uses precomputed ROM tables (half-DIM, symmetry exploited)
   // input: [SEQ_LEN][DIM]
   // output: [SEQ_LEN][DIM]
   void rope_forward(const T input[MAX_SEQ_LEN][DIM],
                     T output[MAX_SEQ_LEN][DIM]) {
 #pragma HLS INLINE off
 
-    int half_dim = DIM / 2;
+    const int half_dim = DIM / 2;
 
   ROPE_TIME:
     for (int t = 0; t < MAX_SEQ_LEN; ++t) {
@@ -26,8 +26,11 @@ public:
       for (int i = 0; i < DIM; ++i) {
 
         T x_val = input[t][i];
-        T cos_val = (T)ROPE_COS_TABLE[t][i];
-        T sin_val = (T)ROPE_SIN_TABLE[t][i];
+
+        // Tables are [SEQ_LEN][HALF_DIM] — access with i % half_dim
+        int lut_idx = (i < half_dim) ? i : (i - half_dim);
+        T cos_val = (T)ROPE_COS_TABLE[t][lut_idx];
+        T sin_val = (T)ROPE_SIN_TABLE[t][lut_idx];
 
         T rot_val;
 

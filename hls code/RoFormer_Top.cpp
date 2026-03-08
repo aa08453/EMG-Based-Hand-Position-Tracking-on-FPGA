@@ -59,8 +59,12 @@ void set_roformer_layer_weights(
 // Arguments become the hardware ports (AXI, Bram, etc using #pragma HLS
 // INTERFACE)
 void RoFormer_Top(const data_t input[IN_CH][SEQ_LEN], data_t output[OUT_DIM]) {
-#pragma HLS INTERFACE mode = m_axi port = input bundle = gmem0 depth = 4800
-#pragma HLS INTERFACE mode = m_axi port = output bundle = gmem1 depth = 10
+#pragma HLS INTERFACE mode = m_axi port = input bundle = gmem0 depth =         \
+    4800 offset = slave
+#pragma HLS INTERFACE mode = m_axi port = output bundle = gmem1 depth =        \
+    10 offset = slave
+#pragma HLS INTERFACE mode = s_axilite port = input
+#pragma HLS INTERFACE mode = s_axilite port = output
 #pragma HLS INTERFACE mode = s_axilite port = return
 
   // Call the class method
