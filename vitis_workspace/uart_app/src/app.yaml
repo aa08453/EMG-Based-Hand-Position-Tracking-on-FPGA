@@ -1,0 +1,4 @@
+domain_path: /home/abdullah/Desktop/FYP/EMG-Based-Hand-Position-Tracking-on-FPGA/vitis_workspace/model1/export/model1/sw/standalone_ps7_cortexa9_0
+app_src_dir: /home/abdullah/Xilinx/2025.2/Vitis/data/embeddedsw/lib/sw_apps/hello_world
+template: hello_world
+lang: c
