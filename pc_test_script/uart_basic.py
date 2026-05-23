@@ -1,0 +1,60 @@
+import serial
+import numpy as np
+import sys
+import time
+
+# --- Config ---
+COM_PORT = '/dev/ttyACM0'  # Update this
+BAUD_RATE = 115200
+INPUT_FLOATS = 2400 # 200 * 12 (seq_len * in_channels)
+OUTPUT_FLOATS = 10 # 10 joint
+INPUT_BYTES = INPUT_FLOATS * 4
+OUTPUT_BYTES = OUTPUT_FLOATS * 4
+
+def loopback_test():
+    try:
+        # We use a longer timeout here because 19,200 bytes at 115200 baud takes about 1.6 seconds to physically transmit
+        ser = serial.Serial(COM_PORT, BAUD_RATE, timeout=3)
+        print(f"[PC] Connected to {COM_PORT}")
+    except Exception as e:
+        print(f"Error opening port: {e}")
+        sys.exit(1)
+
+    # 1. Create dummy input data (e.g., an array of 0.5s)
+    print(f"\n[PC] Sending {INPUT_FLOATS}  floats...")
+    with open("hls_code/verification_data/full_input.txt", 'r') as file:
+        content = list(map(float,file.read().split()))
+        # print(content)
+        content = np.array(content, dtype=np.float32)
+        print(content)
+    # content = np.arange(1, INPUT_FLOATS + 1, dtype=np.float32)
+    raw_tx_bytes = content.tobytes()
+
+    time.sleep(2)
+
+    # 2. Clear buffers before sending
+    ser.reset_input_buffer()
+    ser.reset_output_buffer()
+
+    # 3. Transmit
+    print(f"[PC] Sending {len(raw_tx_bytes)} bytes to Zynq...")
+    ser.write(raw_tx_bytes)
+    ser.flush()  # Block until all bytes leave the PC
+
+    # 4. Receive
+    print(f"[PC] Waiting for {OUTPUT_BYTES} bytes of joint data...")
+    raw_rx_bytes = ser.read(OUTPUT_BYTES)
+
+    if len(raw_rx_bytes) == OUTPUT_BYTES:
+        # Convert the received bytes back into floats
+        joints = np.frombuffer(raw_rx_bytes, dtype=np.float32)
+        print("\n[SUCCESS] Received Joint Array:")
+        for i, val in enumerate(joints):
+            print(f"  Joint[{i}]: {val:.3f}")
+    else:
+        print(f"\n[ERROR] Timeout! Received only {len(raw_rx_bytes)} / {OUTPUT_BYTES} bytes.")
+        
+    ser.close()
+
+if __name__ == "__main__":
+    loopback_test()
