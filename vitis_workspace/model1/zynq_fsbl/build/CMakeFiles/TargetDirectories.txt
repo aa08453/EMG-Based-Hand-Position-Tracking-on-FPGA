@@ -1,0 +1,4 @@
+/home/abdullah/Desktop/FYP/EMG-Based-Hand-Position-Tracking-on-FPGA/vitis_workspace/model1/zynq_fsbl/build/CMakeFiles/fsbl.elf.dir
+/home/abdullah/Desktop/FYP/EMG-Based-Hand-Position-Tracking-on-FPGA/vitis_workspace/model1/zynq_fsbl/build/CMakeFiles/print_build_info.dir
+/home/abdullah/Desktop/FYP/EMG-Based-Hand-Position-Tracking-on-FPGA/vitis_workspace/model1/zynq_fsbl/build/CMakeFiles/edit_cache.dir
+/home/abdullah/Desktop/FYP/EMG-Based-Hand-Position-Tracking-on-FPGA/vitis_workspace/model1/zynq_fsbl/build/CMakeFiles/rebuild_cache.dir

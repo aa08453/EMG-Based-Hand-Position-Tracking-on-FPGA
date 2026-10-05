@@ -1,0 +1,47 @@
+.venv/
+.Xil/
+# Python Model and Verification Script
+RoFormer.py
+gen_verification_data.py
+__pycache__/
+
+# Old/Unused Test Files
+main.cpp
+
+# Binaries and Object Files
+test_vitis_roformer
+*.exe
+*.o
+*.out
+*.zip
+
+# IDE Files
+.vscode/
+vitis_workspace/_ide
+vitis_workspace/.rigel_lopper
+vitis_workspace/transformer/.Xil
+vitis_workspace/transformer/.cache
+vivado_project/vivado_project.cache
+vivado_project/vivado_project.gen
+vivado_project/vivado_project.hw 
+vivado_project/vivado_project.ip_user_files 
+vivado_project/vivado_project.sim 
+vivado_project/vivado_project.srcs 
+vivado_project/vivado_project.xpr
+
+# Keep these (Explicitly allowed for Vitis)
+!Conv1dLayer.h
+!FCLayer.h
+!FeedForward.h
+!LayerNorm.h
+!MultiHeadAttention.h
+!ReLU.h
+!RoFormer.h
+!RoFormerBlock.h
+!RoFormer_Top.cpp
+!RotaryEmbedding.h
+!Softmax.h
+!types.h
+!test_vitis_roformer.cpp
+!TestUtils.h
+!verification_data/

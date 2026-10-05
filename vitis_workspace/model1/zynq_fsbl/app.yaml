@@ -1,0 +1,4 @@
+domain_path: /home/abdullah/Desktop/FYP/EMG-Based-Hand-Position-Tracking-on-FPGA/vitis_workspace/model1/zynq_fsbl/zynq_fsbl_bsp
+app_src_dir: /home/abdullah/Xilinx/2025.2/Vitis/data/embeddedsw/lib/sw_apps/zynq_fsbl
+template: zynq_fsbl
+lang: c

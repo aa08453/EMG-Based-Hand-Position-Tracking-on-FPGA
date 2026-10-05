@@ -1,0 +1,11 @@
+#define OUT_DIM 10
+#define SEQ_LEN 200
+#define D_MODEL 128
+#define IN_CHANNELS 12
+#define OUT_CHANNELS 128
+#define KERNEL_SIZE 3
+#define NUM_HEADS 8
+#define HEAD_DIM 16
+#define D_FF 256
+#define ROPE_HALF_DIM 64
+#define NUM_LAYERS 1
