@@ -1,0 +1,218 @@
+[{"stream_name":"stderr","time":8.604189452,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.604243266,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.604251168,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.604255812,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.338100023,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.338149503,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.338155895,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.3381603,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":21.679324092999998,"data":"torch 2.11.0+cu128 cuda True | emg_common from /kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py\n"}
+,{"stream_name":"stdout","time":21.806913099,"data":"10 subjects: ['DB2_s1', 'DB2_s10', 'DB2_s11', 'DB2_s12', 'DB2_s13', 'DB2_s14', 'DB2_s15', 'DB2_s16', 'DB2_s17', 'DB2_s18']\n"}
+,{"stream_name":"stdout","time":21.886178129,"data":"patch_both_prev0_K0_qat5_v2 | tokens: 25 | MACs: {'tokens': 25, 'conv': 307200, 'attention': 1798400, 'ffn': 1638400, 'head': 2560, 'total': 3746560, 'ms_at_1MAC_per_cycle_100MHz': 37.4656}\n"}
+,{"stream_name":"stderr","time":23.917955939,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":23.917994533,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":23.918001012,"data":"\n"}
+,{"stream_name":"stderr","time":23.918004823,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":23.918010026,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":23.919277751,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":23.919308054,"data":"\n"}
+,{"stream_name":"stderr","time":23.919313834,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":23.920332423,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: No netrc file found, creating one.\n"}
+,{"stream_name":"stderr","time":23.920370468,"data":"\n"}
+,{"stream_name":"stderr","time":23.920375856,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: No netrc file found, creating one.\n"}
+,{"stream_name":"stderr","time":23.921330409,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":23.921356486,"data":"\n"}
+,{"stream_name":"stderr","time":23.921370263,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":25.578601885,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Currently logged in as: \u001b[33mmk08457\u001b[0m (\u001b[33mmk08457-habib-university\u001b[0m) to \u001b[32mhttps://api.wandb.ai\u001b[0m. Use \u001b[1m`wandb login --relogin`\u001b[0m to force relogin\n"}
+,{"stream_name":"stderr","time":25.578688493,"data":"\n"}
+,{"stream_name":"stderr","time":25.57869841,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Currently logged in as: \u001b[33mmk08457\u001b[0m (\u001b[33mmk08457-habib-university\u001b[0m) to \u001b[32mhttps://api.wandb.ai\u001b[0m. Use \u001b[1m`wandb login --relogin`\u001b[0m to force relogin\n"}
+,{"stream_name":"stderr","time":26.721772956,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run p2v8fzog\n"}
+,{"stream_name":"stderr","time":26.721817121,"data":"\n"}
+,{"stream_name":"stderr","time":26.721824704,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run p2v8fzog\n"}
+,{"stream_name":"stderr","time":26.825983157,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":26.826013418,"data":"\n"}
+,{"stream_name":"stderr","time":26.826018537,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":26.827387867,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261012_081010-p2v8fzog\u001b[0m\n"}
+,{"stream_name":"stderr","time":26.827411735,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":26.8274176,"data":"\n"}
+,{"stream_name":"stderr","time":26.827722814,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261012_081010-p2v8fzog\u001b[0m\n"}
+,{"stream_name":"stderr","time":26.827755822,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":26.828900140000002,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev0_K0_qat5_v2\u001b[0m\n"}
+,{"stream_name":"stderr","time":26.828955257,"data":"\n"}
+,{"stream_name":"stderr","time":26.828963073,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev0_K0_qat5_v2\u001b[0m\n"}
+,{"stream_name":"stderr","time":26.829927694,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":26.829957743,"data":"\n"}
+,{"stream_name":"stderr","time":26.829964381,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":26.831197442,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/p2v8fzog\u001b[0m\n"}
+,{"stream_name":"stderr","time":26.83123822,"data":"\n"}
+,{"stream_name":"stderr","time":26.83124416,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/p2v8fzog\u001b[0m\n"}
+,{"stream_name":"stdout","time":79.141191415,"data":"  checkpoint selection on: val_abs\n"}
+,{"stream_name":"stdout","time":79.141227718,"data":"[patch_both_prev0_K0_qat5_v2] params=147,476 tokens=25 train_batches=5213 val_batches=4314 MACs=3,746,560\n"}
+,{"stream_name":"stderr","time":87.46916026,"data":"/kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py:743: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.\n"}
+,{"stream_name":"stderr","time":87.469213077,"data":"Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)\n"}
+,{"stream_name":"stderr","time":87.469237978,"data":"  logs['abs_rmse'] = float(F.mse_loss(out['abs'], a).sqrt())\n"}
+,{"stream_name":"stderr","time":87.469241256,"data":"\n"}
+,{"stream_name":"stderr","time":87.469243884,"data":"/kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py:743: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.\n"}
+,{"stream_name":"stderr","time":87.469246819,"data":"Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)\n"}
+,{"stream_name":"stderr","time":87.46924971,"data":"  logs['abs_rmse'] = float(F.mse_loss(out['abs'], a).sqrt())\n"}
+,{"stream_name":"stdout","time":171.2382151,"data":"  float ep   1 train 2.33837 val 1.55141 abs=0.5796 abs_rmse=0.1206 delta=0.9718 (86s)\n"}
+,{"stream_name":"stdout","time":255.601751292,"data":"  float ep   2 train 2.08225 val 1.44950 abs=0.5085 abs_rmse=0.1129 delta=0.9410 (84s)\n"}
+,{"stream_name":"stdout","time":340.664724879,"data":"  float ep   3 train 1.98805 val 1.44518 abs=0.5241 abs_rmse=0.1144 delta=0.9211 (85s)\n"}
+,{"stream_name":"stdout","time":425.411899724,"data":"  float ep   4 train 1.93561 val 1.39902 abs=0.4936 abs_rmse=0.1120 delta=0.9055 (85s)\n"}
+,{"stream_name":"stdout","time":510.084416758,"data":"  float ep   5 train 1.90077 val 1.38060 abs=0.4826 abs_rmse=0.1106 delta=0.8980 (85s)\n"}
+,{"stream_name":"stdout","time":593.113002067,"data":"  float ep   6 train 1.87580 val 1.39258 abs=0.4855 abs_rmse=0.1110 delta=0.9071 (83s)\n"}
+,{"stream_name":"stdout","time":671.659380984,"data":"  float ep   7 train 1.85509 val 1.37667 abs=0.4855 abs_rmse=0.1112 delta=0.8911 (79s)\n"}
+,{"stream_name":"stdout","time":751.63503755,"data":"  float ep   8 train 1.83943 val 1.36523 abs=0.4753 abs_rmse=0.1101 delta=0.8900 (80s)\n"}
+,{"stream_name":"stdout","time":833.207571243,"data":"  float ep   9 train 1.82437 val 1.36041 abs=0.4786 abs_rmse=0.1105 delta=0.8818 (82s)\n"}
+,{"stream_name":"stdout","time":916.874879004,"data":"  float ep  10 train 1.81135 val 1.38559 abs=0.5016 abs_rmse=0.1134 delta=0.8840 (84s)\n"}
+,{"stream_name":"stdout","time":1001.071147657,"data":"  float ep  11 train 1.79924 val 1.37021 abs=0.4905 abs_rmse=0.1126 delta=0.8797 (84s)\n"}
+,{"stream_name":"stdout","time":1085.415395889,"data":"  float ep  12 train 1.78924 val 1.35630 abs=0.4831 abs_rmse=0.1111 delta=0.8732 (84s)\n"}
+,{"stream_name":"stdout","time":1169.169036921,"data":"  float ep  13 train 1.77640 val 1.38414 abs=0.5020 abs_rmse=0.1133 delta=0.8821 (84s)\n"}
+,{"stream_name":"stdout","time":1251.745024393,"data":"  float ep  14 train 1.76689 val 1.35759 abs=0.4802 abs_rmse=0.1111 delta=0.8774 (83s)\n"}
+,{"stream_name":"stdout","time":1328.324905653,"data":"  float ep  15 train 1.75903 val 1.32217 abs=0.4496 abs_rmse=0.1065 delta=0.8725 (77s)\n"}
+,{"stream_name":"stdout","time":1405.075043575,"data":"  float ep  16 train 1.75134 val 1.35234 abs=0.4860 abs_rmse=0.1115 delta=0.8663 (77s)\n"}
+,{"stream_name":"stdout","time":1483.904959902,"data":"  float ep  17 train 1.74321 val 1.37886 abs=0.5030 abs_rmse=0.1141 delta=0.8758 (79s)\n"}
+,{"stream_name":"stdout","time":1566.927700848,"data":"  float ep  18 train 1.73574 val 1.37571 abs=0.5056 abs_rmse=0.1140 delta=0.8701 (83s)\n"}
+,{"stream_name":"stdout","time":1650.861550358,"data":"  float ep  19 train 1.72908 val 1.38507 abs=0.5044 abs_rmse=0.1144 delta=0.8807 (84s)\n"}
+,{"stream_name":"stdout","time":1734.079884028,"data":"  float ep  20 train 1.69141 val 1.35904 abs=0.4881 abs_rmse=0.1119 delta=0.8709 (83s)\n"}
+,{"stream_name":"stdout","time":1817.614999123,"data":"  float ep  21 train 1.68687 val 1.36706 abs=0.5028 abs_rmse=0.1143 delta=0.8643 (84s)\n"}
+,{"stream_name":"stdout","time":1901.380907076,"data":"  float ep  22 train 1.68299 val 1.36580 abs=0.5010 abs_rmse=0.1138 delta=0.8648 (84s)\n"}
+,{"stream_name":"stdout","time":1985.329207101,"data":"  float ep  23 train 1.67944 val 1.39627 abs=0.5274 abs_rmse=0.1168 delta=0.8689 (84s)\n"}
+,{"stream_name":"stdout","time":1985.329244258,"data":"  early stop (float)\n"}
+,{"stream_name":"stdout","time":2123.109930246,"data":"  qat ep   1 train 1.73055 val 1.36578 abs=0.4911 abs_rmse=0.1127 delta=0.8747 (138s)\n"}
+,{"stream_name":"stdout","time":2259.869273607,"data":"  qat ep   2 train 1.72748 val 1.37098 abs=0.4937 abs_rmse=0.1142 delta=0.8773 (137s)\n"}
+,{"stream_name":"stdout","time":2394.748018863,"data":"  qat ep   3 train 1.72660 val 1.36604 abs=0.4904 abs_rmse=0.1126 delta=0.8757 (135s)\n"}
+,{"stream_name":"stdout","time":2524.895963756,"data":"  qat ep   4 train 1.72499 val 1.34133 abs=0.4635 abs_rmse=0.1090 delta=0.8778 (130s)\n"}
+,{"stream_name":"stdout","time":2657.437423114,"data":"  qat ep   5 train 1.72489 val 1.35423 abs=0.4750 abs_rmse=0.1114 delta=0.8792 (132s)\n"}
+,{"stream_name":"stdout","time":2749.91556833,"data":"window metrics: {'abs_rmse': 0.12001011115431137, 'abs_r2': 0.5546818971633911, 'delta_rmse': 0.005455129962366944, 'delta_r2': 0.14915795624256134}\n"}
+,{"stream_name":"stderr","time":5147.880580727,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading data; updating run metadata\n"}
+,{"stream_name":"stderr","time":5147.880665393,"data":"\n"}
+,{"stream_name":"stderr","time":5147.880672323,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading data; updating run metadata\n"}
+,{"stream_name":"stderr","time":5148.785098212,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_29_f06768adaab5cd2d0812.png; uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":5148.785136908,"data":"\n"}
+,{"stream_name":"stderr","time":5148.785141257,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_29_f06768adaab5cd2d0812.png; uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":5149.788949548,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_29_f06768adaab5cd2d0812.png\n"}
+,{"stream_name":"stderr","time":5149.788991646,"data":"\n"}
+,{"stream_name":"stderr","time":5149.788998323,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_29_f06768adaab5cd2d0812.png\n"}
+,{"stream_name":"stderr","time":5150.212012566,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":5150.212043966,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":5150.212052558,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▂▂▃▃▃▄▄▄▅▅▅▅▆▆▆▇▇▇██▁▁▂▂▂\n"}
+,{"stream_name":"stderr","time":5150.212059956,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████████▄▄▄▄▂▁▁▁▁▁\n"}
+,{"stream_name":"stderr","time":5150.212066795,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▂▂▂▂▂▂▁▁▂▂▂▂▂▂▁▁▁▂▂▂▂▂▂███▇▇\n"}
+,{"stream_name":"stderr","time":5150.212073156,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212078938,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212085082,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212108733,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212113697,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212121696,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212126122,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq/kalman_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212130682,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +12 ...\n"}
+,{"stream_name":"stderr","time":5150.212136013,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":5150.212140528,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":5150.212145518,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch 5\n"}
+,{"stream_name":"stderr","time":5150.212150572,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr 5e-05\n"}
+,{"stream_name":"stderr","time":5150.212155243,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          phase qat\n"}
+,{"stream_name":"stderr","time":5150.212159889,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec 132.45587\n"}
+,{"stream_name":"stderr","time":5150.212164496,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse 0.12001\n"}
+,{"stream_name":"stderr","time":5150.21216915,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse 0.18175\n"}
+,{"stream_name":"stderr","time":5150.212173234,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse 0.80374\n"}
+,{"stream_name":"stderr","time":5150.212177652,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse 0.18173\n"}
+,{"stream_name":"stderr","time":5150.212182004,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse 0.14918\n"}
+,{"stream_name":"stderr","time":5150.212186433,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse 0.1332\n"}
+,{"stream_name":"stderr","time":5150.21219105,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +13 ...\n"}
+,{"stream_name":"stderr","time":5150.212195648,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":5150.212200089,"data":"\n"}
+,{"stream_name":"stderr","time":5150.212204149,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":5150.212208486,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":5150.212212651,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▂▂▃▃▃▄▄▄▅▅▅▅▆▆▆▇▇▇██▁▁▂▂▂\n"}
+,{"stream_name":"stderr","time":5150.212217118,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████████▄▄▄▄▂▁▁▁▁▁\n"}
+,{"stream_name":"stderr","time":5150.212223459,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▂▂▂▂▂▂▁▁▂▂▂▂▂▂▁▁▁▂▂▂▂▂▂███▇▇\n"}
+,{"stream_name":"stderr","time":5150.212228381,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212232634,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212237339,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212241415,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212251284,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212255695,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212260237,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq/kalman_rmse ▁\n"}
+,{"stream_name":"stderr","time":5150.212265054,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +12 ...\n"}
+,{"stream_name":"stderr","time":5150.21226935,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":5150.212273385,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":5150.212277652,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch 5\n"}
+,{"stream_name":"stderr","time":5150.21228171,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr 5e-05\n"}
+,{"stream_name":"stderr","time":5150.212285903,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          phase qat\n"}
+,{"stream_name":"stderr","time":5150.21229046,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec 132.45587\n"}
+,{"stream_name":"stderr","time":5150.212294981,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse 0.12001\n"}
+,{"stream_name":"stderr","time":5150.212299346,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse 0.18175\n"}
+,{"stream_name":"stderr","time":5150.212303946,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse 0.80374\n"}
+,{"stream_name":"stderr","time":5150.212308464,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse 0.18173\n"}
+,{"stream_name":"stderr","time":5150.212312898,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse 0.14918\n"}
+,{"stream_name":"stderr","time":5150.212317189,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse 0.1332\n"}
+,{"stream_name":"stderr","time":5150.212321484,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +13 ...\n"}
+,{"stream_name":"stderr","time":5150.212326493,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":5150.213438918,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev0_K0_qat5_v2\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/p2v8fzog\u001b[0m\n"}
+,{"stream_name":"stderr","time":5150.213523058,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":5150.213528911,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":5150.21353346,"data":"\n"}
+,{"stream_name":"stderr","time":5150.21353787,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev0_K0_qat5_v2\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/p2v8fzog\u001b[0m\n"}
+,{"stream_name":"stderr","time":5150.213543219,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":5150.213548207,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":5150.214831569,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261012_081010-p2v8fzog/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":5150.214869792,"data":"\n"}
+,{"stream_name":"stderr","time":5150.214874642,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261012_081010-p2v8fzog/logs\u001b[0m\n"}
+,{"stream_name":"stdout","time":5150.754815921,"data":"checkpoint: /kaggle/working/outputs/patch_both_prev0_K0_qat5_v2.pt | phase: qat | selected on: val_abs | variant: patch both | cond_prev: False\n"}
+,{"stream_name":"stdout","time":7318.822671882,"data":"--- feedback=True ---\n"}
+,{"stream_name":"stdout","time":9518.832753166,"data":"best (q, r): ('q=1e-05', 'r=0.001') -\u003e 0.1098\n"}
+,{"stream_name":"stdout","time":11681.614185887,"data":"/kaggle/working/outputs/patch_both_prev0_K0_qat5_v2.pt | variant patch | heads both | cond_prev False | tokens 25 | resid_fmt (16, 8)\n"}
+,{"stream_name":"stdout","time":11763.715060319,"data":"#define OUT_DIM 10\n"}
+,{"stream_name":"stdout","time":11763.715115194,"data":"#define SEQ_LEN 25\n"}
+,{"stream_name":"stdout","time":11763.715120677,"data":"#define RAW_SEQ_LEN 200\n"}
+,{"stream_name":"stdout","time":11763.715125381,"data":"#define D_MODEL 128\n"}
+,{"stream_name":"stdout","time":11763.715129919,"data":"#define IN_CHANNELS 12\n"}
+,{"stream_name":"stdout","time":11763.715134534,"data":"#define OUT_CHANNELS 128\n"}
+,{"stream_name":"stdout","time":11763.715139103,"data":"#define KERNEL_SIZE 8\n"}
+,{"stream_name":"stdout","time":11763.715143669,"data":"#define CONV_STRIDE 8\n"}
+,{"stream_name":"stdout","time":11763.715148129,"data":"#define CONV_PADDING 0\n"}
+,{"stream_name":"stdout","time":11763.715167984,"data":"#define NUM_HEADS 8\n"}
+,{"stream_name":"stdout","time":11763.715172767,"data":"#define HEAD_DIM 16\n"}
+,{"stream_name":"stdout","time":11763.715177621,"data":"#define D_FF 256\n"}
+,{"stream_name":"stdout","time":11763.715182103,"data":"#define ROPE_HALF_DIM 64\n"}
+,{"stream_name":"stdout","time":11763.715186671,"data":"#define NUM_LAYERS 1\n"}
+,{"stream_name":"stdout","time":11763.715191156,"data":"#define USE_ATTENTION 1\n"}
+,{"stream_name":"stdout","time":11763.71519568,"data":"#define CAUSAL_ATTENTION 0\n"}
+,{"stream_name":"stdout","time":11763.715200229,"data":"#define NORM_IS_RMS 0\n"}
+,{"stream_name":"stdout","time":11763.715204747,"data":"#define POOL_LAST_TOKEN 0\n"}
+,{"stream_name":"stdout","time":11763.715209381,"data":"#define HAS_ABS_HEAD 1\n"}
+,{"stream_name":"stdout","time":11763.715213895,"data":"#define HAS_DELTA_HEAD 1\n"}
+,{"stream_name":"stdout","time":11763.715218534,"data":"#define COND_PREV 0\n"}
+,{"stream_name":"stdout","time":11763.715223141,"data":"\n"}
+,{"stream_name":"stdout","time":11763.715227539,"data":"typedef ap_fixed\u003c10, 3, AP_RND, AP_SAT\u003e data_t;\n"}
+,{"stream_name":"stdout","time":11763.715247938,"data":"typedef ap_fixed\u003c10, 3, AP_RND, AP_SAT\u003e weight_t;\n"}
+,{"stream_name":"stdout","time":11763.715252964,"data":"typedef ap_fixed\u003c8, 2, AP_RND, AP_SAT\u003e rope_t;\n"}
+,{"stream_name":"stdout","time":11763.715257779,"data":"typedef ap_fixed\u003c16, 8, AP_RND, AP_SAT\u003e resid_t;  // branch outputs + pre-norm residual sums (ff_out, ln_in)\n"}
+,{"stream_name":"stdout","time":11763.715262747,"data":"\n"}
+,{"stream_name":"stdout","time":11764.134946235,"data":"archive: /kaggle/working/hls_export/patch_both_prev0_K0_qat5_v2.zip\n"}
+,{"stream_name":"stdout","time":11764.134978109,"data":"\n"}
+,{"stream_name":"stdout","time":11764.134984989,"data":"Copy into the HLS project:\n"}
+,{"stream_name":"stdout","time":11764.134990361,"data":"  /kaggle/working/hls_export/patch_both_prev0_K0_qat5_v2/weights/*.h            -\u003e hls_code/weights/\n"}
+,{"stream_name":"stdout","time":11764.134996126,"data":"  /kaggle/working/hls_export/patch_both_prev0_K0_qat5_v2/rope_tables.h          -\u003e hls_code/rope_tables.h\n"}
+,{"stream_name":"stdout","time":11764.135025872,"data":"  /kaggle/working/hls_export/patch_both_prev0_K0_qat5_v2/config.h               -\u003e hls_code/config.h\n"}
+,{"stream_name":"stdout","time":11764.135030691,"data":"  /kaggle/working/hls_export/patch_both_prev0_K0_qat5_v2/verification_data/     -\u003e hls_code/verification_data/\n"}
+,{"stream_name":"stdout","time":11764.135034497,"data":"  /kaggle/working/hls_export/patch_both_prev0_K0_qat5_v2/hil_verification_samples/ -\u003e hil_verification_samples/\n"}
+,{"stream_name":"stdout","time":11764.135038431,"data":"  /kaggle/working/hls_export/patch_both_prev0_K0_qat5_v2/normalization_constants.h -\u003e vitis_workspace (PS firmware)\n"}
+,{"stream_name":"stdout","time":11764.135042997,"data":"Then re-run C-simulation; per-layer cosine should match fixed_point_expectation.json (about 0.999).\n"}
+,{"stream_name":"stdout","time":11764.135046831,"data":"HLS changes required by this checkpoint: strided conv embedding, delta head output\n"}
+,{"stream_name":"stderr","time":11770.002982234,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":11770.003030611,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":11770.190851477,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":11770.190877574,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":11771.076617426,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":11771.219615954,"data":"[NbConvertApp] Writing 1120456 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":11774.077974444,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":11774.778313068,"data":"[NbConvertApp] Support files will be in __results___files/\n"}
+,{"stream_name":"stderr","time":11774.77834792,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":11774.778708517,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":11774.779146596,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":11774.779382549,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":11774.77957941,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":11774.779861212,"data":"[NbConvertApp] Writing 420187 bytes to __results__.html\n"}
+]

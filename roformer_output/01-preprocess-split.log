@@ -1,0 +1,975 @@
+[{"stream_name":"stderr","time":6.136532614,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.136572151,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.136578051,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.136582539,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":6.695425773,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.6954621979999995,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.695465521,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.695468179,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":15.251822948,"data":"torch 2.11.0+cu128 cuda True | emg_common from /kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py\n"}
+,{"stream_name":"stdout","time":15.271430273,"data":"subjects: ['DB2_s1', 'DB2_s10', 'DB2_s11', 'DB2_s12', 'DB2_s13', 'DB2_s14', 'DB2_s15', 'DB2_s16', 'DB2_s17', 'DB2_s18']\n"}
+,{"stream_name":"stdout","time":15.271455547,"data":"window 200 samples = 100.0 ms | stride 50 = 25.0 ms\n"}
+,{"stream_name":"stdout","time":39.944657792,"data":"DB2_s1: 86587 windows (train 58893, test 27694) -\u003e /kaggle/working/db2_processed/DB2_s1/data.npz\n"}
+,{"stream_name":"stdout","time":63.815411988,"data":"DB2_s10: 86435 windows (train 58477, test 27958) -\u003e /kaggle/working/db2_processed/DB2_s10/data.npz\n"}
+,{"stream_name":"stdout","time":87.870014836,"data":"DB2_s11: 86350 windows (train 58489, test 27861) -\u003e /kaggle/working/db2_processed/DB2_s11/data.npz\n"}
+,{"stream_name":"stdout","time":111.653407548,"data":"DB2_s12: 86234 windows (train 58983, test 27251) -\u003e /kaggle/working/db2_processed/DB2_s12/data.npz\n"}
+,{"stream_name":"stdout","time":135.52815120100001,"data":"DB2_s13: 86296 windows (train 58796, test 27500) -\u003e /kaggle/working/db2_processed/DB2_s13/data.npz\n"}
+,{"stream_name":"stdout","time":160.160501928,"data":"DB2_s14: 86373 windows (train 58917, test 27456) -\u003e /kaggle/working/db2_processed/DB2_s14/data.npz\n"}
+,{"stream_name":"stdout","time":183.994359179,"data":"DB2_s15: 86415 windows (train 59317, test 27098) -\u003e /kaggle/working/db2_processed/DB2_s15/data.npz\n"}
+,{"stream_name":"stdout","time":207.582266108,"data":"DB2_s16: 86358 windows (train 58586, test 27772) -\u003e /kaggle/working/db2_processed/DB2_s16/data.npz\n"}
+,{"stream_name":"stdout","time":231.394038234,"data":"DB2_s17: 86410 windows (train 58642, test 27768) -\u003e /kaggle/working/db2_processed/DB2_s17/data.npz\n"}
+,{"stream_name":"stdout","time":255.369680771,"data":"DB2_s18: 86193 windows (train 58484, test 27709) -\u003e /kaggle/working/db2_processed/DB2_s18/data.npz\n"}
+,{"stream_name":"stdout","time":310.826911222,"data":"per-joint delta std (train): [0.0056 0.006  0.0058 0.0058 0.0061 0.0057 0.0057 0.006  0.0056 0.0061]\n"}
+,{"stream_name":"stdout","time":310.826949962,"data":"rest pose (train): [0.517 0.472 0.588 0.438 0.585 0.445 0.505 0.444 0.475 0.472] | rest energy threshold: 0.3954\n"}
+,{"stream_name":"stdout","time":310.826954462,"data":"smallest delta std vs ap_fixed\u003c10,3\u003e LSB (1/128=0.0078): 0.0056 -\u003e deltas MUST be standardised before quantisation\n"}
+,{"stream_name":"stdout","time":500.192976121,"data":"patch_both_prev1_K0_qat5 | tokens: 25 | MACs: {'tokens': 25, 'conv': 307200, 'attention': 1798400, 'ffn': 1638400, 'head': 3840, 'total': 3747840, 'ms_at_1MAC_per_cycle_100MHz': 37.4784}\n"}
+,{"stream_name":"stderr","time":501.565710561,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":501.565735425,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":501.565741873,"data":"\n"}
+,{"stream_name":"stderr","time":501.565746336,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":501.565750961,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":501.566786165,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":501.566804278,"data":"\n"}
+,{"stream_name":"stderr","time":501.566809092,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":501.567762392,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: No netrc file found, creating one.\n"}
+,{"stream_name":"stderr","time":501.567774805,"data":"\n"}
+,{"stream_name":"stderr","time":501.567778563,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: No netrc file found, creating one.\n"}
+,{"stream_name":"stderr","time":501.568726627,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":501.568758887,"data":"\n"}
+,{"stream_name":"stderr","time":501.568764106,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":502.57761011,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Currently logged in as: \u001b[33mmk08457\u001b[0m (\u001b[33mmk08457-habib-university\u001b[0m) to \u001b[32mhttps://api.wandb.ai\u001b[0m. Use \u001b[1m`wandb login --relogin`\u001b[0m to force relogin\n"}
+,{"stream_name":"stderr","time":502.577640225,"data":"\n"}
+,{"stream_name":"stderr","time":502.577645144,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Currently logged in as: \u001b[33mmk08457\u001b[0m (\u001b[33mmk08457-habib-university\u001b[0m) to \u001b[32mhttps://api.wandb.ai\u001b[0m. Use \u001b[1m`wandb login --relogin`\u001b[0m to force relogin\n"}
+,{"stream_name":"stderr","time":503.564328439,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run bspu8fsx\n"}
+,{"stream_name":"stderr","time":503.564363051,"data":"\n"}
+,{"stream_name":"stderr","time":503.564366385,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run bspu8fsx\n"}
+,{"stream_name":"stderr","time":503.586234482,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":503.586288475,"data":"\n"}
+,{"stream_name":"stderr","time":503.586294831,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":503.587309361,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_104633-bspu8fsx\u001b[0m\n"}
+,{"stream_name":"stderr","time":503.587324649,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":503.587389136,"data":"\n"}
+,{"stream_name":"stderr","time":503.587401524,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_104633-bspu8fsx\u001b[0m\n"}
+,{"stream_name":"stderr","time":503.587421321,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":503.588287797,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev1_K0_qat5\u001b[0m\n"}
+,{"stream_name":"stderr","time":503.588298122,"data":"\n"}
+,{"stream_name":"stderr","time":503.588302207,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev1_K0_qat5\u001b[0m\n"}
+,{"stream_name":"stderr","time":503.589406734,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":503.589424446,"data":"\n"}
+,{"stream_name":"stderr","time":503.589428324,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":503.590241741,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/bspu8fsx\u001b[0m\n"}
+,{"stream_name":"stderr","time":503.590252754,"data":"\n"}
+,{"stream_name":"stderr","time":503.590256491,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/bspu8fsx\u001b[0m\n"}
+,{"stream_name":"stdout","time":545.472981043,"data":"[patch_both_prev1_K0_qat5] params=148,884 tokens=25 train_batches=5213 val_batches=4314 MACs=3,747,840\n"}
+,{"stream_name":"stdout","time":617.508897006,"data":"  float ep   1 train 1.44005 val 0.96002 abs=0.0006 delta=0.9594 (67s)\n"}
+,{"stream_name":"stdout","time":684.29611331,"data":"  float ep   2 train 1.37264 val 0.90174 abs=0.0004 delta=0.9013 (67s)\n"}
+,{"stream_name":"stdout","time":750.878082876,"data":"  float ep   3 train 1.32665 val 0.89358 abs=0.0004 delta=0.8932 (67s)\n"}
+,{"stream_name":"stdout","time":818.201621718,"data":"  float ep   4 train 1.29300 val 0.87507 abs=0.0003 delta=0.8747 (67s)\n"}
+,{"stream_name":"stdout","time":885.210915693,"data":"  float ep   5 train 1.26678 val 0.86497 abs=0.0003 delta=0.8647 (67s)\n"}
+,{"stream_name":"stdout","time":952.164967778,"data":"  float ep   6 train 1.24677 val 0.85423 abs=0.0003 delta=0.8539 (67s)\n"}
+,{"stream_name":"stdout","time":1017.972986547,"data":"  float ep   7 train 1.23057 val 0.84523 abs=0.0002 delta=0.8450 (66s)\n"}
+,{"stream_name":"stdout","time":1084.323891091,"data":"  float ep   8 train 1.21715 val 0.83894 abs=0.0003 delta=0.8387 (66s)\n"}
+,{"stream_name":"stdout","time":1151.128349673,"data":"  float ep   9 train 1.20275 val 0.84107 abs=0.0002 delta=0.8408 (67s)\n"}
+,{"stream_name":"stdout","time":1217.840554233,"data":"  float ep  10 train 1.19322 val 0.84259 abs=0.0002 delta=0.8424 (67s)\n"}
+,{"stream_name":"stdout","time":1284.01013187,"data":"  float ep  11 train 1.18521 val 0.82628 abs=0.0002 delta=0.8261 (66s)\n"}
+,{"stream_name":"stdout","time":1350.804702005,"data":"  float ep  12 train 1.17475 val 0.82867 abs=0.0002 delta=0.8284 (67s)\n"}
+,{"stream_name":"stdout","time":1417.220344838,"data":"  float ep  13 train 1.16670 val 0.83604 abs=0.0002 delta=0.8358 (66s)\n"}
+,{"stream_name":"stdout","time":1483.608419834,"data":"  float ep  14 train 1.15862 val 0.85009 abs=0.0002 delta=0.8499 (66s)\n"}
+,{"stream_name":"stdout","time":1550.183189347,"data":"  float ep  15 train 1.15324 val 0.82110 abs=0.0002 delta=0.8209 (67s)\n"}
+,{"stream_name":"stdout","time":1616.692498746,"data":"  float ep  16 train 1.14732 val 0.82299 abs=0.0002 delta=0.8228 (67s)\n"}
+,{"stream_name":"stdout","time":1682.924728095,"data":"  float ep  17 train 1.14228 val 0.82447 abs=0.0002 delta=0.8243 (66s)\n"}
+,{"stream_name":"stdout","time":1749.582629857,"data":"  float ep  18 train 1.13718 val 0.83076 abs=0.0002 delta=0.8306 (67s)\n"}
+,{"stream_name":"stdout","time":1815.470742918,"data":"  float ep  19 train 1.13090 val 0.82389 abs=0.0002 delta=0.8237 (66s)\n"}
+,{"stream_name":"stdout","time":1881.451963365,"data":"  float ep  20 train 1.10160 val 0.81542 abs=0.0002 delta=0.8153 (66s)\n"}
+,{"stream_name":"stdout","time":1947.721943018,"data":"  float ep  21 train 1.09484 val 0.81078 abs=0.0002 delta=0.8106 (66s)\n"}
+,{"stream_name":"stdout","time":2013.948654182,"data":"  float ep  22 train 1.09310 val 0.82386 abs=0.0002 delta=0.8237 (66s)\n"}
+,{"stream_name":"stdout","time":2080.303536009,"data":"  float ep  23 train 1.08865 val 0.81799 abs=0.0002 delta=0.8178 (66s)\n"}
+,{"stream_name":"stdout","time":2147.141049217,"data":"  float ep  24 train 1.08652 val 0.80759 abs=0.0002 delta=0.8074 (67s)\n"}
+,{"stream_name":"stdout","time":2213.032757572,"data":"  float ep  25 train 1.08326 val 0.82282 abs=0.0002 delta=0.8227 (66s)\n"}
+,{"stream_name":"stdout","time":2279.144647565,"data":"  float ep  26 train 1.08196 val 0.81795 abs=0.0002 delta=0.8178 (66s)\n"}
+,{"stream_name":"stdout","time":2345.323337088,"data":"  float ep  27 train 1.07899 val 0.81371 abs=0.0002 delta=0.8135 (66s)\n"}
+,{"stream_name":"stdout","time":2411.20530161,"data":"  float ep  28 train 1.07721 val 0.81801 abs=0.0002 delta=0.8178 (66s)\n"}
+,{"stream_name":"stdout","time":2478.347500429,"data":"  float ep  29 train 1.06038 val 0.80826 abs=0.0002 delta=0.8081 (67s)\n"}
+,{"stream_name":"stdout","time":2544.227540013,"data":"  float ep  30 train 1.05939 val 0.81156 abs=0.0002 delta=0.8114 (66s)\n"}
+,{"stream_name":"stdout","time":2610.009757082,"data":"  float ep  31 train 1.05788 val 0.81128 abs=0.0002 delta=0.8111 (66s)\n"}
+,{"stream_name":"stdout","time":2675.251457512,"data":"  float ep  32 train 1.05544 val 0.80905 abs=0.0002 delta=0.8089 (65s)\n"}
+,{"stream_name":"stdout","time":2675.25150473,"data":"  early stop (float)\n"}
+,{"stream_name":"stdout","time":2775.862643003,"data":"  qat ep   1 train 1.06812 val 0.81256 abs=0.0002 delta=0.8123 (100s)\n"}
+,{"stream_name":"stdout","time":2875.913161125,"data":"  qat ep   2 train 1.06519 val 0.81083 abs=0.0002 delta=0.8106 (100s)\n"}
+,{"stream_name":"stdout","time":2975.738181304,"data":"  qat ep   3 train 1.06440 val 0.81118 abs=0.0003 delta=0.8109 (100s)\n"}
+,{"stream_name":"stdout","time":3075.552471196,"data":"  qat ep   4 train 1.06274 val 0.80850 abs=0.0002 delta=0.8083 (100s)\n"}
+,{"stream_name":"stdout","time":3174.505898498,"data":"  qat ep   5 train 1.06116 val 0.81065 abs=0.0003 delta=0.8104 (99s)\n"}
+,{"stream_name":"stdout","time":3248.138002918,"data":"window metrics: {'abs_rmse': 0.015544451841916133, 'abs_r2': 0.9918495416641235, 'delta_rmse': 0.005235880620027532, 'delta_r2': 0.2154378890991211}\n"}
+,{"stream_name":"stderr","time":6315.076437642,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":6315.076492808,"data":"\n"}
+,{"stream_name":"stderr","time":6315.076497383,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":6315.980726883,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_38_22ab0f0a843cc22bfe72.png; uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":6315.980751286,"data":"\n"}
+,{"stream_name":"stderr","time":6315.980756959,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_38_22ab0f0a843cc22bfe72.png; uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":6316.483288565,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_38_22ab0f0a843cc22bfe72.png; uploading output.log; uploading wandb-summary.json\n"}
+,{"stream_name":"stderr","time":6316.483312258,"data":"\n"}
+,{"stream_name":"stderr","time":6316.48331637,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading media/images/tracking_38_22ab0f0a843cc22bfe72.png; uploading output.log; uploading wandb-summary.json\n"}
+,{"stream_name":"stderr","time":6316.985613941,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 38-38, summary\n"}
+,{"stream_name":"stderr","time":6316.985635687,"data":"\n"}
+,{"stream_name":"stderr","time":6316.985639821,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 38-38, summary\n"}
+,{"stream_name":"stderr","time":6317.023271002,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":6317.023287685,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":6317.023293116,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▁▂▂▂▂▃▃▃▃▃▄▄▄▄▅▅▅▅▆▆▆▆▆▇▇▇▇███▁▁▁▂▂\n"}
+,{"stream_name":"stderr","time":6317.023297605,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████████▄▄▄▄▄▄▄▄▄▂▂▂▂▁▁▁▁▁▁\n"}
+,{"stream_name":"stderr","time":6317.023302289,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█████\n"}
+,{"stream_name":"stderr","time":6317.023307422,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023311551,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023315543,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023319475,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023323541,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023327308,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023330696,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq/kalman_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023334072,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +10 ...\n"}
+,{"stream_name":"stderr","time":6317.02333756,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":6317.023340933,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":6317.023344711,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch 5\n"}
+,{"stream_name":"stderr","time":6317.023348469,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr 5e-05\n"}
+,{"stream_name":"stderr","time":6317.023353293,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          phase qat\n"}
+,{"stream_name":"stderr","time":6317.023361337,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec 98.91608\n"}
+,{"stream_name":"stderr","time":6317.023379158,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse 0.1192\n"}
+,{"stream_name":"stderr","time":6317.02339832,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse 0.13062\n"}
+,{"stream_name":"stderr","time":6317.023412969,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse 0.69781\n"}
+,{"stream_name":"stderr","time":6317.023417091,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse 0.13062\n"}
+,{"stream_name":"stderr","time":6317.023420999,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse 0.14455\n"}
+,{"stream_name":"stderr","time":6317.023424972,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse 0.14154\n"}
+,{"stream_name":"stderr","time":6317.023428861,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +11 ...\n"}
+,{"stream_name":"stderr","time":6317.02343285,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":6317.023436759,"data":"\n"}
+,{"stream_name":"stderr","time":6317.023440403,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":6317.02344362,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":6317.023454143,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▁▂▂▂▂▃▃▃▃▃▄▄▄▄▅▅▅▅▆▆▆▆▆▇▇▇▇███▁▁▁▂▂\n"}
+,{"stream_name":"stderr","time":6317.023459048,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████████▄▄▄▄▄▄▄▄▄▂▂▂▂▁▁▁▁▁▁\n"}
+,{"stream_name":"stderr","time":6317.023463064,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█████\n"}
+,{"stream_name":"stderr","time":6317.02346688,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.02347028,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023473731,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023477136,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023481142,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023485103,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023489142,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq/kalman_rmse ▁\n"}
+,{"stream_name":"stderr","time":6317.023493135,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +10 ...\n"}
+,{"stream_name":"stderr","time":6317.023497218,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":6317.02350116,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":6317.023505238,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch 5\n"}
+,{"stream_name":"stderr","time":6317.023508865,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr 5e-05\n"}
+,{"stream_name":"stderr","time":6317.023512856,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          phase qat\n"}
+,{"stream_name":"stderr","time":6317.02351684,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec 98.91608\n"}
+,{"stream_name":"stderr","time":6317.023520939,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq/abs_only_rmse 0.1192\n"}
+,{"stream_name":"stderr","time":6317.023524751,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq/delta_fixed_round_12b_rmse 0.13062\n"}
+,{"stream_name":"stderr","time":6317.023533677,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:  seq/delta_fixed_trunc_7b_rmse 0.69781\n"}
+,{"stream_name":"stderr","time":6317.023537069,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      seq/delta_integrated_rmse 0.13062\n"}
+,{"stream_name":"stderr","time":6317.023540111,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq/delta_leaky_clamped_rmse 0.14455\n"}
+,{"stream_name":"stderr","time":6317.023543276,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    seq/kalman_rest_anchor_rmse 0.14154\n"}
+,{"stream_name":"stderr","time":6317.023546468,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +11 ...\n"}
+,{"stream_name":"stderr","time":6317.023549931,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":6317.024410966,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev1_K0_qat5\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/bspu8fsx\u001b[0m\n"}
+,{"stream_name":"stderr","time":6317.024429574,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":6317.024434739,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":6317.024438867,"data":"\n"}
+,{"stream_name":"stderr","time":6317.024442157,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev1_K0_qat5\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer/runs/bspu8fsx\u001b[0m\n"}
+,{"stream_name":"stderr","time":6317.024446128,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_roformer\u001b[0m\n"}
+,{"stream_name":"stderr","time":6317.024450106,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":6317.025599911,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_104633-bspu8fsx/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":6317.025615912,"data":"\n"}
+,{"stream_name":"stderr","time":6317.025620594,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_104633-bspu8fsx/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":6336.100128559,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":6336.100160262,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":6336.100166503,"data":"\n"}
+,{"stream_name":"stderr","time":6336.100170541,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":6336.100175635,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":6336.101235106,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":6336.101256959,"data":"\n"}
+,{"stream_name":"stderr","time":6336.101288611,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":6336.102141404,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":6336.102156058,"data":"\n"}
+,{"stream_name":"stderr","time":6336.102160694,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":6337.145461646,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run r6qzsi8s\n"}
+,{"stream_name":"stderr","time":6337.145486134,"data":"\n"}
+,{"stream_name":"stderr","time":6337.145490311,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run r6qzsi8s\n"}
+,{"stream_name":"stderr","time":6337.836717358,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":6337.836741025,"data":"\n"}
+,{"stream_name":"stderr","time":6337.83678113,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":6337.837871349,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_122347-r6qzsi8s\u001b[0m\n"}
+,{"stream_name":"stderr","time":6337.837890475,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":6337.837896615,"data":"\n"}
+,{"stream_name":"stderr","time":6337.83790115,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_122347-r6qzsi8s\u001b[0m\n"}
+,{"stream_name":"stderr","time":6337.83790555,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":6337.839542401,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mroformer_absolute_prev0_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":6337.839560823,"data":"\n"}
+,{"stream_name":"stderr","time":6337.839565697,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mroformer_absolute_prev0_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":6337.839981347,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":6337.839990763,"data":"\n"}
+,{"stream_name":"stderr","time":6337.839997085,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":6337.8408544,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/r6qzsi8s\u001b[0m\n"}
+,{"stream_name":"stderr","time":6337.840867598,"data":"\n"}
+,{"stream_name":"stderr","time":6337.840872605,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/r6qzsi8s\u001b[0m\n"}
+,{"stream_name":"stdout","time":6378.27723906,"data":"[roformer_absolute_prev0_K0] params=138,506 tokens=200 train_batches=5213 val_batches=4314 MACs=37,377,280\n"}
+,{"stream_name":"stdout","time":6511.492042732,"data":"  float ep   1 train 0.02732 val 0.01821 abs=0.0182 (133s)\n"}
+,{"stream_name":"stdout","time":6643.14729823,"data":"  float ep   2 train 0.02036 val 0.01657 abs=0.0166 (132s)\n"}
+,{"stream_name":"stdout","time":6775.495006546,"data":"  float ep   3 train 0.01817 val 0.01438 abs=0.0144 (132s)\n"}
+,{"stream_name":"stdout","time":6906.445334104,"data":"  float ep   4 train 0.01706 val 0.01496 abs=0.0150 (131s)\n"}
+,{"stream_name":"stdout","time":7039.252708668,"data":"  float ep   5 train 0.01637 val 0.01410 abs=0.0141 (133s)\n"}
+,{"stream_name":"stdout","time":7170.089456409,"data":"  float ep   6 train 0.01590 val 0.01374 abs=0.0137 (131s)\n"}
+,{"stream_name":"stdout","time":7302.684144577,"data":"  float ep   7 train 0.01551 val 0.01450 abs=0.0145 (133s)\n"}
+,{"stream_name":"stdout","time":7433.607341103,"data":"  float ep   8 train 0.01514 val 0.01434 abs=0.0143 (131s)\n"}
+,{"stream_name":"stdout","time":7565.272068676,"data":"  float ep   9 train 0.01481 val 0.01451 abs=0.0145 (132s)\n"}
+,{"stream_name":"stdout","time":7696.290851596,"data":"  float ep  10 train 0.01454 val 0.01446 abs=0.0145 (131s)\n"}
+,{"stream_name":"stdout","time":7828.798100979,"data":"  float ep  11 train 0.01373 val 0.01406 abs=0.0141 (132s)\n"}
+,{"stream_name":"stdout","time":7828.7981372,"data":"  early stop (float)\n"}
+,{"stream_name":"stderr","time":9785.949769291,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":9785.949815893,"data":"\n"}
+,{"stream_name":"stderr","time":9785.949822428,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":9786.836639302,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":9786.836668632,"data":"\n"}
+,{"stream_name":"stderr","time":9786.836675427,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":9787.338687296,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":9787.338720845,"data":"\n"}
+,{"stream_name":"stderr","time":9787.338727211,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":9787.841688789,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 11-11, summary\n"}
+,{"stream_name":"stderr","time":9787.841719925,"data":"\n"}
+,{"stream_name":"stderr","time":9787.841723962,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 11-11, summary\n"}
+,{"stream_name":"stderr","time":9788.078136349,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":9788.078161699,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":9788.078167269,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              MACs ▁\n"}
+,{"stream_name":"stderr","time":9788.078172995,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":9788.078177904,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             epoch ▁▂▂▃▄▅▅▆▇▇█\n"}
+,{"stream_name":"stderr","time":9788.078182415,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                lr █████████▁▁\n"}
+,{"stream_name":"stderr","time":9788.078187452,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            params ▁\n"}
+,{"stream_name":"stderr","time":9788.078192146,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:               sec █▃▅▁▇▁▆▁▃▂▅\n"}
+,{"stream_name":"stderr","time":9788.078197368,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":9788.078201569,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":9788.078205695,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            tokens ▁\n"}
+,{"stream_name":"stderr","time":9788.078210662,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_abs █▄▃▃▂▂▂▂▂▁▁\n"}
+,{"stream_name":"stderr","time":9788.078229044,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                +6 ...\n"}
+,{"stream_name":"stderr","time":9788.078233804,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":9788.078237125,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":9788.078240455,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 37377280\n"}
+,{"stream_name":"stderr","time":9788.078244146,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.01374\n"}
+,{"stream_name":"stderr","time":9788.07824817,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev False\n"}
+,{"stream_name":"stderr","time":9788.078251322,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 11\n"}
+,{"stream_name":"stderr","time":9788.078254827,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads absolute\n"}
+,{"stream_name":"stderr","time":9788.078262152,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":9788.078265946,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 138506\n"}
+,{"stream_name":"stderr","time":9788.078271402,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":9788.078275337,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 132.30261\n"}
+,{"stream_name":"stderr","time":9788.078280148,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.57279\n"}
+,{"stream_name":"stderr","time":9788.0782842,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +10 ...\n"}
+,{"stream_name":"stderr","time":9788.07828889,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":9788.078292321,"data":"\n"}
+,{"stream_name":"stderr","time":9788.078296019,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":9788.078299098,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":9788.078302651,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              MACs ▁\n"}
+,{"stream_name":"stderr","time":9788.07830667,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":9788.078309937,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             epoch ▁▂▂▃▄▅▅▆▇▇█\n"}
+,{"stream_name":"stderr","time":9788.07831413,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                lr █████████▁▁\n"}
+,{"stream_name":"stderr","time":9788.078317465,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            params ▁\n"}
+,{"stream_name":"stderr","time":9788.078321011,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:               sec █▃▅▁▇▁▆▁▃▂▅\n"}
+,{"stream_name":"stderr","time":9788.07832532,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":9788.078328647,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":9788.078332687,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            tokens ▁\n"}
+,{"stream_name":"stderr","time":9788.078336135,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_abs █▄▃▃▂▂▂▂▂▁▁\n"}
+,{"stream_name":"stderr","time":9788.07833985,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                +6 ...\n"}
+,{"stream_name":"stderr","time":9788.078343791,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":9788.07834771,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":9788.078351318,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 37377280\n"}
+,{"stream_name":"stderr","time":9788.078358895,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.01374\n"}
+,{"stream_name":"stderr","time":9788.078362864,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev False\n"}
+,{"stream_name":"stderr","time":9788.078366793,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 11\n"}
+,{"stream_name":"stderr","time":9788.078372559,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads absolute\n"}
+,{"stream_name":"stderr","time":9788.078404569,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":9788.078408872,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 138506\n"}
+,{"stream_name":"stderr","time":9788.078412095,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":9788.078416339,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 132.30261\n"}
+,{"stream_name":"stderr","time":9788.078419635,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.57279\n"}
+,{"stream_name":"stderr","time":9788.078422768,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +10 ...\n"}
+,{"stream_name":"stderr","time":9788.078425897,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":9788.079397165,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mroformer_absolute_prev0_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/r6qzsi8s\u001b[0m\n"}
+,{"stream_name":"stderr","time":9788.079416924,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":9788.079421801,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":9788.079425678,"data":"\n"}
+,{"stream_name":"stderr","time":9788.079428926,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mroformer_absolute_prev0_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/r6qzsi8s\u001b[0m\n"}
+,{"stream_name":"stderr","time":9788.07943305,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":9788.079437429,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":9788.080495375,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_122347-r6qzsi8s/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":9788.080507081,"data":"\n"}
+,{"stream_name":"stderr","time":9788.080510684,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_122347-r6qzsi8s/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":9788.372851543,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":9788.372872643,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":9788.372877789,"data":"\n"}
+,{"stream_name":"stderr","time":9788.372881517,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":9788.372885193,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":9788.373873751,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":9788.373890768,"data":"\n"}
+,{"stream_name":"stderr","time":9788.373894929,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":9788.374736694,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":9788.374748412,"data":"\n"}
+,{"stream_name":"stderr","time":9788.374752191,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":9789.436531068,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run pf2jk47i\n"}
+,{"stream_name":"stderr","time":9789.436567659,"data":"\n"}
+,{"stream_name":"stderr","time":9789.436572476,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run pf2jk47i\n"}
+,{"stream_name":"stderr","time":9789.678646436,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":9789.678674129,"data":"\n"}
+,{"stream_name":"stderr","time":9789.67867866,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":9789.679328969,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_132119-pf2jk47i\u001b[0m\n"}
+,{"stream_name":"stderr","time":9789.679344372,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":9789.6793495,"data":"\n"}
+,{"stream_name":"stderr","time":9789.67942384,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_132119-pf2jk47i\u001b[0m\n"}
+,{"stream_name":"stderr","time":9789.679438103,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":9789.680502116,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_absolute_prev0_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":9789.680519994,"data":"\n"}
+,{"stream_name":"stderr","time":9789.680524298,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_absolute_prev0_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":9789.681263172,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":9789.681275524,"data":"\n"}
+,{"stream_name":"stderr","time":9789.681279484,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":9789.6820947,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/pf2jk47i\u001b[0m\n"}
+,{"stream_name":"stderr","time":9789.682110827,"data":"\n"}
+,{"stream_name":"stderr","time":9789.682114666,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/pf2jk47i\u001b[0m\n"}
+,{"stream_name":"stdout","time":9831.085730721,"data":"[patch_absolute_prev0_K0] params=146,186 tokens=25 train_batches=5213 val_batches=4314 MACs=3,745,280\n"}
+,{"stream_name":"stdout","time":9893.046048813,"data":"  float ep   1 train 0.02786 val 0.01754 abs=0.0175 (62s)\n"}
+,{"stream_name":"stdout","time":9954.991120374,"data":"  float ep   2 train 0.02096 val 0.01664 abs=0.0166 (62s)\n"}
+,{"stream_name":"stdout","time":10016.695536502,"data":"  float ep   3 train 0.01883 val 0.01501 abs=0.0150 (62s)\n"}
+,{"stream_name":"stdout","time":10078.534848713,"data":"  float ep   4 train 0.01775 val 0.01448 abs=0.0145 (62s)\n"}
+,{"stream_name":"stdout","time":10140.544674278,"data":"  float ep   5 train 0.01711 val 0.01437 abs=0.0144 (62s)\n"}
+,{"stream_name":"stdout","time":10202.87758945,"data":"  float ep   6 train 0.01663 val 0.01441 abs=0.0144 (62s)\n"}
+,{"stream_name":"stdout","time":10264.894012224,"data":"  float ep   7 train 0.01622 val 0.01495 abs=0.0150 (62s)\n"}
+,{"stream_name":"stdout","time":10326.92031203,"data":"  float ep   8 train 0.01587 val 0.01434 abs=0.0143 (62s)\n"}
+,{"stream_name":"stdout","time":10388.527156498,"data":"  float ep   9 train 0.01559 val 0.01411 abs=0.0141 (62s)\n"}
+,{"stream_name":"stdout","time":10450.682849787,"data":"  float ep  10 train 0.01530 val 0.01447 abs=0.0145 (62s)\n"}
+,{"stream_name":"stdout","time":10513.231134182,"data":"  float ep  11 train 0.01507 val 0.01420 abs=0.0142 (63s)\n"}
+,{"stream_name":"stdout","time":10576.166294867,"data":"  float ep  12 train 0.01482 val 0.01441 abs=0.0144 (63s)\n"}
+,{"stream_name":"stdout","time":10638.752394201,"data":"  float ep  13 train 0.01464 val 0.01556 abs=0.0156 (63s)\n"}
+,{"stream_name":"stdout","time":10702.066656067,"data":"  float ep  14 train 0.01393 val 0.01534 abs=0.0153 (63s)\n"}
+,{"stream_name":"stdout","time":10702.06668453,"data":"  early stop (float)\n"}
+,{"stream_name":"stderr","time":12643.641679771,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":12643.641745421,"data":"\n"}
+,{"stream_name":"stderr","time":12643.641751631,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":12645.029941034,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading config.yaml; uploading output.log; uploading wandb-summary.json\n"}
+,{"stream_name":"stderr","time":12645.02996809,"data":"\n"}
+,{"stream_name":"stderr","time":12645.029973605,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading config.yaml; uploading output.log; uploading wandb-summary.json\n"}
+,{"stream_name":"stderr","time":12645.532218667,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading config.yaml; uploading wandb-summary.json; uploading history steps 14-14, summary\n"}
+,{"stream_name":"stderr","time":12645.53226171,"data":"\n"}
+,{"stream_name":"stderr","time":12645.532267818,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading config.yaml; uploading wandb-summary.json; uploading history steps 14-14, summary\n"}
+,{"stream_name":"stderr","time":12646.034504133,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading config.yaml\n"}
+,{"stream_name":"stderr","time":12646.034525955,"data":"\n"}
+,{"stream_name":"stderr","time":12646.034530965,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading config.yaml\n"}
+,{"stream_name":"stderr","time":12646.464313331,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":12646.464332324,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":12646.464338211,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              MACs ▁\n"}
+,{"stream_name":"stderr","time":12646.464343871,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":12646.464348994,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             epoch ▁▂▂▃▃▄▄▅▅▆▆▇▇█\n"}
+,{"stream_name":"stderr","time":12646.464365819,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                lr ████████████▁▁\n"}
+,{"stream_name":"stderr","time":12646.464369576,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            params ▁\n"}
+,{"stream_name":"stderr","time":12646.464396494,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:               sec ▃▃▁▂▃▄▃▃▁▃▅▇▅█\n"}
+,{"stream_name":"stderr","time":12646.464403514,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":12646.464407439,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":12646.464411421,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            tokens ▁\n"}
+,{"stream_name":"stderr","time":12646.464415474,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_abs █▅▃▃▃▂▂▂▂▂▂▁▁▁\n"}
+,{"stream_name":"stderr","time":12646.46441977,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                +6 ...\n"}
+,{"stream_name":"stderr","time":12646.464423923,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":12646.464427711,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":12646.464431157,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 3745280\n"}
+,{"stream_name":"stderr","time":12646.464434521,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.01411\n"}
+,{"stream_name":"stderr","time":12646.464437866,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev False\n"}
+,{"stream_name":"stderr","time":12646.464441159,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 14\n"}
+,{"stream_name":"stderr","time":12646.464444553,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads absolute\n"}
+,{"stream_name":"stderr","time":12646.464448039,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":12646.464451309,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 146186\n"}
+,{"stream_name":"stderr","time":12646.464456139,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":12646.464463268,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 63.15632\n"}
+,{"stream_name":"stderr","time":12646.464466007,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.5613\n"}
+,{"stream_name":"stderr","time":12646.464468297,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +10 ...\n"}
+,{"stream_name":"stderr","time":12646.464488375,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":12646.464492386,"data":"\n"}
+,{"stream_name":"stderr","time":12646.464496081,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":12646.464499915,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":12646.464504136,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              MACs ▁\n"}
+,{"stream_name":"stderr","time":12646.464508375,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":12646.4645123,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             epoch ▁▂▂▃▃▄▄▅▅▆▆▇▇█\n"}
+,{"stream_name":"stderr","time":12646.464516702,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                lr ████████████▁▁\n"}
+,{"stream_name":"stderr","time":12646.464520795,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            params ▁\n"}
+,{"stream_name":"stderr","time":12646.464524538,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:               sec ▃▃▁▂▃▄▃▃▁▃▅▇▅█\n"}
+,{"stream_name":"stderr","time":12646.464534608,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":12646.46453916,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":12646.464543199,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            tokens ▁\n"}
+,{"stream_name":"stderr","time":12646.464547318,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_abs █▅▃▃▃▂▂▂▂▂▂▁▁▁\n"}
+,{"stream_name":"stderr","time":12646.464551175,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                +6 ...\n"}
+,{"stream_name":"stderr","time":12646.464555252,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":12646.46455916,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":12646.464563593,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 3745280\n"}
+,{"stream_name":"stderr","time":12646.464567868,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.01411\n"}
+,{"stream_name":"stderr","time":12646.464572592,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev False\n"}
+,{"stream_name":"stderr","time":12646.464576653,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 14\n"}
+,{"stream_name":"stderr","time":12646.464581055,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads absolute\n"}
+,{"stream_name":"stderr","time":12646.464584923,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":12646.464588917,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 146186\n"}
+,{"stream_name":"stderr","time":12646.464592833,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":12646.464596853,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 63.15632\n"}
+,{"stream_name":"stderr","time":12646.464600977,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.5613\n"}
+,{"stream_name":"stderr","time":12646.464605207,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +10 ...\n"}
+,{"stream_name":"stderr","time":12646.464609027,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":12646.465553791,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_absolute_prev0_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/pf2jk47i\u001b[0m\n"}
+,{"stream_name":"stderr","time":12646.465574386,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":12646.46559113,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":12646.465595191,"data":"\n"}
+,{"stream_name":"stderr","time":12646.465599577,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_absolute_prev0_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/pf2jk47i\u001b[0m\n"}
+,{"stream_name":"stderr","time":12646.465604069,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":12646.465608373,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":12646.466675331,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_132119-pf2jk47i/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":12646.466694557,"data":"\n"}
+,{"stream_name":"stderr","time":12646.466721145,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_132119-pf2jk47i/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":12646.724659168,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":12646.724676683,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":12646.724681889,"data":"\n"}
+,{"stream_name":"stderr","time":12646.724685475,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":12646.724689682,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":12646.725664416,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":12646.725680918,"data":"\n"}
+,{"stream_name":"stderr","time":12646.725685193,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":12646.726467861,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":12646.726482464,"data":"\n"}
+,{"stream_name":"stderr","time":12646.726487082,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":12648.317242555,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 65y4eeo7\n"}
+,{"stream_name":"stderr","time":12648.317269883,"data":"\n"}
+,{"stream_name":"stderr","time":12648.31727299,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 65y4eeo7\n"}
+,{"stream_name":"stderr","time":12649.430552596,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":12649.430579472,"data":"\n"}
+,{"stream_name":"stderr","time":12649.430584647,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":12649.431777789,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_140858-65y4eeo7\u001b[0m\n"}
+,{"stream_name":"stderr","time":12649.431796602,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":12649.431802006,"data":"\n"}
+,{"stream_name":"stderr","time":12649.431805421,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_140858-65y4eeo7\u001b[0m\n"}
+,{"stream_name":"stderr","time":12649.431924789,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":12649.433460274,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mnoattn_absolute_prev0_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":12649.43347842,"data":"\n"}
+,{"stream_name":"stderr","time":12649.433483465,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mnoattn_absolute_prev0_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":12649.433668025,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":12649.433691892,"data":"\n"}
+,{"stream_name":"stderr","time":12649.433973538,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":12649.434775128,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/65y4eeo7\u001b[0m\n"}
+,{"stream_name":"stderr","time":12649.434789372,"data":"\n"}
+,{"stream_name":"stderr","time":12649.434794721,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/65y4eeo7\u001b[0m\n"}
+,{"stream_name":"stdout","time":12689.934176657,"data":"[noattn_absolute_prev0_K0] params=79,882 tokens=25 train_batches=5213 val_batches=4314 MACs=1,946,880\n"}
+,{"stream_name":"stdout","time":12742.545214049,"data":"  float ep   1 train 0.02981 val 0.01993 abs=0.0199 (53s)\n"}
+,{"stream_name":"stdout","time":12794.886830592,"data":"  float ep   2 train 0.02485 val 0.02050 abs=0.0205 (52s)\n"}
+,{"stream_name":"stdout","time":12847.59877653,"data":"  float ep   3 train 0.02329 val 0.01807 abs=0.0181 (53s)\n"}
+,{"stream_name":"stdout","time":12899.926282465,"data":"  float ep   4 train 0.02235 val 0.01911 abs=0.0191 (52s)\n"}
+,{"stream_name":"stdout","time":12952.69487847,"data":"  float ep   5 train 0.02174 val 0.01772 abs=0.0177 (53s)\n"}
+,{"stream_name":"stdout","time":13005.044848544,"data":"  float ep   6 train 0.02124 val 0.01665 abs=0.0167 (52s)\n"}
+,{"stream_name":"stdout","time":13057.44817365,"data":"  float ep   7 train 0.02093 val 0.01684 abs=0.0168 (52s)\n"}
+,{"stream_name":"stdout","time":13109.811287254,"data":"  float ep   8 train 0.02068 val 0.01657 abs=0.0166 (52s)\n"}
+,{"stream_name":"stdout","time":13162.356725917,"data":"  float ep   9 train 0.02043 val 0.01678 abs=0.0168 (53s)\n"}
+,{"stream_name":"stdout","time":13214.71550901,"data":"  float ep  10 train 0.02028 val 0.01768 abs=0.0177 (52s)\n"}
+,{"stream_name":"stdout","time":13267.141692237,"data":"  float ep  11 train 0.02012 val 0.01670 abs=0.0167 (52s)\n"}
+,{"stream_name":"stdout","time":13319.430504717,"data":"  float ep  12 train 0.02001 val 0.01719 abs=0.0172 (52s)\n"}
+,{"stream_name":"stdout","time":13372.272533561,"data":"  float ep  13 train 0.01944 val 0.01656 abs=0.0166 (53s)\n"}
+,{"stream_name":"stdout","time":13424.593331023,"data":"  float ep  14 train 0.01936 val 0.01656 abs=0.0166 (52s)\n"}
+,{"stream_name":"stdout","time":13477.34288607,"data":"  float ep  15 train 0.01934 val 0.01645 abs=0.0164 (53s)\n"}
+,{"stream_name":"stderr","time":15445.405472353,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":15445.405526148,"data":"\n"}
+,{"stream_name":"stderr","time":15445.405530416,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":15445.788724239,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata; uploading history steps 15-15, summary\n"}
+,{"stream_name":"stderr","time":15445.78876384,"data":"\n"}
+,{"stream_name":"stderr","time":15445.788770108,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata; uploading history steps 15-15, summary\n"}
+,{"stream_name":"stderr","time":15447.296235776,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":15447.296279545,"data":"\n"}
+,{"stream_name":"stderr","time":15447.296284124,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":15447.799327715,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json\n"}
+,{"stream_name":"stderr","time":15447.799364338,"data":"\n"}
+,{"stream_name":"stderr","time":15447.799369686,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json\n"}
+,{"stream_name":"stderr","time":15448.302517558,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading data\n"}
+,{"stream_name":"stderr","time":15448.302546723,"data":"\n"}
+,{"stream_name":"stderr","time":15448.302551328,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading data\n"}
+,{"stream_name":"stderr","time":15448.310026083,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":15448.310054025,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":15448.310060453,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              MACs ▁\n"}
+,{"stream_name":"stderr","time":15448.310066449,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":15448.310071429,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":15448.310076199,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                lr ███████████▁▁▁▁\n"}
+,{"stream_name":"stderr","time":15448.310080947,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            params ▁\n"}
+,{"stream_name":"stderr","time":15448.310085377,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:               sec ▅▂▇▂▇▂▃▂▄▂▃▁█▂▄\n"}
+,{"stream_name":"stderr","time":15448.310090131,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":15448.31009476,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":15448.310099137,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            tokens ▁\n"}
+,{"stream_name":"stderr","time":15448.310103518,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_abs █▅▄▃▃▂▂▂▂▂▂▁▁▁▁\n"}
+,{"stream_name":"stderr","time":15448.310108005,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                +6 ...\n"}
+,{"stream_name":"stderr","time":15448.310113709,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":15448.310119184,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":15448.310124031,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 1946880\n"}
+,{"stream_name":"stderr","time":15448.310128864,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.01645\n"}
+,{"stream_name":"stderr","time":15448.310133049,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev False\n"}
+,{"stream_name":"stderr","time":15448.310137338,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":15448.310141717,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads absolute\n"}
+,{"stream_name":"stderr","time":15448.310146291,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":15448.310152111,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 79882\n"}
+,{"stream_name":"stderr","time":15448.310156505,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":15448.310160805,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 52.54413\n"}
+,{"stream_name":"stderr","time":15448.310165377,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.48993\n"}
+,{"stream_name":"stderr","time":15448.310183749,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +10 ...\n"}
+,{"stream_name":"stderr","time":15448.310189497,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":15448.310193818,"data":"\n"}
+,{"stream_name":"stderr","time":15448.3101978,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":15448.310201997,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":15448.310206284,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              MACs ▁\n"}
+,{"stream_name":"stderr","time":15448.310211184,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":15448.310215503,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":15448.310220257,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                lr ███████████▁▁▁▁\n"}
+,{"stream_name":"stderr","time":15448.310225098,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            params ▁\n"}
+,{"stream_name":"stderr","time":15448.310230054,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:               sec ▅▂▇▂▇▂▃▂▄▂▃▁█▂▄\n"}
+,{"stream_name":"stderr","time":15448.310236146,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":15448.310241477,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":15448.310246144,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            tokens ▁\n"}
+,{"stream_name":"stderr","time":15448.310251225,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_abs █▅▄▃▃▂▂▂▂▂▂▁▁▁▁\n"}
+,{"stream_name":"stderr","time":15448.310256403,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                +6 ...\n"}
+,{"stream_name":"stderr","time":15448.310261132,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":15448.310265267,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":15448.310269517,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 1946880\n"}
+,{"stream_name":"stderr","time":15448.310275551,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.01645\n"}
+,{"stream_name":"stderr","time":15448.310280133,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev False\n"}
+,{"stream_name":"stderr","time":15448.310284437,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":15448.310288712,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads absolute\n"}
+,{"stream_name":"stderr","time":15448.310292982,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":15448.310297284,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 79882\n"}
+,{"stream_name":"stderr","time":15448.310301516,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":15448.310305866,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 52.54413\n"}
+,{"stream_name":"stderr","time":15448.31031113,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.48993\n"}
+,{"stream_name":"stderr","time":15448.310316157,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +10 ...\n"}
+,{"stream_name":"stderr","time":15448.310320958,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":15448.311289807,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mnoattn_absolute_prev0_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/65y4eeo7\u001b[0m\n"}
+,{"stream_name":"stderr","time":15448.311318956,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":15448.311325518,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":15448.31133007,"data":"\n"}
+,{"stream_name":"stderr","time":15448.311333875,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mnoattn_absolute_prev0_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/65y4eeo7\u001b[0m\n"}
+,{"stream_name":"stderr","time":15448.311338586,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":15448.311343019,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":15448.312465619,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_140858-65y4eeo7/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":15448.312522163,"data":"\n"}
+,{"stream_name":"stderr","time":15448.312527742,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_140858-65y4eeo7/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":15448.573853324,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":15448.573883854,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":15448.573889389,"data":"\n"}
+,{"stream_name":"stderr","time":15448.573892774,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":15448.57389693,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":15448.574994994,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":15448.575016848,"data":"\n"}
+,{"stream_name":"stderr","time":15448.575021203,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":15448.575788675,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":15448.575806679,"data":"\n"}
+,{"stream_name":"stderr","time":15448.575811384,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":15450.108152295,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 6g45splg\n"}
+,{"stream_name":"stderr","time":15450.108188019,"data":"\n"}
+,{"stream_name":"stderr","time":15450.108193508,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 6g45splg\n"}
+,{"stream_name":"stderr","time":15450.26388988,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":15450.263922681,"data":"\n"}
+,{"stream_name":"stderr","time":15450.263929208,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":15450.265397571,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_145539-6g45splg\u001b[0m\n"}
+,{"stream_name":"stderr","time":15450.265422657,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":15450.265429611,"data":"\n"}
+,{"stream_name":"stderr","time":15450.265434661,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_145539-6g45splg\u001b[0m\n"}
+,{"stream_name":"stderr","time":15450.265440701,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":15450.266648242,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev1_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":15450.266669066,"data":"\n"}
+,{"stream_name":"stderr","time":15450.266674788,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev1_K0\u001b[0m\n"}
+,{"stream_name":"stderr","time":15450.26787801,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":15450.267924184,"data":"\n"}
+,{"stream_name":"stderr","time":15450.267930668,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":15450.269140539,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/6g45splg\u001b[0m\n"}
+,{"stream_name":"stderr","time":15450.269181048,"data":"\n"}
+,{"stream_name":"stderr","time":15450.269187255,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/6g45splg\u001b[0m\n"}
+,{"stream_name":"stdout","time":15492.087362798,"data":"[patch_both_prev1_K0] params=148,884 tokens=25 train_batches=5213 val_batches=4314 MACs=3,747,840\n"}
+,{"stream_name":"stdout","time":15562.252183621,"data":"  float ep   1 train 1.43964 val 0.95989 abs=0.0006 delta=0.9593 (70s)\n"}
+,{"stream_name":"stdout","time":15631.550295804,"data":"  float ep   2 train 1.37076 val 0.90126 abs=0.0004 delta=0.9009 (69s)\n"}
+,{"stream_name":"stdout","time":15701.346196529,"data":"  float ep   3 train 1.32581 val 0.89674 abs=0.0004 delta=0.8963 (70s)\n"}
+,{"stream_name":"stdout","time":15771.043856182,"data":"  float ep   4 train 1.29320 val 0.87272 abs=0.0003 delta=0.8724 (70s)\n"}
+,{"stream_name":"stdout","time":15839.824038565,"data":"  float ep   5 train 1.26720 val 0.85967 abs=0.0003 delta=0.8594 (69s)\n"}
+,{"stream_name":"stdout","time":15909.850646291,"data":"  float ep   6 train 1.24798 val 0.85393 abs=0.0003 delta=0.8536 (70s)\n"}
+,{"stream_name":"stdout","time":15979.091552267,"data":"  float ep   7 train 1.23132 val 0.85482 abs=0.0002 delta=0.8546 (69s)\n"}
+,{"stream_name":"stdout","time":16048.926049946,"data":"  float ep   8 train 1.21745 val 0.83988 abs=0.0002 delta=0.8396 (70s)\n"}
+,{"stream_name":"stdout","time":16118.071902468,"data":"  float ep   9 train 1.20268 val 0.85019 abs=0.0002 delta=0.8500 (69s)\n"}
+,{"stream_name":"stdout","time":16187.61717907,"data":"  float ep  10 train 1.19271 val 0.84156 abs=0.0002 delta=0.8413 (70s)\n"}
+,{"stream_name":"stdout","time":16257.247294749,"data":"  float ep  11 train 1.18330 val 0.82842 abs=0.0002 delta=0.8282 (70s)\n"}
+,{"stream_name":"stdout","time":16326.703686441,"data":"  float ep  12 train 1.17270 val 0.83136 abs=0.0002 delta=0.8312 (69s)\n"}
+,{"stream_name":"stdout","time":16396.610642147,"data":"  float ep  13 train 1.16566 val 0.83293 abs=0.0002 delta=0.8327 (70s)\n"}
+,{"stream_name":"stdout","time":16465.72315899,"data":"  float ep  14 train 1.15724 val 0.83711 abs=0.0002 delta=0.8369 (69s)\n"}
+,{"stream_name":"stdout","time":16535.699529764,"data":"  float ep  15 train 1.15195 val 0.82925 abs=0.0002 delta=0.8291 (70s)\n"}
+,{"stream_name":"stderr","time":18861.931446936,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":18861.931493923,"data":"\n"}
+,{"stream_name":"stderr","time":18861.93149821,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":18862.81538899,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":18862.815434148,"data":"\n"}
+,{"stream_name":"stderr","time":18862.815441849,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":18863.724871212,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":18863.724899595,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":18863.724905173,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                           MACs ▁\n"}
+,{"stream_name":"stderr","time":18863.724910729,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                  best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":18863.724915509,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":18863.724920481,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████▁\n"}
+,{"stream_name":"stderr","time":18863.724925661,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                         params ▁\n"}
+,{"stream_name":"stderr","time":18863.724930334,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec █▄▆▆▁▇▃▆▃▅▅▅▇▃▆\n"}
+,{"stream_name":"stderr","time":18863.724935475,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":18863.724940397,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":18863.724945988,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_delta_fixed_round_12b_r2 ▁\n"}
+,{"stream_name":"stderr","time":18863.724951822,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":18863.724957432,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +22 ...\n"}
+,{"stream_name":"stderr","time":18863.72496265,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":18863.724979695,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":18863.724985348,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 3747840\n"}
+,{"stream_name":"stderr","time":18863.724990899,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.82842\n"}
+,{"stream_name":"stderr","time":18863.724996249,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev True\n"}
+,{"stream_name":"stderr","time":18863.725001032,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":18863.725005709,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads both\n"}
+,{"stream_name":"stderr","time":18863.72501037,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":18863.725028843,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 148884\n"}
+,{"stream_name":"stderr","time":18863.725033211,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":18863.725037271,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 69.76681\n"}
+,{"stream_name":"stderr","time":18863.725041657,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.53283\n"}
+,{"stream_name":"stderr","time":18863.725045697,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +26 ...\n"}
+,{"stream_name":"stderr","time":18863.725050065,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":18863.725054238,"data":"\n"}
+,{"stream_name":"stderr","time":18863.725058287,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":18863.725062447,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":18863.725066033,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                           MACs ▁\n"}
+,{"stream_name":"stderr","time":18863.725070481,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                  best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":18863.725074667,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":18863.725078597,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████▁\n"}
+,{"stream_name":"stderr","time":18863.72508259,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                         params ▁\n"}
+,{"stream_name":"stderr","time":18863.725086339,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec █▄▆▆▁▇▃▆▃▅▅▅▇▃▆\n"}
+,{"stream_name":"stderr","time":18863.725090253,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":18863.725093977,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":18863.725097644,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_delta_fixed_round_12b_r2 ▁\n"}
+,{"stream_name":"stderr","time":18863.725102873,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":18863.725106691,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +22 ...\n"}
+,{"stream_name":"stderr","time":18863.725110519,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":18863.725114125,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":18863.725118165,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 3747840\n"}
+,{"stream_name":"stderr","time":18863.725122506,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.82842\n"}
+,{"stream_name":"stderr","time":18863.725126852,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev True\n"}
+,{"stream_name":"stderr","time":18863.725131392,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":18863.725135639,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads both\n"}
+,{"stream_name":"stderr","time":18863.725139844,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":18863.725143875,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 148884\n"}
+,{"stream_name":"stderr","time":18863.725147293,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":18863.725150862,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 69.76681\n"}
+,{"stream_name":"stderr","time":18863.725154404,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.53283\n"}
+,{"stream_name":"stderr","time":18863.725163292,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +26 ...\n"}
+,{"stream_name":"stderr","time":18863.725167275,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":18863.726117589,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev1_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/6g45splg\u001b[0m\n"}
+,{"stream_name":"stderr","time":18863.726137701,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":18863.726144203,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":18863.726148661,"data":"\n"}
+,{"stream_name":"stderr","time":18863.726152874,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev1_K0\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/6g45splg\u001b[0m\n"}
+,{"stream_name":"stderr","time":18863.726157475,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":18863.726161606,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":18863.726916502,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_145539-6g45splg/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":18863.726934704,"data":"\n"}
+,{"stream_name":"stderr","time":18863.726939618,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_145539-6g45splg/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":18863.9792439,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":18863.979275687,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":18863.979281352,"data":"\n"}
+,{"stream_name":"stderr","time":18863.979285245,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":18863.979289687,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":18863.98017772,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":18863.980195933,"data":"\n"}
+,{"stream_name":"stderr","time":18863.980216501,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":18863.980998977,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":18863.981015836,"data":"\n"}
+,{"stream_name":"stderr","time":18863.981020061,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":18866.110453274,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 11y5pabm\n"}
+,{"stream_name":"stderr","time":18866.110489441,"data":"\n"}
+,{"stream_name":"stderr","time":18866.110492506,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 11y5pabm\n"}
+,{"stream_name":"stderr","time":18866.779724096,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":18866.779781664,"data":"\n"}
+,{"stream_name":"stderr","time":18866.779787981,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":18866.780813182,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_155236-11y5pabm\u001b[0m\n"}
+,{"stream_name":"stderr","time":18866.780827692,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":18866.780833176,"data":"\n"}
+,{"stream_name":"stderr","time":18866.780836736,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_155236-11y5pabm\u001b[0m\n"}
+,{"stream_name":"stderr","time":18866.780840634,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":18866.781831957,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev1_K8\u001b[0m\n"}
+,{"stream_name":"stderr","time":18866.781859939,"data":"\n"}
+,{"stream_name":"stderr","time":18866.781864574,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mpatch_both_prev1_K8\u001b[0m\n"}
+,{"stream_name":"stderr","time":18866.782787541,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":18866.782803277,"data":"\n"}
+,{"stream_name":"stderr","time":18866.782808334,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":18866.78353482,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/11y5pabm\u001b[0m\n"}
+,{"stream_name":"stderr","time":18866.783550399,"data":"\n"}
+,{"stream_name":"stderr","time":18866.783555813,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/11y5pabm\u001b[0m\n"}
+,{"stream_name":"stdout","time":18920.095599294,"data":"[patch_both_prev1_K8] params=148,884 tokens=25 train_batches=9091 val_batches=4227 MACs=3,747,840\n"}
+,{"stream_name":"stderr","time":18920.596064145,"data":"/kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py:733: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.\n"}
+,{"stream_name":"stderr","time":18920.596101248,"data":"Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)\n"}
+,{"stream_name":"stderr","time":18920.596107184,"data":"  return loss, {'traj': (l_traj / K).item(), 'abs': float(l_abs) / K, 'delta': float(l_delta) / K}, None\n"}
+,{"stream_name":"stderr","time":18920.596113425,"data":"\n"}
+,{"stream_name":"stderr","time":18920.596117456,"data":"/kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py:733: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.\n"}
+,{"stream_name":"stderr","time":18920.59613065,"data":"Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)\n"}
+,{"stream_name":"stderr","time":18920.596145414,"data":"  return loss, {'traj': (l_traj / K).item(), 'abs': float(l_abs) / K, 'delta': float(l_delta) / K}, None\n"}
+,{"stream_name":"stdout","time":19396.155557207,"data":"  float ep   1 train 0.90423 val 0.89797 traj=0.0009 abs=0.0028 delta=0.8943 (476s)\n"}
+,{"stream_name":"stdout","time":19874.274315118,"data":"  float ep   2 train 0.83323 val 0.85071 traj=0.0009 abs=0.0034 delta=0.8464 (478s)\n"}
+,{"stream_name":"stdout","time":20350.691471515,"data":"  float ep   3 train 0.79722 val 0.81885 traj=0.0008 abs=0.0026 delta=0.8154 (476s)\n"}
+,{"stream_name":"stdout","time":20829.821308428,"data":"  float ep   4 train 0.77590 val 0.80477 traj=0.0008 abs=0.0032 delta=0.8008 (479s)\n"}
+,{"stream_name":"stdout","time":21309.820846929,"data":"  float ep   5 train 0.76123 val 0.79272 traj=0.0008 abs=0.0034 delta=0.7885 (480s)\n"}
+,{"stream_name":"stdout","time":21786.808739696,"data":"  float ep   6 train 0.74874 val 0.79047 traj=0.0009 abs=0.0035 delta=0.7861 (477s)\n"}
+,{"stream_name":"stdout","time":22264.62667297,"data":"  float ep   7 train 0.73928 val 0.79901 traj=0.0008 abs=0.0033 delta=0.7949 (478s)\n"}
+,{"stream_name":"stdout","time":22739.786897861,"data":"  float ep   8 train 0.73022 val 0.78640 traj=0.0009 abs=0.0042 delta=0.7812 (475s)\n"}
+,{"stream_name":"stdout","time":23214.725090173,"data":"  float ep   9 train 0.72231 val 0.78901 traj=0.0009 abs=0.0042 delta=0.7839 (475s)\n"}
+,{"stream_name":"stdout","time":23688.981186013,"data":"  float ep  10 train 0.71628 val 0.79743 traj=0.0009 abs=0.0038 delta=0.7928 (474s)\n"}
+,{"stream_name":"stdout","time":24165.09188773,"data":"  float ep  11 train 0.71028 val 0.78590 traj=0.0009 abs=0.0041 delta=0.7809 (476s)\n"}
+,{"stream_name":"stdout","time":24638.327931132,"data":"  float ep  12 train 0.70450 val 0.78728 traj=0.0010 abs=0.0047 delta=0.7816 (473s)\n"}
+,{"stream_name":"stdout","time":25115.972971139,"data":"  float ep  13 train 0.69964 val 0.81863 traj=0.0009 abs=0.0042 delta=0.8135 (478s)\n"}
+,{"stream_name":"stdout","time":25589.585001433,"data":"  float ep  14 train 0.69480 val 0.80981 traj=0.0009 abs=0.0044 delta=0.8045 (474s)\n"}
+,{"stream_name":"stdout","time":26061.294287272,"data":"  float ep  15 train 0.69038 val 0.80470 traj=0.0010 abs=0.0050 delta=0.7988 (471s)\n"}
+,{"stream_name":"stderr","time":28367.97280012,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading data; updating run metadata\n"}
+,{"stream_name":"stderr","time":28367.972864618,"data":"\n"}
+,{"stream_name":"stderr","time":28367.972869054,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading data; updating run metadata\n"}
+,{"stream_name":"stderr","time":28368.354308002,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":28368.354333579,"data":"\n"}
+,{"stream_name":"stderr","time":28368.354339555,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":28369.860730322,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading wandb-summary.json; uploading config.yaml; uploading output.log\n"}
+,{"stream_name":"stderr","time":28369.860761821,"data":"\n"}
+,{"stream_name":"stderr","time":28369.860767464,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading wandb-summary.json; uploading config.yaml; uploading output.log\n"}
+,{"stream_name":"stderr","time":28370.363951081,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":28370.363981566,"data":"\n"}
+,{"stream_name":"stderr","time":28370.363994183,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":28370.866022437,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 15-15, summary\n"}
+,{"stream_name":"stderr","time":28370.866050376,"data":"\n"}
+,{"stream_name":"stderr","time":28370.866055187,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 15-15, summary\n"}
+,{"stream_name":"stderr","time":28370.883939907,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":28370.883957817,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":28370.883962456,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                           MACs ▁\n"}
+,{"stream_name":"stderr","time":28370.883966378,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                  best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":28370.883969798,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":28370.883973593,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████▁\n"}
+,{"stream_name":"stderr","time":28370.88397719,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                         params ▁\n"}
+,{"stream_name":"stderr","time":28370.883980587,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▅▆▅▇█▆▆▄▄▃▅▃▆▃▁\n"}
+,{"stream_name":"stderr","time":28370.883984618,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":28370.883988555,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":28370.883992545,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_delta_fixed_round_12b_r2 ▁\n"}
+,{"stream_name":"stderr","time":28370.883995772,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":28370.883999606,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +24 ...\n"}
+,{"stream_name":"stderr","time":28370.884003828,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":28370.884007228,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":28370.884010527,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 3747840\n"}
+,{"stream_name":"stderr","time":28370.884013925,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.7859\n"}
+,{"stream_name":"stderr","time":28370.88401738,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev True\n"}
+,{"stream_name":"stderr","time":28370.88402075,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":28370.884024573,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads both\n"}
+,{"stream_name":"stderr","time":28370.884028014,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":28370.884031472,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 148884\n"}
+,{"stream_name":"stderr","time":28370.884034879,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":28370.884038305,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 471.37503\n"}
+,{"stream_name":"stderr","time":28370.884041887,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.12423\n"}
+,{"stream_name":"stderr","time":28370.884045814,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +28 ...\n"}
+,{"stream_name":"stderr","time":28370.884049892,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":28370.884053454,"data":"\n"}
+,{"stream_name":"stderr","time":28370.884056867,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":28370.884079185,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":28370.884082808,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                           MACs ▁\n"}
+,{"stream_name":"stderr","time":28370.884086462,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                  best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":28370.88408994,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":28370.884093528,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ██████████████▁\n"}
+,{"stream_name":"stderr","time":28370.884097192,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                         params ▁\n"}
+,{"stream_name":"stderr","time":28370.884100663,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▅▆▅▇█▆▆▄▄▃▅▃▆▃▁\n"}
+,{"stream_name":"stderr","time":28370.884104272,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":28370.884107673,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":28370.88411085,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_delta_fixed_round_12b_r2 ▁\n"}
+,{"stream_name":"stderr","time":28370.884121641,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":28370.884125097,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +24 ...\n"}
+,{"stream_name":"stderr","time":28370.884127513,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":28370.884129684,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":28370.884131843,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 3747840\n"}
+,{"stream_name":"stderr","time":28370.884134024,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.7859\n"}
+,{"stream_name":"stderr","time":28370.884136275,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev True\n"}
+,{"stream_name":"stderr","time":28370.884138453,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":28370.884140628,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads both\n"}
+,{"stream_name":"stderr","time":28370.884142812,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.00015\n"}
+,{"stream_name":"stderr","time":28370.88414507,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 148884\n"}
+,{"stream_name":"stderr","time":28370.88414725,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":28370.884149437,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 471.37503\n"}
+,{"stream_name":"stderr","time":28370.88415163,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 0.12423\n"}
+,{"stream_name":"stderr","time":28370.884153922,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +28 ...\n"}
+,{"stream_name":"stderr","time":28370.884156137,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":28370.884462765,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev1_K8\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/11y5pabm\u001b[0m\n"}
+,{"stream_name":"stderr","time":28370.884478223,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":28370.884482602,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":28370.88449632,"data":"\n"}
+,{"stream_name":"stderr","time":28370.884500451,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mpatch_both_prev1_K8\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/11y5pabm\u001b[0m\n"}
+,{"stream_name":"stderr","time":28370.884505239,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":28370.88450997,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":28370.885424115,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_155236-11y5pabm/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":28370.885435691,"data":"\n"}
+,{"stream_name":"stderr","time":28370.885439253,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_155236-11y5pabm/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":28371.191512181,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":28371.191538532,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":28371.191543572,"data":"\n"}
+,{"stream_name":"stderr","time":28371.191547525,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":28371.191552157,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":28371.192565373,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":28371.192583643,"data":"\n"}
+,{"stream_name":"stderr","time":28371.192587906,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":28371.193535205,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":28371.193551045,"data":"\n"}
+,{"stream_name":"stderr","time":28371.193555627,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":28373.268833617,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run iplr6qpy\n"}
+,{"stream_name":"stderr","time":28373.268890024,"data":"\n"}
+,{"stream_name":"stderr","time":28373.268895651,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run iplr6qpy\n"}
+,{"stream_name":"stderr","time":28373.981220167,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":28373.981247102,"data":"\n"}
+,{"stream_name":"stderr","time":28373.981251549,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":28373.982220819,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_183102-iplr6qpy\u001b[0m\n"}
+,{"stream_name":"stderr","time":28373.982248566,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":28373.982253858,"data":"\n"}
+,{"stream_name":"stderr","time":28373.982257506,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_183102-iplr6qpy\u001b[0m\n"}
+,{"stream_name":"stderr","time":28373.982261241,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":28373.983197677,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mnoattn_both_prev1_K8\u001b[0m\n"}
+,{"stream_name":"stderr","time":28373.983216277,"data":"\n"}
+,{"stream_name":"stderr","time":28373.98322111,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mnoattn_both_prev1_K8\u001b[0m\n"}
+,{"stream_name":"stderr","time":28373.984201658,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":28373.984218927,"data":"\n"}
+,{"stream_name":"stderr","time":28373.984223779,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":28373.985130567,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/iplr6qpy\u001b[0m\n"}
+,{"stream_name":"stderr","time":28373.985147096,"data":"\n"}
+,{"stream_name":"stderr","time":28373.985151924,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/iplr6qpy\u001b[0m\n"}
+,{"stream_name":"stdout","time":28422.355987001,"data":"[noattn_both_prev1_K8] params=82,580 tokens=25 train_batches=9091 val_batches=4227 MACs=1,949,440\n"}
+,{"stream_name":"stdout","time":28709.66404907,"data":"  float ep   1 train 0.92168 val 0.92020 traj=0.0010 abs=0.0035 delta=0.9157 (287s)\n"}
+,{"stream_name":"stdout","time":28996.500872908,"data":"  float ep   2 train 0.88072 val 0.91910 traj=0.0008 abs=0.0021 delta=0.9163 (287s)\n"}
+,{"stream_name":"stdout","time":29283.12635082,"data":"  float ep   3 train 0.86293 val 0.87403 traj=0.0008 abs=0.0024 delta=0.8709 (287s)\n"}
+,{"stream_name":"stdout","time":29570.638389778,"data":"  float ep   4 train 0.85180 val 0.86580 traj=0.0008 abs=0.0024 delta=0.8626 (288s)\n"}
+,{"stream_name":"stdout","time":29857.582034472,"data":"  float ep   5 train 0.84320 val 0.85757 traj=0.0008 abs=0.0026 delta=0.8541 (287s)\n"}
+,{"stream_name":"stdout","time":30145.834672567,"data":"  float ep   6 train 0.83616 val 0.85022 traj=0.0009 abs=0.0030 delta=0.8464 (288s)\n"}
+,{"stream_name":"stdout","time":30434.477507977,"data":"  float ep   7 train 0.83028 val 0.85004 traj=0.0008 abs=0.0026 delta=0.8466 (289s)\n"}
+,{"stream_name":"stdout","time":30721.551076017,"data":"  float ep   8 train 0.82601 val 0.84982 traj=0.0009 abs=0.0032 delta=0.8457 (287s)\n"}
+,{"stream_name":"stdout","time":31009.360557217,"data":"  float ep   9 train 0.82168 val 0.84836 traj=0.0009 abs=0.0033 delta=0.8442 (288s)\n"}
+,{"stream_name":"stdout","time":31301.787617471,"data":"  float ep  10 train 0.81844 val 0.85060 traj=0.0009 abs=0.0031 delta=0.8467 (292s)\n"}
+,{"stream_name":"stdout","time":31593.730434729,"data":"  float ep  11 train 0.81535 val 0.86004 traj=0.0009 abs=0.0035 delta=0.8556 (292s)\n"}
+,{"stream_name":"stdout","time":31888.017025206,"data":"  float ep  12 train 0.81244 val 0.83778 traj=0.0009 abs=0.0036 delta=0.8332 (294s)\n"}
+,{"stream_name":"stdout","time":32180.001014736,"data":"  float ep  13 train 0.81038 val 0.83942 traj=0.0009 abs=0.0037 delta=0.8348 (292s)\n"}
+,{"stream_name":"stdout","time":32469.022986756,"data":"  float ep  14 train 0.80873 val 0.83170 traj=0.0009 abs=0.0033 delta=0.8275 (289s)\n"}
+,{"stream_name":"stdout","time":32759.98217753,"data":"  float ep  15 train 0.80706 val 0.83442 traj=0.0009 abs=0.0037 delta=0.8298 (291s)\n"}
+,{"stream_name":"stderr","time":34914.719823401,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":34914.719900206,"data":"\n"}
+,{"stream_name":"stderr","time":34914.719907193,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: updating run metadata\n"}
+,{"stream_name":"stderr","time":34915.602364583,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":34915.602414929,"data":"\n"}
+,{"stream_name":"stderr","time":34915.602422425,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading wandb-summary.json; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":34916.105107186,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":34916.105139423,"data":"\n"}
+,{"stream_name":"stderr","time":34916.105143377,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading output.log; uploading config.yaml\n"}
+,{"stream_name":"stderr","time":34916.607680927,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 15-15, summary\n"}
+,{"stream_name":"stderr","time":34916.607706098,"data":"\n"}
+,{"stream_name":"stderr","time":34916.607711261,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: uploading history steps 15-15, summary\n"}
+,{"stream_name":"stderr","time":34916.725880993,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":34916.725901002,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":34916.725906536,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                           MACs ▁\n"}
+,{"stream_name":"stderr","time":34916.725911489,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                  best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":34916.725916008,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":34916.725921732,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n"}
+,{"stream_name":"stderr","time":34916.725926902,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                         params ▁\n"}
+,{"stream_name":"stderr","time":34916.725932326,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▂▁▁▂▁▂▃▁▂▆▆█▆▃▅\n"}
+,{"stream_name":"stderr","time":34916.725937783,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":34916.725942913,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":34916.725947786,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_delta_fixed_round_12b_r2 ▁\n"}
+,{"stream_name":"stderr","time":34916.725952277,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":34916.725956645,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +24 ...\n"}
+,{"stream_name":"stderr","time":34916.725961364,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":34916.72596688,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":34916.72597238,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 1949440\n"}
+,{"stream_name":"stderr","time":34916.725988855,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.8317\n"}
+,{"stream_name":"stderr","time":34916.725992409,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev True\n"}
+,{"stream_name":"stderr","time":34916.725996152,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":34916.725999803,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads both\n"}
+,{"stream_name":"stderr","time":34916.726003239,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.0003\n"}
+,{"stream_name":"stderr","time":34916.726006603,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 82580\n"}
+,{"stream_name":"stderr","time":34916.726010588,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":34916.726014815,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 290.76221\n"}
+,{"stream_name":"stderr","time":34916.726019006,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 -0.35386\n"}
+,{"stream_name":"stderr","time":34916.726022818,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +28 ...\n"}
+,{"stream_name":"stderr","time":34916.72602698,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":34916.72603132,"data":"\n"}
+,{"stream_name":"stderr","time":34916.726035066,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":34916.726038822,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":34916.726042151,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                           MACs ▁\n"}
+,{"stream_name":"stderr","time":34916.726045903,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                  best_val_loss ▁\n"}
+,{"stream_name":"stderr","time":34916.726049766,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                          epoch ▁▁▂▃▃▃▄▅▅▅▆▇▇▇█\n"}
+,{"stream_name":"stderr","time":34916.726054196,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                             lr ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n"}
+,{"stream_name":"stderr","time":34916.726058193,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                         params ▁\n"}
+,{"stream_name":"stderr","time":34916.726062851,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            sec ▂▁▁▂▁▂▃▁▂▆▆█▆▃▅\n"}
+,{"stream_name":"stderr","time":34916.726067208,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                seq_abs_only_r2 ▁\n"}
+,{"stream_name":"stderr","time":34916.726071129,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              seq_abs_only_rmse ▁\n"}
+,{"stream_name":"stderr","time":34916.726074578,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   seq_delta_fixed_round_12b_r2 ▁\n"}
+,{"stream_name":"stderr","time":34916.726079477,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_delta_fixed_round_12b_rmse ▁\n"}
+,{"stream_name":"stderr","time":34916.726083458,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                            +24 ...\n"}
+,{"stream_name":"stderr","time":34916.726087245,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":34916.726091033,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":34916.726094345,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:            MACs 1949440\n"}
+,{"stream_name":"stderr","time":34916.726098387,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:   best_val_loss 0.8317\n"}
+,{"stream_name":"stderr","time":34916.726102312,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:       cond_prev True\n"}
+,{"stream_name":"stderr","time":34916.726106335,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           epoch 15\n"}
+,{"stream_name":"stderr","time":34916.726116597,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           heads both\n"}
+,{"stream_name":"stderr","time":34916.72613603,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:              lr 0.0003\n"}
+,{"stream_name":"stderr","time":34916.726140114,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          params 82580\n"}
+,{"stream_name":"stderr","time":34916.726144065,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           phase float\n"}
+,{"stream_name":"stderr","time":34916.726147782,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             sec 290.76221\n"}
+,{"stream_name":"stderr","time":34916.726151874,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: seq_abs_only_r2 -0.35386\n"}
+,{"stream_name":"stderr","time":34916.726156664,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:             +28 ...\n"}
+,{"stream_name":"stderr","time":34916.726161254,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":34916.727085383,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mnoattn_both_prev1_K8\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/iplr6qpy\u001b[0m\n"}
+,{"stream_name":"stderr","time":34916.727110175,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":34916.727117083,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":34916.727122219,"data":"\n"}
+,{"stream_name":"stderr","time":34916.72784566,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run \u001b[33mnoattn_both_prev1_K8\u001b[0m at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/iplr6qpy\u001b[0m\n"}
+,{"stream_name":"stderr","time":34916.727863744,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at: \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":34916.727868647,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Synced 5 W\u0026B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)\n"}
+,{"stream_name":"stderr","time":34916.728353835,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_183102-iplr6qpy/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":34916.728365051,"data":"\n"}
+,{"stream_name":"stderr","time":34916.728369123,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/run-20261007_183102-iplr6qpy/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":34917.031876438,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":34917.031898121,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":34917.031903434,"data":"\n"}
+,{"stream_name":"stderr","time":34917.031906888,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m If you're specifying your api key in code, ensure this code is not shared publicly.\n"}
+,{"stream_name":"stderr","time":34917.031910942,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.\n"}
+,{"stream_name":"stderr","time":34917.032908714,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":34917.032949541,"data":"\n"}
+,{"stream_name":"stderr","time":34917.032955049,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[33mWARNING\u001b[0m [wandb.login()] Changing session credentials to explicit value for https://api.wandb.ai.\n"}
+,{"stream_name":"stderr","time":34917.033995246,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":34917.034012678,"data":"\n"}
+,{"stream_name":"stderr","time":34917.034017494,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Appending key for api.wandb.ai to your netrc file: /root/.netrc\n"}
+,{"stream_name":"stderr","time":34918.622021536,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 4tiebqmu\n"}
+,{"stream_name":"stderr","time":34918.622058218,"data":"\n"}
+,{"stream_name":"stderr","time":34918.622061866,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: setting up run 4tiebqmu\n"}
+,{"stream_name":"stderr","time":34919.360442287,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":34919.360464827,"data":"\n"}
+,{"stream_name":"stderr","time":34919.360468813,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.28.1\n"}
+,{"stream_name":"stderr","time":34919.360998396,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_202008-4tiebqmu\u001b[0m\n"}
+,{"stream_name":"stderr","time":34919.361011732,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":34919.361016584,"data":"\n"}
+,{"stream_name":"stderr","time":34919.361020636,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/run-20261007_202008-4tiebqmu\u001b[0m\n"}
+,{"stream_name":"stderr","time":34919.361025057,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run \u001b[1m`wandb offline`\u001b[0m to turn off syncing.\n"}
+,{"stream_name":"stderr","time":34919.362143053,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mcausal_both_prev1_K8\u001b[0m\n"}
+,{"stream_name":"stderr","time":34919.362163057,"data":"\n"}
+,{"stream_name":"stderr","time":34919.36216781,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Syncing run \u001b[33mcausal_both_prev1_K8\u001b[0m\n"}
+,{"stream_name":"stderr","time":34919.362741988,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":34919.362758181,"data":"\n"}
+,{"stream_name":"stderr","time":34919.362762444,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: ⭐️ View project at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation\u001b[0m\n"}
+,{"stream_name":"stderr","time":34919.36391649,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/4tiebqmu\u001b[0m\n"}
+,{"stream_name":"stderr","time":34919.363934246,"data":"\n"}
+,{"stream_name":"stderr","time":34919.363939225,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: 🚀 View run at \u001b[34m\u001b[4mhttps://wandb.ai/mk08457-habib-university/ninapro_db2_ablation/runs/4tiebqmu\u001b[0m\n"}
+,{"stream_name":"stdout","time":34966.978551338,"data":"[causal_both_prev1_K8] params=148,628 tokens=25 train_batches=9091 val_batches=4227 MACs=3,747,840\n"}
+,{"stream_name":"stdout","time":35482.335054687,"data":"  float ep   1 train 0.93174 val 0.91977 traj=0.0008 abs=0.0022 delta=0.9168 (515s)\n"}
+,{"stream_name":"stdout","time":36004.959332496,"data":"  float ep   2 train 0.86698 val 0.85888 traj=0.0009 abs=0.0033 delta=0.8547 (523s)\n"}
+,{"stream_name":"stdout","time":36524.904746484,"data":"  float ep   3 train 0.83535 val 0.83779 traj=0.0009 abs=0.0033 delta=0.8336 (520s)\n"}
+,{"stream_name":"stdout","time":37046.919876984,"data":"  float ep   4 train 0.81562 val 0.82838 traj=0.0010 abs=0.0044 delta=0.8230 (522s)\n"}
+,{"stream_name":"stdout","time":37570.345902211,"data":"  float ep   5 train 0.80103 val 0.80890 traj=0.0010 abs=0.0044 delta=0.8035 (523s)\n"}
+,{"stream_name":"stdout","time":38096.979897181,"data":"  float ep   6 train 0.78944 val 0.79808 traj=0.0010 abs=0.0047 delta=0.7923 (527s)\n"}
+,{"stream_name":"stdout","time":38620.327220057,"data":"  float ep   7 train 0.78024 val 0.79623 traj=0.0010 abs=0.0050 delta=0.7902 (523s)\n"}
+,{"stream_name":"stdout","time":39141.61587364,"data":"  float ep   8 train 0.77233 val 0.78941 traj=0.0011 abs=0.0053 delta=0.7830 (521s)\n"}
+,{"stream_name":"stdout","time":39664.80491699,"data":"  float ep   9 train 0.76555 val 0.78816 traj=0.0011 abs=0.0057 delta=0.7814 (523s)\n"}
+,{"stream_name":"stdout","time":40186.02432856,"data":"  float ep  10 train 0.75955 val 0.79380 traj=0.0010 abs=0.0049 delta=0.7879 (521s)\n"}
+,{"stream_name":"stdout","time":40705.799988216,"data":"  float ep  11 train 0.75437 val 0.78482 traj=0.0011 abs=0.0058 delta=0.7779 (520s)\n"}
+,{"stream_name":"stdout","time":41229.860842559,"data":"  float ep  12 train 0.75012 val 0.78340 traj=0.0011 abs=0.0062 delta=0.7761 (524s)\n"}
+,{"stream_name":"stdout","time":41746.944858172,"data":"  float ep  13 train 0.74546 val 0.80001 traj=0.0010 abs=0.0049 delta=0.7941 (517s)\n"}
+,{"stream_name":"stdout","time":42263.295214248,"data":"  float ep  14 train 0.74165 val 0.78782 traj=0.0010 abs=0.0054 delta=0.7814 (516s)\n"}
+,{"stream_name":"stdout","time":42779.499911856,"data":"  float ep  15 train 0.73741 val 0.78786 traj=0.0011 abs=0.0060 delta=0.7807 (516s)\n"}
+]

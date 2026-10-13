@@ -99,6 +99,10 @@ class Config:
     seed: int = 42
     lambda_abs: float = 1.0
     lambda_delta: float = 1.0
+    loss_norm: bool = True                   # divide the absolute error by the per-joint train variance so that
+                                             # abs and (standardised) delta terms are both on a 1-R^2 scale
+    select_metric: str = 'val_abs'           # checkpoint selection / early stop: val_abs | val_delta | val_loss
+    delta_detach: bool = False               # train the delta head on detached trunk features (linear probe)
     lambda_traj: float = 1.0                 # loss on integrated trajectory (unrolled mode)
     unroll_steps: int = 0                    # 0 = plain windows; K>1 = integration in the loop
     feedback_noise_std: float = 0.03         # noise on fed-back estimate during training
@@ -108,7 +112,8 @@ class Config:
     # ---- quantisation (ap_fixed<W,I>) ----
     qat_epochs: int = 0                      # 0 disables QAT fine-tuning
     qat_lr: float = 5e-5
-    act_fmt: Tuple[int, int] = (10, 3)       # current HLS data_t
+    act_fmt: Tuple[int, int] = (10, 3)       # current HLS data_t (norm outputs, pooled feature, head outputs, linear inputs)
+    resid_fmt: Tuple[int, int] = (16, 8)     # residual stream: branch outputs and pre-norm sums (FFN outputs reach |100|+)
     weight_fmt: Tuple[int, int] = (10, 3)
     rope_fmt: Tuple[int, int] = (8, 2)
     export_weight_type: str = 'data_t'       # change to 'weight_t' after adding a typedef in types.h
@@ -364,6 +369,12 @@ def delta_scale_from_train(npz_files: Sequence[str]) -> np.ndarray:
     return np.concatenate(ds).std(axis=0).astype(np.float32) + 1e-6
 
 
+def angle_var_from_train(npz_files: Sequence[str]) -> np.ndarray:
+    """Per-joint variance of the absolute angle over training windows (normalises the absolute loss term)."""
+    a = np.concatenate([np.load(f)['angles'][np.load(f)['split'] == 0] for f in npz_files])
+    return a.var(axis=0).astype(np.float32) + 1e-6
+
+
 def rest_pose_from_train(npz_files: Sequence[str]) -> np.ndarray:
     poses = []
     for f in npz_files:
@@ -550,9 +561,13 @@ class EncoderLayer(nn.Module):
         self.drop = nn.Dropout(cfg.dropout)
 
     def forward(self, x, cos, sin):
+        q = lambda t: _qa(self, t)
+        qr = lambda t: _qa(self, t, 'resid_fmt')
         if self.use_attention:
-            x = self.norm1(x + self.drop(self.attn(x, apply_rope(x, cos, sin))))
-        x = self.norm2(x + self.drop(self.ff2(self.drop(F.relu(self.ff1(x))))))
+            o = qr(self.drop(self.attn(x, q(apply_rope(x, cos, sin)))))
+            x = q(self.norm1(qr(x + o)))
+        f = qr(self.drop(self.ff2(self.drop(F.relu(self.ff1(x))))))
+        x = q(self.norm2(qr(x + f)))
         return x
 
 
@@ -577,28 +592,36 @@ class EMGRoFormer(nn.Module):
         if cfg.heads in ('delta', 'both'):
             self.fc_delta = nn.Linear(cfg.d_model, cfg.num_angles)
         self.register_buffer('delta_scale', torch.ones(cfg.num_angles))
+        self.register_buffer('angle_var', torch.ones(cfg.num_angles))   # per-joint train variance (loss normalisation)
+        self.delta_detach = getattr(cfg, 'delta_detach', False)
 
     def set_delta_scale(self, scale: np.ndarray):
         self.delta_scale.copy_(torch.as_tensor(scale, dtype=torch.float32))
 
+    def set_angle_var(self, var: np.ndarray):
+        self.angle_var.copy_(torch.as_tensor(var, dtype=torch.float32))
+
     def features(self, x):
-        x = self.drop(self.embed(x).transpose(1, 2))       # [B, T, D]
+        q = lambda t: _qa(self, t)
+        x = self.drop(q(self.embed(x).transpose(1, 2)))    # [B, T, D]
         cos, sin = self.rope(x.shape[1])
         for layer in self.layers:
             x = layer(x, cos, sin)
-        return x.mean(1) if self.cfg.pooling == 'mean' else x[:, -1]
+        return q(x.mean(1) if self.cfg.pooling == 'mean' else x[:, -1])
 
     def forward(self, x, prev: Optional[torch.Tensor] = None):
+        q = lambda t: _qa(self, t)
         f = self.features(x)
         if self.cond_prev:
             if prev is None:
                 raise ValueError('cond_prev=True requires prev angles')
-            f = f + self.prev_proj(prev)
+            f = q(f + self.prev_proj(q(prev)))
         out = {}
         if hasattr(self, 'fc_abs'):
-            out['abs'] = self.fc_abs(f)
+            out['abs'] = q(self.fc_abs(f))
         if hasattr(self, 'fc_delta'):
-            out['delta_std'] = self.fc_delta(f)
+            fd = f.detach() if (self.training and self.delta_detach) else f
+            out['delta_std'] = q(self.fc_delta(fd))
             out['delta'] = out['delta_std'] * self.delta_scale
         return out
 
@@ -640,6 +663,13 @@ def fq(x, fmt: Tuple[int, int]):
     return _FixedPointSTE.apply(x, int(fmt[0]), int(fmt[1]))
 
 
+def _qa(module, t, which: str = 'act_fmt'):
+    """Fake-quantise an activation if QAT formats were attached to the module (see convert_to_qat).
+    which='act_fmt' for data_t points, 'resid_fmt' for the residual stream."""
+    fmt = getattr(module, which, None)
+    return fq(t, fmt) if fmt is not None else t
+
+
 class QLinear(nn.Linear):
     def __init__(self, lin: nn.Linear, w_fmt, a_fmt):
         super().__init__(lin.in_features, lin.out_features, lin.bias is not None)
@@ -664,7 +694,13 @@ class QConv1d(nn.Conv1d):
 
 
 def convert_to_qat(model: nn.Module, cfg: Config) -> nn.Module:
-    """Replace every Linear/Conv1d with a fake-quantised twin using cfg.weight_fmt / cfg.act_fmt."""
+    """Replace every Linear/Conv1d with a fake-quantised twin using cfg.weight_fmt / cfg.act_fmt, and
+    fake-quantise activations at the same points as the HLS / numpy_forward (conv output, branch outputs,
+    residual sums, norm outputs, pooled feature, head outputs). Without the latter, the residual stream can
+    silently grow beyond the ap_fixed integer range during training."""
+    if isinstance(model, (EMGRoFormer, EncoderLayer)):
+        model.act_fmt = tuple(cfg.act_fmt)
+        model.resid_fmt = tuple(cfg.resid_fmt)
     for name, child in list(model.named_children()):
         if isinstance(child, QLinear) or isinstance(child, QConv1d):
             continue
@@ -695,8 +731,10 @@ def _loss_windows(model: EMGRoFormer, batch, cfg: Config, device, train: bool):
     prev = ap + torch.randn_like(ap) * cfg.feedback_noise_std if (train and cfg.cond_prev) else ap
     out = model(x, prev if cfg.cond_prev else None)
     loss, logs = 0.0, {}
+    nv = model.angle_var if getattr(cfg, 'loss_norm', True) else torch.ones_like(model.angle_var)
     if 'abs' in out:
-        l = F.mse_loss(out['abs'], a); loss = loss + cfg.lambda_abs * l; logs['abs'] = l.item()
+        l = (((out['abs'] - a) ** 2) / nv).mean(); loss = loss + cfg.lambda_abs * l; logs['abs'] = l.item()
+        logs['abs_rmse'] = float(F.mse_loss(out['abs'].detach(), a).sqrt())
     if 'delta' in out:
         w = hp.unsqueeze(1)
         l = ((out['delta_std'] - d / model.delta_scale) ** 2 * w).sum() / (w.sum() * d.shape[1] + 1e-8)
@@ -710,6 +748,8 @@ def _loss_unrolled(model: EMGRoFormer, batch, cfg: Config, device, train: bool):
     d = batch['delta'].to(device)
     B, K = x.shape[:2]
     est = ap[:, 0]
+    nv = model.angle_var if getattr(cfg, 'loss_norm', True) else torch.ones_like(model.angle_var)
+    nmse = lambda u, v: (((u - v) ** 2) / nv).mean()
     loss, l_traj, l_abs, l_delta = 0.0, 0.0, 0.0, 0.0
     for t in range(K):
         prev_in = est + torch.randn_like(est) * cfg.feedback_noise_std if train else est
@@ -719,12 +759,13 @@ def _loss_unrolled(model: EMGRoFormer, batch, cfg: Config, device, train: bool):
             new = est + out['delta']
             l_delta = l_delta + F.mse_loss(out['delta_std'], d[:, t] / model.delta_scale)
         if 'abs' in out:
-            l_abs = l_abs + F.mse_loss(out['abs'], a[:, t])
+            l_abs = l_abs + nmse(out['abs'], a[:, t])
             new = (1 - cfg.fuse_alpha) * new + cfg.fuse_alpha * out['abs'] if 'delta' in out else out['abs']
-        l_traj = l_traj + F.mse_loss(new, a[:, t])
+        l_traj = l_traj + nmse(new, a[:, t])
         est = new
     loss = (cfg.lambda_traj * l_traj + cfg.lambda_abs * l_abs + cfg.lambda_delta * l_delta) / K
-    return loss, {'traj': (l_traj / K).item(), 'abs': float(l_abs) / K, 'delta': float(l_delta) / K}, None
+    return loss, {'traj': float(l_traj.detach()) / K, 'abs': float(getattr(l_abs, 'detach', lambda: l_abs)()) / K,
+                  'delta': float(getattr(l_delta, 'detach', lambda: l_delta)()) / K}, None
 
 
 def run_epoch(model, loader, cfg, device, optimizer=None):
@@ -806,7 +847,13 @@ def train_model(cfg: Config, npz_files: Sequence[str], run=None, tag: str = '') 
     model = EMGRoFormer(cfg).to(device)
     if hasattr(model, 'fc_delta'):
         model.set_delta_scale(delta_scale_from_train(npz_files))
+    model.set_angle_var(angle_var_from_train(npz_files))
     train_loader, val_loader = make_loaders(cfg, npz_files)
+    sel = getattr(cfg, 'select_metric', 'val_abs')
+    sel_key = {'val_abs': 'abs', 'val_delta': 'delta'}.get(sel)
+    if sel_key == 'abs' and cfg.heads == 'delta': sel_key = 'delta'
+    if sel_key == 'delta' and cfg.heads == 'absolute': sel_key = 'abs'
+    print(f'  checkpoint selection on: {"val_" + sel_key if sel_key else "val_loss"}')
     print(f'[{tag or cfg.run_name}] params={count_params(model):,} tokens={cfg.num_tokens} '
           f'train_batches={len(train_loader)} val_batches={len(val_loader)} MACs={estimate_macs(cfg)["total"]:,}')
     ck_path = os.path.join(cfg.save_dir, f'{tag or cfg.run_name}.pt')
@@ -828,9 +875,12 @@ def train_model(cfg: Config, npz_files: Sequence[str], run=None, tag: str = '') 
             history.append(rec); wandb_log(run, rec)
             print(f'  {phase} ep {ep + 1:3d} train {tr_loss:.5f} val {va_loss:.5f} ' +
                   ' '.join(f'{k}={v:.4f}' for k, v in va_logs.items()) + f' ({rec["sec"]:.0f}s)')
-            if va_loss < best - 1e-6:
-                best, bad = va_loss, 0
-                save_checkpoint(model, cfg, ck_path, {'phase': phase, 'val_loss': best, 'qat': phase == 'qat'})
+            score = va_logs.get(sel_key, va_loss) if sel_key else va_loss
+            rec['select_score'] = score
+            if score < best - 1e-6:
+                best, bad = score, 0
+                save_checkpoint(model, cfg, ck_path, {'phase': phase, 'val_loss': va_loss, 'select_score': best,
+                                                      'select_metric': sel, 'qat': phase == 'qat'})
             else:
                 bad += 1
                 if bad >= cfg.patience:
@@ -934,17 +984,22 @@ def error_vs_horizon(est: np.ndarray, truth: np.ndarray, bins: Sequence[int] = (
     """RMSE as a function of steps since the run started (how fast drift accumulates)."""
     err = ((est - truth) ** 2).mean(axis=1)
     out, lo = {}, 0
-    for hi in bins:
+    for hi in list(bins) + [10 ** 9]:
         if lo < len(err):
-            out[f'{lo}-{min(hi, len(err))}'] = float(np.sqrt(err[lo:hi].mean()))
+            label = f'{lo}-{hi}' if hi < 10 ** 9 else f'{lo}+'
+            out[label] = float(np.sqrt(err[lo:hi].mean()))
         lo = hi
     return out
 
 
 def evaluate_sequential(model: EMGRoFormer, npz_files: Sequence[str], cfg: Config, device, split: str = 'test',
                         rest_pose: Optional[np.ndarray] = None, rest_threshold: Optional[float] = None,
-                        q: float = 1e-4, r: float = 2e-2, feedback: bool = True) -> dict:
-    """Runs every ordered run of every subject and reports metrics for several estimators."""
+                        q: float = 1e-4, r: float = 2e-2, feedback: bool = True, init: str = 'truth') -> dict:
+    """Runs every ordered run of every subject and reports metrics for several estimators.
+    init='truth' seeds integrators/filters with the true angle at the run start (optimistic: a glove reading).
+    init='abs'   seeds them with the absolute head's first prediction (deployable, no glove).
+    'abs_smoothed' is the Kalman filter with zero process input: it isolates the gain of the DELTA head
+    from plain temporal smoothing of the absolute head."""
     est_all: Dict[str, List[np.ndarray]] = {}
     truth_all, horizon_err = [], {}
     for f in npz_files:
@@ -952,10 +1007,13 @@ def evaluate_sequential(model: EMGRoFormer, npz_files: Sequence[str], cfg: Confi
             if len(run['angles']) < 4:
                 continue
             p = predict_run(model, run, cfg, device, feedback=feedback)
+            if init == 'abs' and p['abs'] is not None:
+                p['start'] = p['abs'][0].copy()
             truth = p['angles']; truth_all.append(truth)
             cands = {}
             if p['abs'] is not None:
                 cands['abs_only'] = p['abs']
+                cands['abs_smoothed'] = kalman_fuse(np.zeros_like(p['abs']), p['abs'], p['start'], q, r, clamp=(-0.1, 1.1))
             if p['delta'] is not None:
                 cands['delta_integrated'] = integrate(p['delta'], p['start'])
                 cands['delta_leaky_clamped'] = integrate(p['delta'], p['start'], leak=0.01,
@@ -974,9 +1032,27 @@ def evaluate_sequential(model: EMGRoFormer, npz_files: Sequence[str], cfg: Confi
     truth = np.concatenate(truth_all)
     report = {k: seq_metrics(np.concatenate(v), truth) for k, v in est_all.items()}
     for k, lst in horizon_err.items():
-        keys = sorted({kk for d in lst for kk in d}, key=lambda s: int(s.split('-')[0]))
+        keys = sorted({kk for d in lst for kk in d}, key=lambda s: int(s.rstrip('+').split('-')[0]))
         report[k]['rmse_vs_horizon'] = {kk: float(np.mean([d[kk] for d in lst if kk in d])) for kk in keys}
     return report
+
+
+def kalman_sweep(preds: Sequence[dict], qs=(1e-5, 1e-4, 1e-3, 1e-2), rs=(1e-3, 3e-3, 1e-2, 3e-2, 1e-1),
+                 use_delta: bool = True, init: str = 'truth') -> 'object':
+    """RMSE grid of the plain Kalman fusion (use_delta=True) or of abs-only smoothing (use_delta=False).
+    preds: outputs of predict_run. Returns a pandas DataFrame indexed by q, columns by r."""
+    import pandas as pd
+    truth = np.concatenate([p['angles'] for p in preds])
+    grid = pd.DataFrame(index=[f'q={q:g}' for q in qs], columns=[f'r={r:g}' for r in rs], dtype=float)
+    for q in qs:
+        for r in rs:
+            est = []
+            for p in preds:
+                start = p['abs'][0] if init == 'abs' else p['start']
+                d = p['delta'] if use_delta else np.zeros_like(p['abs'])
+                est.append(kalman_fuse(d, p['abs'], start, q, r, clamp=(-0.1, 1.1)))
+            grid.loc[f'q={q:g}', f'r={r:g}'] = seq_metrics(np.concatenate(est), truth)['rmse']
+    return grid
 
 
 def rest_energy_threshold(npz_files: Sequence[str], percentile: float = 90.0) -> float:
@@ -1032,11 +1108,12 @@ def rope_tables(num_tokens: int, dim: int, base: float = 10000.0):
 
 
 def numpy_forward(w: dict, cfg: Config, x: np.ndarray, prev: Optional[np.ndarray] = None,
-                  Q=None, rope_fmt: Optional[Tuple[int, int]] = None) -> dict:
+                  Q=None, rope_fmt: Optional[Tuple[int, int]] = None, Qr=None) -> dict:
     """Reference forward pass. x: [C, seq_len] channel-major (the HLS input layout).
     Q: optional quantiser applied to weights and activations (fixed-point simulation).
     Returns intermediates named like the HLS debug checkpoints."""
     Q = Q or (lambda a: a)
+    Qr = Qr or Q                      # residual-stream quantiser (branch outputs, pre-norm sums)
     W = {k: Q(v) for k, v in w.items()}
     C, L = x.shape
     k, s, p = cfg.conv_kernel, cfg.conv_stride, cfg.conv_padding
@@ -1073,11 +1150,11 @@ def numpy_forward(w: dict, cfg: Config, x: np.ndarray, prev: Optional[np.ndarray
                     sc = sc + np.triu(np.full((T, T), -1e9), 1)
                 sc = sc - sc.max(-1, keepdims=True); e = np.exp(sc); pr = e / e.sum(-1, keepdims=True)
                 ctx[:, sl] = pr @ v[:, sl]
-            o = Q(ctx @ W[pre + 'mha_o_w'].T + W[pre + 'mha_o_b'])
-            h = Q(norm(Q(h + o), W[pre + 'ln1_g'], W[pre + 'ln1_b'])); out[pre + 'add_norm1_out'] = h
+            o = Qr(ctx @ W[pre + 'mha_o_w'].T + W[pre + 'mha_o_b'])
+            h = Q(norm(Qr(h + o), W[pre + 'ln1_g'], W[pre + 'ln1_b'])); out[pre + 'add_norm1_out'] = h
         hid = np.maximum(Q(h @ W[pre + 'ff_w1'].T + W[pre + 'ff_b1']), 0)
-        f = Q(hid @ W[pre + 'ff_w2'].T + W[pre + 'ff_b2'])
-        h = Q(norm(Q(h + f), W[pre + 'ln2_g'], W[pre + 'ln2_b'])); out[pre + 'add_norm2_out'] = h
+        f = Qr(hid @ W[pre + 'ff_w2'].T + W[pre + 'ff_b2'])
+        h = Q(norm(Qr(h + f), W[pre + 'ln2_g'], W[pre + 'ln2_b'])); out[pre + 'add_norm2_out'] = h
     pooled = Q(h.mean(0) if cfg.pooling == 'mean' else h[-1]); out['pool_out'] = pooled
     feat = pooled
     if 'prev_w' in W:
@@ -1189,6 +1266,7 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
         f.write(f'typedef ap_fixed<{cfg.act_fmt[0]}, {cfg.act_fmt[1]}, AP_RND, AP_SAT> data_t;\n')
         f.write(f'typedef ap_fixed<{cfg.weight_fmt[0]}, {cfg.weight_fmt[1]}, AP_RND, AP_SAT> weight_t;\n')
         f.write(f'typedef ap_fixed<{cfg.rope_fmt[0]}, {cfg.rope_fmt[1]}, AP_RND, AP_SAT> rope_t;\n')
+        f.write(f'typedef ap_fixed<{cfg.resid_fmt[0]}, {cfg.resid_fmt[1]}, AP_RND, AP_SAT> resid_t;  // branch outputs + pre-norm residual sums (ff_out, ln_in)\n')
 
     # --- results.h and input_output.h for the C testbench ---
     with open(os.path.join(wd, 'results.h'), 'w') as f:
@@ -1250,7 +1328,7 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
     wq = {k: quantise_array(v, cfg.weight_fmt) for k, v in w.items()}
     if delta_scale is not None:
         w['delta_scale'] = delta_scale; wq['delta_scale'] = delta_scale
-    fx = numpy_forward(wq, cfg, sample_x, sample_prev, Q=Qa, rope_fmt=cfg.rope_fmt)
+    fx = numpy_forward(wq, cfg, sample_x, sample_prev, Q=Qa, rope_fmt=cfg.rope_fmt, Qr=lambda a: quantise_array(a, cfg.resid_fmt))
     report = {}
     for k in ref:
         a, b = ref[k].ravel(), fx[k].ravel()

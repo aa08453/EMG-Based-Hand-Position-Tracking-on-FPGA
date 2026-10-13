@@ -1,0 +1,19 @@
+[patch_both_prev1_K8] params=148,884 tokens=25 train_batches=9091 val_batches=4227 MACs=3,747,840
+/kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py:733: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  return loss, {'traj': (l_traj / K).item(), 'abs': float(l_abs) / K, 'delta': float(l_delta) / K}, None
+  float ep   1 train 0.90423 val 0.89797 traj=0.0009 abs=0.0028 delta=0.8943 (476s)
+  float ep   2 train 0.83323 val 0.85071 traj=0.0009 abs=0.0034 delta=0.8464 (478s)
+  float ep   3 train 0.79722 val 0.81885 traj=0.0008 abs=0.0026 delta=0.8154 (476s)
+  float ep   4 train 0.77590 val 0.80477 traj=0.0008 abs=0.0032 delta=0.8008 (479s)
+  float ep   5 train 0.76123 val 0.79272 traj=0.0008 abs=0.0034 delta=0.7885 (480s)
+  float ep   6 train 0.74874 val 0.79047 traj=0.0009 abs=0.0035 delta=0.7861 (477s)
+  float ep   7 train 0.73928 val 0.79901 traj=0.0008 abs=0.0033 delta=0.7949 (478s)
+  float ep   8 train 0.73022 val 0.78640 traj=0.0009 abs=0.0042 delta=0.7812 (475s)
+  float ep   9 train 0.72231 val 0.78901 traj=0.0009 abs=0.0042 delta=0.7839 (475s)
+  float ep  10 train 0.71628 val 0.79743 traj=0.0009 abs=0.0038 delta=0.7928 (474s)
+  float ep  11 train 0.71028 val 0.78590 traj=0.0009 abs=0.0041 delta=0.7809 (476s)
+  float ep  12 train 0.70450 val 0.78728 traj=0.0010 abs=0.0047 delta=0.7816 (473s)
+  float ep  13 train 0.69964 val 0.81863 traj=0.0009 abs=0.0042 delta=0.8135 (478s)
+  float ep  14 train 0.69480 val 0.80981 traj=0.0009 abs=0.0044 delta=0.8045 (474s)
+  float ep  15 train 0.69038 val 0.80470 traj=0.0010 abs=0.0050 delta=0.7988 (471s)

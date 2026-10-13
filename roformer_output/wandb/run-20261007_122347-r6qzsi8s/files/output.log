@@ -1,0 +1,13 @@
+[roformer_absolute_prev0_K0] params=138,506 tokens=200 train_batches=5213 val_batches=4314 MACs=37,377,280
+  float ep   1 train 0.02732 val 0.01821 abs=0.0182 (133s)
+  float ep   2 train 0.02036 val 0.01657 abs=0.0166 (132s)
+  float ep   3 train 0.01817 val 0.01438 abs=0.0144 (132s)
+  float ep   4 train 0.01706 val 0.01496 abs=0.0150 (131s)
+  float ep   5 train 0.01637 val 0.01410 abs=0.0141 (133s)
+  float ep   6 train 0.01590 val 0.01374 abs=0.0137 (131s)
+  float ep   7 train 0.01551 val 0.01450 abs=0.0145 (133s)
+  float ep   8 train 0.01514 val 0.01434 abs=0.0143 (131s)
+  float ep   9 train 0.01481 val 0.01451 abs=0.0145 (132s)
+  float ep  10 train 0.01454 val 0.01446 abs=0.0145 (131s)
+  float ep  11 train 0.01373 val 0.01406 abs=0.0141 (132s)
+  early stop (float)

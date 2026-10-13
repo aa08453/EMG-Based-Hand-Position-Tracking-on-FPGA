@@ -1,0 +1,21 @@
+2026-10-07 14:55:39,724 INFO    MainThread:24 [wandb_init.py:setup_run_log_directory():729] Logging user logs to /kaggle/working/wandb/run-20261007_145539-6g45splg/logs/debug.log
+2026-10-07 14:55:39,724 INFO    MainThread:24 [wandb_init.py:setup_run_log_directory():730] Logging internal logs to /kaggle/working/wandb/run-20261007_145539-6g45splg/logs/debug-internal.log
+2026-10-07 14:55:39,724 INFO    MainThread:24 [wandb_init.py:init():772] calling init triggers
+2026-10-07 14:55:39,724 INFO    MainThread:24 [wandb_init.py:init():777] wandb.init called with sweep_config: {}
+config: {'base_path': '/kaggle/input/datasets/quddusikashaf/ninapro-db2', 'processed_dir': '/kaggle/working/db2_processed', 'save_dir': '/kaggle/working/outputs_grid', 'export_dir': '/kaggle/working/hls_export', 'subjects': None, 'n_subjects': 3, 'exercises': [1, 2], 'fs': 2000, 'seq_len': 200, 'stride': 50, 'num_channels': 12, 'num_angles': 10, 'glove_cols': [1, 2, 4, 5, 7, 8, 11, 12, 15, 16], 'train_reps': [1, 3, 4, 6], 'test_reps': [2, 5], 'bandpass': [5.0, 500.0], 'filter_order': 4, 'causal_filter': True, 'mu': 255, 'emg_scale_percentile': 99.9, 'balance_rest': True, 'variant': 'patch', 'd_model': 128, 'd_ff': 256, 'num_heads': 8, 'num_layers': 1, 'conv_kernel': 8, 'conv_stride': 8, 'conv_padding': 0, 'patch_stride': 8, 'norm': 'layernorm', 'use_attention': True, 'causal': False, 'pooling': 'mean', 'dropout': 0.1, 'heads': 'both', 'cond_prev': True, 'batch_size': 64, 'lr': 0.0003, 'weight_decay': 0.0001, 'epochs': 15, 'patience': 5, 'seed': 42, 'lambda_abs': 1.0, 'lambda_delta': 1.0, 'lambda_traj': 1.0, 'unroll_steps': 0, 'feedback_noise_std': 0.03, 'fuse_alpha': 0.1, 'num_workers': 2, 'qat_epochs': 0, 'qat_lr': 5e-05, 'act_fmt': [10, 3], 'weight_fmt': [10, 3], 'rope_fmt': [8, 2], 'export_weight_type': 'data_t', 'project_name': 'ninapro_db2_ablation', 'run_name': 'patch_both_prev1_K0', 'use_wandb': True, '_wandb': {}}
+2026-10-07 14:55:39,724 INFO    MainThread:24 [wandb_init.py:init():820] starting backend
+2026-10-07 14:55:39,724 INFO    MainThread:24 [wandb_init.py:init():835] sending inform_init request
+2026-10-07 14:55:39,831 INFO    MainThread:24 [wandb_init.py:init():840] backend started and connected
+2026-10-07 14:55:39,836 INFO    MainThread:24 [wandb_init.py:init():910] updated telemetry
+2026-10-07 14:55:39,839 INFO    MainThread:24 [wandb_init.py:init():933] communicating run to backend with 90.0 second timeout
+2026-10-07 14:55:40,996 INFO    MainThread:24 [wandb_init.py:init():978] starting run threads in backend
+2026-10-07 14:55:41,753 INFO    MainThread:24 [wandb_run.py:_console_start():2621] atexit reg
+2026-10-07 14:55:41,753 INFO    MainThread:24 [wandb_run.py:_redirect():2471] redirect: wrap_raw
+2026-10-07 14:55:41,754 INFO    MainThread:24 [wandb_run.py:_redirect():2540] Wrapping output streams.
+2026-10-07 14:55:41,754 INFO    MainThread:24 [wandb_run.py:_redirect():2563] Redirects installed.
+2026-10-07 14:55:41,756 INFO    MainThread:24 [wandb_init.py:init():1016] run started, returning control to user process
+2026-10-07 15:52:32,544 INFO    MainThread:24 [wandb_run.py:_finish():2383] finishing run mk08457-habib-university/ninapro_db2_ablation/6g45splg
+2026-10-07 15:52:32,545 INFO    MainThread:24 [wandb_run.py:_atexit_cleanup():2588] got exitcode: 0
+2026-10-07 15:52:32,545 INFO    MainThread:24 [wandb_run.py:_restore():2570] restore
+2026-10-07 15:52:32,545 INFO    MainThread:24 [wandb_run.py:_restore():2576] restore done
+2026-10-07 15:52:34,461 INFO    MainThread:24 [wandb_run.py:_footer_sync_info():3993] logging synced files

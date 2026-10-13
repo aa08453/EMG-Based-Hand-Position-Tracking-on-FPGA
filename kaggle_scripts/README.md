@@ -30,13 +30,20 @@ The two original notebooks (`roformer.ipynb`, `baseline-models-joint-angles.ipyn
 | `heads` | `absolute`, `delta`, `both` |
 | `cond_prev` | feed the previous angle estimate into the head |
 | `unroll_steps` | 0 = independent windows; K>1 = integration-in-the-loop over K consecutive windows |
-| `qat_epochs`, `act_fmt`, `weight_fmt`, `rope_fmt` | fixed-point fine-tuning with `ap_fixed<W,I>` round-to-nearest, saturate |
+| `qat_epochs`, `act_fmt`, `resid_fmt`, `weight_fmt`, `rope_fmt` | fixed-point fine-tuning with `ap_fixed<W,I>` round-to-nearest, saturate. `resid_fmt` (default 16,8) is the residual stream: FFN outputs of trained models reach magnitude 100+, far outside `data_t` |
 | `train_reps`, `test_reps` | repetition split (NinaPro convention 1,3,4,6 / 2,5) |
 | `causal_filter` | one-directional band-pass (deployable) instead of zero-phase |
+| `loss_norm`, `select_metric`, `delta_detach` | absolute error divided by per-joint train variance so abs and delta terms share a 1-R² scale; checkpoint/early-stop metric (`val_abs` default); optionally train the delta head on detached trunk features |
 
 ## Export compatibility
 
 For `variant=roformer`, `heads=absolute`, `cond_prev=False` the exported `weights/*.h`, `rope_tables.h` and `config.h` are drop-in replacements for the files in `hls_code/`; the existing C++ layer functions reproduce the exported golden dumps at cosine 0.999 (verified with the project's float mock). Other variants require the HLS changes named by the macros written to `config.h` (`CONV_STRIDE`, `USE_ATTENTION`, `NORM_IS_RMS`, `POOL_LAST_TOKEN`, `HAS_DELTA_HEAD`, `COND_PREV`). The delta head is exported in standardised units; the firmware multiplies by `DELTA_SCALE` from `normalization_constants.h` before integrating.
+
+## Evaluation notes
+
+- `evaluate_sequential(..., init='abs')` seeds filters and integrators with the absolute head's first prediction, which is what the device can do. `init='truth'` seeds with the glove reading at the start of each run and is optimistic. Report `init='abs'` numbers.
+- `abs_smoothed` is the same Kalman filter with zero delta input. The delta head's real contribution is `abs_smoothed` minus `kalman`, not `abs_only` minus `kalman`.
+- `kalman_sweep(preds, use_delta=..., init=...)` tunes the plain fusion filter. The session-2 notebook sweep tuned the rest-anchored filter by mistake.
 
 ## Local smoke test
 
