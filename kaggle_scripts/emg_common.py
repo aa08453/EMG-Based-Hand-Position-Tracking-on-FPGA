@@ -388,6 +388,18 @@ def rest_pose_from_train(npz_files: Sequence[str]) -> np.ndarray:
 # 3. DATASETS
 # =====================================================================================
 
+def crop_last(x: np.ndarray, seq_len: int, axis: int = 1) -> np.ndarray:
+    """Keep the last `seq_len` samples of stored windows (axis = time). Lets a 100 ms model be trained and
+    evaluated on data preprocessed with 200 ms windows, ending at exactly the same samples."""
+    n = x.shape[axis]
+    if n < seq_len:
+        raise ValueError(f'stored windows have {n} samples, model needs seq_len={seq_len}')
+    if n == seq_len:
+        return x
+    sl = [slice(None)] * x.ndim; sl[axis] = slice(n - seq_len, n)
+    return x[tuple(sl)]
+
+
 class WindowDataset(Dataset):
     """Independent windows. Rest windows are capped (train only) to the median movement-class count."""
 
@@ -407,7 +419,7 @@ class WindowDataset(Dataset):
                 if len(rest) > cap:
                     keep = np.sort(rng.choice(rest, cap, replace=False))
                     idx = np.sort(np.concatenate([idx[restim != 0], keep]))
-            xs.append(dd['sEMG'][idx]); a.append(dd['angles'][idx]); ap.append(dd['angles_prev'][idx])
+            xs.append(np.ascontiguousarray(crop_last(dd['sEMG'][idx], cfg.seq_len))); a.append(dd['angles'][idx]); ap.append(dd['angles_prev'][idx])
             d.append(dd['delta_stride'][idx]); hp.append(dd['has_prev'][idx])
         self.x = np.concatenate(xs); self.angles = np.concatenate(a); self.angles_prev = np.concatenate(ap)
         self.delta = np.concatenate(d); self.has_prev = np.concatenate(hp)
@@ -429,6 +441,7 @@ class SequenceDataset(Dataset):
     def __init__(self, npz_files: Sequence[str], split: str, cfg: Config, K: int):
         want = 0 if split == 'train' else 1
         self.K = K
+        self.seq_len = cfg.seq_len
         self.data, self.starts = [], []
         for fi, f in enumerate(npz_files):
             dd = np.load(f)
@@ -451,7 +464,7 @@ class SequenceDataset(Dataset):
         fi, i = self.starts[k]
         x, a, ap, d = self.data[fi]
         sl = slice(i, i + self.K)
-        return {'x': torch.from_numpy(np.ascontiguousarray(x[sl].transpose(0, 2, 1))),  # [K, C, T]
+        return {'x': torch.from_numpy(np.ascontiguousarray(crop_last(x[sl], self.seq_len).transpose(0, 2, 1))),  # [K, C, T]
                 'angle': torch.from_numpy(a[sl]), 'angle_prev': torch.from_numpy(ap[sl]),
                 'delta': torch.from_numpy(d[sl])}
 
@@ -904,7 +917,7 @@ def predict_run(model: EMGRoFormer, run: dict, cfg: Config, device, batch: int =
     """Ordered predictions for one contiguous run. With feedback=True the model receives its own
     integrated estimate as `prev` (deployment condition); otherwise the true previous angle."""
     model.eval()
-    x = torch.from_numpy(np.ascontiguousarray(run['sEMG'].transpose(0, 2, 1)))
+    x = torch.from_numpy(np.ascontiguousarray(crop_last(run['sEMG'], cfg.seq_len).transpose(0, 2, 1)))
     n = len(x)
     abs_p = np.zeros((n, cfg.num_angles), np.float32); dl_p = np.zeros_like(abs_p)
     has_abs = hasattr(model, 'fc_abs'); has_delta = hasattr(model, 'fc_delta')

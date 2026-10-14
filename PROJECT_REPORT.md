@@ -55,6 +55,7 @@ All accuracy figures are in **normalised angle units**: each joint is scaled to 
 | 6. Session 3 (Oct 13) | Evaluation only: deployable seeding and a smoothing-only baseline | R² 0.667 deployable. 83 % of the fusion gain is smoothing, 17 % the delta head |
 | 7. HLS v2 (Oct 15) | HLS rewritten for the chosen model: strided embedding, 16-bit residual type, second head, flattened and unrolled MAC loops, rounding and saturation. Bit-accurate C simulation using Xilinx's open-source `ap_fixed` headers. Firmware fuses the two heads | C model matches the numpy fixed-point reference to 0.0004. Estimated 9.3 ms per inference. Old HLS code with the new weights scored cosine −0.06 bit-accurately |
 | 8. Session 4 (prepared) | Notebook 06: per-subject bootstrap confidence intervals, 5-fold leave-subjects-out | Not yet run |
+| 9. Window study (prepared) | Notebook 07: 200 ms windows with a 50 ms step, against a 100 ms control scored on the same test windows | Not yet run |
 
 ---
 
@@ -473,6 +474,7 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 |---|---|
 | 1 | Synthesise the v2 HLS in Vitis (`vitis_workspace/transformer`), commit the utilisation and timing reports, run co-simulation, then rebuild the block design and measure latency on the board |
 | 2 | Run notebook 06 (session 4): per-subject bootstrap confidence intervals and 5-fold leave-subjects-out |
+| 2b | Run notebook 07: does a 200 ms window improve on 100 ms? Compare with its own 100 ms control, not with session 3 |
 | 3 | Convert normalised RMSE to degrees using glove calibration |
 | 4 | Port the causal filter and μ-law normalisation to the ARM firmware using `normalization_constants.h`. The fusion update is already in the firmware |
 | 5 | Replace UART with a faster host link if live streaming is required |
@@ -486,6 +488,7 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | [kaggle_scripts/emg_common.py](kaggle_scripts/emg_common.py) | All current data, model, training, evaluation and export code |
 | [kaggle_scripts/combined-roformer-ablation.ipynb](kaggle_scripts/combined-roformer-ablation.ipynb) | Notebook configured as the session-3, evaluation-only run |
 | [kaggle_scripts/06_subject_ci_and_loso.ipynb](kaggle_scripts/06_subject_ci_and_loso.ipynb) | Session 4: per-subject confidence intervals and leave-subjects-out |
+| [kaggle_scripts/07_window_200ms.ipynb](kaggle_scripts/07_window_200ms.ipynb) | Window-length study: 200 ms windows, 50 ms step |
 | `kaggle_scripts/01_` … `05_*.ipynb` | Stand-alone notebooks for each stage |
 | [kaggle_scripts/README.md](kaggle_scripts/README.md) | Kaggle setup and configuration options |
 | [roformer_output/](roformer_output/) | Session 1: grid checkpoints, `ablation_results_merged.csv`, logs |
