@@ -1,0 +1,30 @@
+[{"stream_name":"stderr","time":7.895067292,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.89513895,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.895146228,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.895150538,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.540168346,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.540204107,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.540210861,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.540215903,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":20.432541638,"data":"torch 2.11.0+cu128 cuda True | emg_common from /kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py\n"}
+,{"stream_name":"stdout","time":20.549331314,"data":"10 subjects: ['DB2_s1', 'DB2_s10', 'DB2_s11', 'DB2_s12', 'DB2_s13', 'DB2_s14', 'DB2_s15', 'DB2_s16', 'DB2_s17', 'DB2_s18']\n"}
+,{"stream_name":"stdout","time":21.891653308,"data":"checkpoint: /kaggle/input/notebooks/quddusikashaf/combined-v2-roformer-ablation/outputs/patch_both_prev0_K0_qat5_v2.pt | phase: qat | selected on: val_abs | variant: patch both | cond_prev: False\n"}
+,{"stream_name":"stdout","time":1978.373693088,"data":"--- init=truth ---\n"}
+,{"stream_name":"stdout","time":3930.228050917,"data":"--- init=abs ---\n"}
+,{"stream_name":"stdout","time":3930.229838228,"data":"RMSE summary (the decisive rows):\n"}
+,{"stream_name":"stdout","time":3930.231304333,"data":"delta-head contribution = abs_smoothed - kalman: {'truth': 0.0028, 'abs': 0.0028}\n"}
+,{"stream_name":"stdout","time":5961.007480484,"data":"kalman_with_delta: best ('q=1e-05', 'r=0.003') -\u003e 0.1031\n"}
+,{"stream_name":"stdout","time":6026.697634059,"data":"abs_smoothing_only: best ('q=1e-05', 'r=0.001') -\u003e 0.1064\n"}
+,{"stream_name":"stderr","time":7941.34145404,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":7941.341492041,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":7941.515006145,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":7941.51503672,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":7942.348742787,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":7942.447954803,"data":"[NbConvertApp] Writing 334192 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":7944.996191125,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":7945.585362078,"data":"[NbConvertApp] Support files will be in __results___files/\n"}
+,{"stream_name":"stderr","time":7945.585391078,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":7945.585707232,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":7945.585919178,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":7945.586210967,"data":"[NbConvertApp] Writing 365481 bytes to __results__.html\n"}
+]

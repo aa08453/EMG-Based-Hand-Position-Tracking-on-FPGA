@@ -1,5 +1,7 @@
 # RoFormer sEMG-to-Angle Pipeline: Review Findings and Roadmap
 
+For the full history and current results, see [PROJECT_REPORT.md](PROJECT_REPORT.md).
+
 This document records the results of a review of the PyTorch model, the data pipeline, and the HLS implementation, followed by the recommended changes. No source files were modified during the review; the "verified" items below are measurements made against the artifacts already in the repository.
 
 ## 1. What was verified
@@ -23,9 +25,9 @@ This document records the results of a review of the PyTorch model, the data pip
 | attention entropy on real windows (uniform = 5.30) | 5.28 to 5.30 |
 | uniform-attention ablation vs real attention, output MAE | 0.14 |
 | notebook sequential evaluation, subject 1 | R² −0.91, RMSE 17.3° |
-| estimated MACs per inference | about 28 million, 26 million in per-token linear layers |
-| estimated latency at 1 MAC/cycle, 100 MHz | about 280 ms versus a 25 ms window stride |
-| activation RAM / weight ROM instantiated | about 1.7 Mbit / 1.07 Mbit of 4.9 Mbit on the Zynq-7020 |
+| estimated MACs per inference | about 37.4 million: 26.2 million in per-token linear layers, 10.2 million in attention scores and weighting (corrected from an earlier 28 million) |
+| estimated latency at 1 MAC/cycle, 100 MHz | about 374 ms versus a 25 ms window stride (corrected from 280 ms) |
+| activation RAM / weight ROM instantiated | about 1.14 Mbit / 1.07 Mbit of 4.9 Mbit on the Zynq-7020 (RAM corrected from 1.7 Mbit) |
 | synthesized weight ROM width | 6 to 7 bits of the 10-bit weight type |
 
 ### 1.3 Conclusions drawn from the results
@@ -36,7 +38,7 @@ This document records the results of a review of the PyTorch model, the data pip
 4. **`VelocityGuidedLoss` is a no-op.** Predicted velocity minus true velocity simplifies to prediction minus target, so the loss equals 1.1 × MSE.
 5. **Normalization is non-causal.** Per-recording max-abs scaling of EMG and min-max scaling of glove angles use the whole recording, which cannot be reproduced in real time and leaks test statistics into training.
 6. **The fixed-point format is sized for the random test input, not real data.** Real inputs lie in 0 to 0.68 with standard deviation 0.10, so a 1/128 step gives about 13 levels per standard deviation. Weights peak at 0.45, so three of the ten weight bits carry nothing. Default `ap_fixed` casts wrap on overflow, and the golden FFN output already contains values beyond ±4.
-7. **The design misses real time by roughly 10×.** Every MAC loop runs one multiply per cycle. The cyclic-8 array partitions buy nothing because no MAC loop is unrolled.
+7. **The design misses real time by roughly 15×.** Every MAC loop runs one multiply per cycle. The cyclic-8 array partitions buy nothing because no MAC loop is unrolled.
 
 ## 2. Recommended changes
 
