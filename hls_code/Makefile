@@ -1,29 +1,27 @@
-# Compiler
-CXX = g++
-CXXFLAGS = -O3 -std=c++14
+# Bit-accurate C simulation of the v2 RoFormer without Vitis.
+# third_party/ap_types holds Xilinx's open-source ap_fixed headers (Apache-2.0); sim/ shims hls_math.h.
+# -O0 on purpose: the weight headers contain ~150k ap_fixed initialisers and -O2 takes many minutes.
+#   make              build both tests
+#   make run          run them (layer-by-layer + 40 HIL windows, then the Vitis testbench)
+#   make MAC_UNROLL=8 build with a different parallelism setting (results must be identical)
+CXX      ?= g++
+MAC_UNROLL ?= 4
+CXXFLAGS = -std=c++14 -O0 -w -Isim -Ithird_party/ap_types/include -I. -DMAC_UNROLL=$(MAC_UNROLL)
+SRCS     = $(wildcard *.h) $(wildcard weights/*.h) RoFormer_Top.cpp tests/check.h
 
-SRC_DIR = .
-TEST_DIR = tests
+all: test_layers test_top
 
-TEST_VITIS_ALL = test_vitis_roformer_all_layers
-TEST_VITIS_SIMPLE = test_vitis
+test_layers: tests/test_layers.cpp $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $@ tests/test_layers.cpp
 
-all: $(TEST_VITIS_ALL) $(TEST_VITIS_SIMPLE)
-
-$(TEST_VITIS_ALL): $(TEST_DIR)/test_vitis_roformer_all_layers.cpp $(SRC_DIR)/types.h $(SRC_DIR)/config.h
-	$(CXX) $(CXXFLAGS) -DUSE_MOCK_HLS -I. -I./tests -o $(TEST_VITIS_ALL) $(TEST_DIR)/test_vitis_roformer_all_layers.cpp
-
-$(TEST_VITIS_SIMPLE): $(TEST_DIR)/test_vitis_roformer.cpp $(SRC_DIR)/RoFormer_Top.cpp $(SRC_DIR)/types.h $(SRC_DIR)/config.h
-	$(CXX) $(CXXFLAGS) -DUSE_MOCK_HLS -I. -I./tests -o $(TEST_VITIS_SIMPLE) $(TEST_DIR)/test_vitis_roformer.cpp $(SRC_DIR)/RoFormer_Top.cpp
+test_top: tests/test_vitis_roformer.cpp $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $@ tests/test_vitis_roformer.cpp RoFormer_Top.cpp
 
 run: all
-	@echo "--- Running tests ---"
-
-clean-all-layers:
-	rm -f $(TEST_VITIS_ALL)
-
-clean-simple-test:
-	rm -f $(TEST_VITIS_SIMPLE)
+	./test_layers ../hil_verification_samples
+	./test_top
 
 clean:
-	rm -f $(TESTS) $(TEST_VITIS_ALL) $(TEST_VITIS_SIMPLE) *.o *.exe
+	rm -f test_layers test_top
+
+.PHONY: all run clean

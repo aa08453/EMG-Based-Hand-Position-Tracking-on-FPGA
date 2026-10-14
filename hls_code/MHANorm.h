@@ -1,147 +1,95 @@
 #ifndef MHANORM_H
 #define MHANORM_H
+#include "types.h"
+#include "config.h"
 #include "FCLayer.h"
 #include "Softmax.h"
 #include "LayerNorm.h"
 #include "RotaryEmbedding.h"
-#include "config.h"
-#include "./weights/l0_mha_weights.h"  // <-- weights live here now
+#include "./weights/l0_mha_weights.h"
 #include "./weights/l0_ln_weights.h"
-#include "config_debug.h"
 
-
-void linear_head_proj(const data_t input[], mha_sum_t output[],
-                      const data_t weights[], const data_t bias[],
-                      int head)
+// out = LN1( x + O( MHA( Q(rope(x)), K(rope(x)), V(x) ) ) )
+// Q, K, V are projected once for all tokens and heads (no per-head recomputation).
+// Quantisation points match QAT: projections qkv_t, context data_t, O output and residual sum resid_t.
+void mha_norm_forward(const data_t input[SEQ_LEN * D_MODEL], data_t output[SEQ_LEN * D_MODEL])
 {
 #pragma HLS INLINE off
-    int base = head * HEAD_DIM;
+#pragma HLS ARRAY_PARTITION variable=l0_q_w_flat cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=l0_k_w_flat cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=l0_v_w_flat cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=l0_o_w_flat cyclic factor=MAC_UNROLL dim=1
 
-    FC_HEAD_OUTPUT:
-    for (int o = 0; o < HEAD_DIM; ++o) {
-        mha_sum_t sum = (mha_sum_t)bias[base + o];
-        FC_HEAD_MAC:
-        for (int i = 0; i < D_MODEL; ++i) {
-#pragma HLS PIPELINE II=1
-            sum += (mha_sum_t)input[i] * (mha_sum_t)weights[(base + o) * D_MODEL + i];
-        }
-        output[o] = sum;
-    }
-}
+    data_t  rope_out[SEQ_LEN * D_MODEL];
+    qkv_t   q_all[SEQ_LEN * D_MODEL], k_all[SEQ_LEN * D_MODEL], v_all[SEQ_LEN * D_MODEL];
+    data_t  ctx[SEQ_LEN * D_MODEL];
+    resid_t o_tok[D_MODEL], ln_in[D_MODEL];
+#pragma HLS ARRAY_PARTITION variable=rope_out cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=q_all cyclic factor=HEAD_DIM dim=1
+#pragma HLS ARRAY_PARTITION variable=k_all cyclic factor=HEAD_DIM dim=1
+#pragma HLS ARRAY_PARTITION variable=v_all cyclic factor=HEAD_DIM dim=1
+#pragma HLS ARRAY_PARTITION variable=ctx cyclic factor=HEAD_DIM dim=1
 
-
-void mha_norm_forward(const data_t input[], data_t output[])
-{
-#pragma HLS INLINE off
-    const mha_sum_t scale = 0.25;
-
-    // --- SMALL per-head buffers instead of full D_MODEL-wide ---
-    mha_sum_t k_head[SEQ_LEN * HEAD_DIM];   // 3200 vs 25600
-    mha_sum_t v_head[SEQ_LEN * HEAD_DIM];   // 3200 vs 25600
-#pragma HLS ARRAY_RESHAPE variable=k_head cyclic factor=8 dim=1
-#pragma HLS ARRAY_RESHAPE variable=v_head cyclic factor=8 dim=1
-
-    // Concatenated attention output — one full array instead of two
-    mha_sum_t attn_concat[SEQ_LEN * D_MODEL];
-#pragma HLS ARRAY_RESHAPE variable=attn_concat cyclic factor=8 dim=1
-
-#pragma HLS ARRAY_PARTITION variable=l0_ln1_g_flat complete dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_ln1_b_flat complete dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_q_b_flat complete dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_k_b_flat complete dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_v_b_flat complete dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_o_b_flat complete dim=1
-
-    data_t rope_out[SEQ_LEN * D_MODEL];
     rope_forward(input, rope_out);
 
-    // ===== HEAD-OUTER LOOP =====
-    MHA_HEAD_LOOP:
+    MHA_PROJ:
+    for (int t = 0; t < SEQ_LEN; ++t) {
+        dense<D_MODEL, D_MODEL, false>(rope_out, t * D_MODEL, q_all, t * D_MODEL, l0_q_w_flat, l0_q_b_flat);
+        dense<D_MODEL, D_MODEL, false>(rope_out, t * D_MODEL, k_all, t * D_MODEL, l0_k_w_flat, l0_k_b_flat);
+        dense<D_MODEL, D_MODEL, false>(input,    t * D_MODEL, v_all, t * D_MODEL, l0_v_w_flat, l0_v_b_flat);
+    }
+
+    MHA_HEAD:
     for (int h = 0; h < NUM_HEADS; ++h) {
-
-        // Project K and V for ALL positions, but only HEAD_DIM outputs for this head
-        MHA_PROJECT_KV_HEAD:
-        for (int t = 0; t < SEQ_LEN; ++t) {
-            linear_head_proj(&rope_out[t * D_MODEL], &k_head[t * HEAD_DIM],
-                             l0_k_w_flat, l0_k_b_flat, h);
-            linear_head_proj(&input[t * D_MODEL],    &v_head[t * HEAD_DIM],
-                             l0_v_w_flat, l0_v_b_flat, h);
-        }
-
-        // Query loop for this head
-        MHA_QUERY_LOOP:
+        MHA_QUERY:
         for (int i = 0; i < SEQ_LEN; ++i) {
-            mha_sum_t q_head[HEAD_DIM];
-#pragma HLS ARRAY_PARTITION variable=q_head complete dim=1
-
-            linear_head_proj(&rope_out[i * D_MODEL], q_head,
-                             l0_q_w_flat, l0_q_b_flat, h);
-
-            // Dot product: q_head[HEAD_DIM] x k_head[j][HEAD_DIM]
-            mha_sum_t row_scores[SEQ_LEN];
-            MHA_DOT_PRODUCT:
+            acc_t scores[SEQ_LEN];
+            acc_t row_max = -2048;
+            MHA_DOT:
             for (int j = 0; j < SEQ_LEN; ++j) {
 #pragma HLS PIPELINE II=1
-                mha_sum_t dot = 0;
-                MHA_DOT_DIM:
-                for (int d = 0; d < HEAD_DIM; ++d) {
+                acc_t d = 0;
+                for (int dd = 0; dd < HEAD_DIM; ++dd) {
 #pragma HLS UNROLL
-                    dot += (mha_sum_t)q_head[d] * (mha_sum_t)k_head[j * HEAD_DIM + d];
+                    d += (acc_t)(q_all[i * D_MODEL + h * HEAD_DIM + dd] * k_all[j * D_MODEL + h * HEAD_DIM + dd]);
                 }
-                row_scores[j] = dot * scale;
+                const acc_t s = d >> 2;                  // / sqrt(HEAD_DIM) = / 4
+                scores[j] = s;
+                row_max = (s > row_max) ? s : row_max;
             }
+            prob_t p[SEQ_LEN];
+            softmax_row(scores, row_max, p);
 
-            mha_sum_t row_probs[SEQ_LEN];
-            softmax_wide(row_scores, row_probs);
-
-            // Weighted sum
-            mha_sum_t head_acc[HEAD_DIM];
-#pragma HLS ARRAY_PARTITION variable=head_acc complete dim=1
-            MHA_ACC_RESET:
-            for (int d = 0; d < HEAD_DIM; ++d) {
+            acc_t acc[HEAD_DIM];
+#pragma HLS ARRAY_PARTITION variable=acc complete
+            for (int dd = 0; dd < HEAD_DIM; ++dd) {
 #pragma HLS UNROLL
-                head_acc[d] = 0;
+                acc[dd] = 0;
             }
-
-            MHA_WEIGHTED_SUM_SEQ:
+            MHA_WSUM:
             for (int j = 0; j < SEQ_LEN; ++j) {
 #pragma HLS PIPELINE II=1
-                MHA_WEIGHTED_SUM_DIM:
-                for (int d = 0; d < HEAD_DIM; ++d) {
+                for (int dd = 0; dd < HEAD_DIM; ++dd) {
 #pragma HLS UNROLL
-                    head_acc[d] += (mha_sum_t)row_probs[j] * (mha_sum_t)v_head[j * HEAD_DIM + d];
+                    acc[dd] += (acc_t)(p[j] * v_all[j * D_MODEL + h * HEAD_DIM + dd]);
                 }
             }
-
-            // Store into concatenated buffer
-            MHA_ACC_WRITEBACK:
-            for (int d = 0; d < HEAD_DIM; ++d) {
+            for (int dd = 0; dd < HEAD_DIM; ++dd) {
 #pragma HLS UNROLL
-                attn_concat[i * D_MODEL + h * HEAD_DIM + d] = head_acc[d];
+                ctx[i * D_MODEL + h * HEAD_DIM + dd] = (data_t)acc[dd];
             }
-        } // end query loop
-    } // end head loop
-
-    // ===== OUTPUT PROJECTION + RESIDUAL + LAYERNORM =====
-    MHA_OUTPUT_LOOP:
-    for (int i = 0; i < SEQ_LEN; ++i) {
-        mha_sum_t mha_out[D_MODEL];
-        linear_wide3(&attn_concat[i * D_MODEL], mha_out, l0_o_w_flat, l0_o_b_flat, D_MODEL, D_MODEL);
-
-        data_t ln_in[D_MODEL], ln_out[D_MODEL];
-        BLOCK_RESIDUAL1:
-        for (int d = 0; d < D_MODEL; ++d) {
-#pragma HLS PIPELINE II=1
-            ln_in[d] = input[i * D_MODEL + d] + (data_t)mha_out[d];
-        }
-        ln_forward(ln_in, ln_out, l0_ln1_g_flat, l0_ln1_b_flat);
-        BLOCK_LN1_COPY_OUT:
-        for (int d = 0; d < D_MODEL; ++d) {
-#pragma HLS PIPELINE II=1
-            output[i * D_MODEL + d] = ln_out[d];
         }
     }
+
+    MHA_OUT:
+    for (int t = 0; t < SEQ_LEN; ++t) {
+        dense<D_MODEL, D_MODEL, false>(ctx, t * D_MODEL, o_tok, 0, l0_o_w_flat, l0_o_b_flat);
+        MHA_RESID:
+        for (int d = 0; d < D_MODEL; ++d) {
+#pragma HLS PIPELINE II=1
+            ln_in[d] = (resid_t)(input[t * D_MODEL + d] + o_tok[d]);
+        }
+        ln_forward<resid_t>(ln_in, 0, output, t * D_MODEL, l0_ln1_g_flat, l0_ln1_b_flat);
+    }
 }
-
-
 #endif // MHANORM_H

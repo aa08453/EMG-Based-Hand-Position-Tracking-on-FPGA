@@ -45,3 +45,6 @@ vivado_project/vivado_project.xpr
 !test_vitis_roformer.cpp
 !TestUtils.h
 !verification_data/
+# local C-simulation binaries
+hls_code/test_layers
+hls_code/test_top

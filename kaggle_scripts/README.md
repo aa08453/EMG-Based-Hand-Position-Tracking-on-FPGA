@@ -12,6 +12,7 @@ Notebooks that implement the roadmap in [../IMPROVEMENTS.md](../IMPROVEMENTS.md)
 | `03_ablation_grid.ipynb` | Grid over variants, heads, training modes; CSV + plots of accuracy vs MACs | 2.2 attention ablation, token reduction |
 | `04_sequential_eval_fusion.ipynb` | Deployment-condition evaluation: own-estimate feedback, Kalman q/r sweep, error vs horizon, fixed-point integrator drift | 2.4 fusion, anchoring, numerics, evaluation |
 | `05_export_hls.ipynb` | One checkpoint to every HLS artifact: quantised weight headers with the existing array names, RoPE tables, config.h, golden dumps on a real window, HIL samples + manifest, normalisation constants, fixed-point expectation | 2.1 reconcile configuration, regenerate HIL samples |
+| `06_subject_ci_and_loso.ipynb` | Session 4: per-subject cluster-bootstrap confidence intervals for the session-2 model, and resumable 5-fold leave-subjects-out training and evaluation | 2.1 sequential metric, generalisation to new users |
 
 The two original notebooks (`roformer.ipynb`, `baseline-models-joint-angles.ipynb`) are kept for reference.
 

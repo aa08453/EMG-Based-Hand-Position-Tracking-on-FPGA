@@ -98,4 +98,4 @@ The machine-learning side of section 2 is implemented in `kaggle_scripts/` (see 
 | 2.1 reconcile configuration, regenerate HIL samples and golden dumps from one checkpoint | `05_export_hls.ipynb`, `emg_common.export_hls` |
 | 2.2 token reduction, attention ablation, causal attention, RMSNorm, fixed-point QAT, delta head | `02_train_roformer.ipynb`, `03_ablation_grid.ipynb`, `emg_common.EMGRoFormer`, `convert_to_qat` |
 | 2.4 Kalman fusion, integration-in-the-loop, rest anchoring, delta standardisation, drift evaluation | `04_sequential_eval_fusion.ipynb`, `emg_common.kalman_fuse`, `_loss_unrolled`, `fixed_point_integrate` |
-| 2.3 HLS changes | not started; `config.h` from the export names the required changes per checkpoint |
+| 2.3 HLS changes | implemented and verified bit-accurately in C simulation (Oct 15); synthesis pending. See PROJECT_REPORT.md section 10.4 |

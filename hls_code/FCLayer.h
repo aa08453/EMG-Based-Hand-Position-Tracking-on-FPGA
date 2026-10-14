@@ -1,104 +1,41 @@
 #ifndef FCLAYER_H
 #define FCLAYER_H
 #include "types.h"
+#include "config.h"
 
-// Final FC layer: data_t input, data_t weights, data_t output
-void linear(const data_t input[], data_t output[],
-            const data_t weights[], const data_t bias[],
-            int in_dim, int out_dim)
+// out[out_off + i] = act( b[i] + sum_j in[in_off + j] * w[i*IN + j] ),  i < OUT, j < IN
+// One flattened pipeline: MAC_UNROLL multiply-accumulates per cycle, OUT*IN/MAC_UNROLL cycles total,
+// no per-neuron pipeline refill. Inlined at every call site so the ARRAY_PARTITION pragmas on the
+// global weight arrays (placed by the caller) apply. Callers partition `in` and `w` cyclic MAC_UNROLL.
+template <int IN, int OUT, bool RELU, typename TI, typename TO>
+void dense(const TI in[], int in_off, TO out[], int out_off, const data_t w[], const data_t b[])
 {
-#pragma HLS INLINE off
-    FC_OUTPUT:
-    for (int i = 0; i < out_dim; ++i) {
-        mha_sum_t sum = (mha_sum_t)bias[i];
-        FC_MAC:
-        for (int j = 0; j < in_dim; ++j) {
+#pragma HLS INLINE
+    const int STEPS = IN / MAC_UNROLL;
+    acc_t sum = 0;
+    DENSE_MAC:
+    for (int n = 0; n < OUT * STEPS; ++n) {
 #pragma HLS PIPELINE II=1
-#pragma HLS BIND_OP variable=sum op=mul impl=dsp
-#pragma HLS BIND_OP variable=sum op=add impl=dsp
-            sum += (mha_sum_t)weights[i*in_dim+j] * (mha_sum_t)input[j];
+        const int i = n / STEPS;
+        const int j = (n % STEPS) * MAC_UNROLL;
+        acc_t partial = 0;
+        DENSE_LANE:
+        for (int u = 0; u < MAC_UNROLL; ++u) {
+#pragma HLS UNROLL
+            partial += (acc_t)((data_t)in[in_off + j + u] * w[i * IN + j + u]);
         }
-        output[i] = (data_t)sum;
+        const acc_t s = (j == 0 ? (acc_t)b[i] : sum) + partial;
+        sum = s;
+        if (j == IN - MAC_UNROLL) {
+            acc_t y = s;
+            if (RELU) {
+                const TO yq = (TO)y;                  // quantise, then ReLU (QAT order)
+                out[out_off + i] = (yq < (TO)0) ? (TO)0 : yq;
+            } else {
+                out[out_off + i] = (TO)y;
+            }
+        }
     }
 }
-
-void linear2(const data_t input[], data_t output[],
-            const data_t weights[], const data_t bias[],
-            int in_dim, int out_dim)
-{
-#pragma HLS INLINE off
-    FC_OUTPUT2:
-    for (int i = 0; i < out_dim; ++i) {
-        mha_sum_t sum = (mha_sum_t)bias[i];
-        FC_MAC2:
-        for (int j = 0; j < in_dim; ++j) {
-#pragma HLS PIPELINE II=1
-#pragma HLS BIND_OP variable=sum op=mul impl=dsp
-#pragma HLS BIND_OP variable=sum op=add impl=dsp
-            sum += (mha_sum_t)weights[i*in_dim+j] * (mha_sum_t)input[j];
-        }
-        output[i] = (data_t)sum;
-    }
-}
-
-// MHA projection: data_t input → mha_sum_t output (Q, K, V from conv1d tokens)
-void linear_wide1(const data_t input[], mha_sum_t output[],
-                 const data_t weights[], const data_t bias[],
-                 int in_dim, int out_dim)
-{
-#pragma HLS INLINE off
-    FC_MHA_CONV_OUTPUT:
-    for (int i = 0; i < out_dim; ++i) {
-        mha_sum_t sum = (mha_sum_t)bias[i];
-        FC_MHA_CONV_MAC:
-        for (int j = 0; j < in_dim; ++j) {
-#pragma HLS PIPELINE II=1
-#pragma HLS BIND_OP variable=sum op=mul impl=dsp
-#pragma HLS BIND_OP variable=sum op=add impl=dsp
-            sum += (mha_sum_t)weights[i*in_dim+j] * (mha_sum_t)input[j];
-        }
-        output[i] = sum;   // no cast — keep full mha_sum_t precision
-    }
-}
-
-// O projection: data_t input (context vector) → mha_sum_t output
-void linear_wide2(const data_t input[], mha_sum_t output[],
-                 const data_t weights[], const data_t bias[],
-                 int in_dim, int out_dim)
-{
-#pragma HLS INLINE off
-    FC_MHA_MHA_OUTPUT:
-    for (int i = 0; i < out_dim; ++i) {
-        mha_sum_t sum = (mha_sum_t)bias[i];
-        FC_MHA_MHA_MAC:
-        for (int j = 0; j < in_dim; ++j) {
-#pragma HLS PIPELINE II=1
-#pragma HLS BIND_OP variable=sum op=mul impl=dsp
-#pragma HLS BIND_OP variable=sum op=add impl=dsp
-            sum += (mha_sum_t)weights[i*in_dim+j] * (mha_sum_t)input[j];
-        }
-        output[i] = sum;   // no cast
-    }
-}
-
-void linear_wide3(const mha_sum_t input[], mha_sum_t output[],
-                 const data_t weights[], const data_t bias[],
-                 int in_dim, int out_dim)
-{
-#pragma HLS INLINE off
-    FC_MHA_MHA_OUTPUT2:
-    for (int i = 0; i < out_dim; ++i) {
-        mha_sum_t sum = (mha_sum_t)bias[i];
-        FC_MHA_MHA_MAC2:
-        for (int j = 0; j < in_dim; ++j) {
-#pragma HLS PIPELINE II=1
-#pragma HLS BIND_OP variable=sum op=mul impl=dsp
-#pragma HLS BIND_OP variable=sum op=add impl=dsp
-            sum += (mha_sum_t)weights[i*in_dim+j] * (mha_sum_t)input[j];
-        }
-        output[i] = sum;   // no cast
-    }
-}
-
 
 #endif // FCLAYER_H

@@ -2,66 +2,38 @@
 #define LAYERNORM_H
 #include "types.h"
 #include "config.h"
-
-#ifndef __SYNTHESIS__
-#include "mock_hls_math.h"
-#else
 #include <hls_math.h>
-#endif
 
-void ln_forward(
-    const data_t input[],
-    data_t output[],
-    const data_t gamma[],
-    const data_t beta[]
-) {
-#pragma HLS INLINE off
-
-    const ln_calc_t epsilon   = (ln_calc_t)0.0009765625f;
-    const ln_calc_t inv_dmodel = (ln_calc_t)(1.0f / D_MODEL); // multiply instead of divide
-
-    ln_calc_t sum = 0;
-
-LN_CALC_MEAN:
-    for (int i = 0; i < D_MODEL; ++i) {
-#pragma HLS PIPELINE II=1   // no UNROLL here — reduction needs serial accumulation
-        sum += (ln_calc_t)input[i];
-    }
-
-    // Multiply by reciprocal — avoids the integer-divisor precision collapse
-    const ln_calc_t mean = sum * inv_dmodel;
-
-    ln_calc_t sum_sq = 0;
-
-LN_CALC_VAR:
+// y = (x - mean) / sqrt(var + eps) * gamma + beta, over D_MODEL values. Input is the residual
+// stream (resid_t), output data_t. Wide sums because pre-norm values reach |70| (variance 117).
+template <typename TI>
+void ln_forward(const TI input[], int off, data_t output[], int out_off,
+                const data_t gamma[], const data_t beta[])
+{
+#pragma HLS INLINE
+    const ln_acc_t eps = 1e-5;                       // PyTorch LayerNorm default
+    ln_acc_t sum = 0;
+    LN_MEAN:
     for (int i = 0; i < D_MODEL; ++i) {
 #pragma HLS PIPELINE II=1
-        ln_calc_t diff = (ln_calc_t)input[i] - mean;
-        sum_sq += diff * diff;
+        sum += (ln_acc_t)input[off + i];
     }
-
-    const ln_calc_t variance = sum_sq * inv_dmodel;
-
-    // rsqrt is fine — cast to float only for the hls::rsqrt call
-    const ln_calc_t std_dev_inv = (ln_calc_t)hls::rsqrt((float)(variance + epsilon));
-
-    LN_NORMALIZE:
+    const ln_acc_t mean = sum >> 7;                   // / 128 (D_MODEL)
+    ln_acc_t sq = 0;
+    LN_VAR:
     for (int i = 0; i < D_MODEL; ++i) {
-#pragma HLS PIPELINE II=2
-// #pragma HLS UNROLL factor=8
-
-        // Step 1: Normalize
-        ln_calc_t norm = ((ln_calc_t)input[i] - mean) * std_dev_inv;
-        
-        // Step 2: Scale
-        ln_calc_t scaled = norm * (ln_calc_t)gamma[i];
-        
-        // Step 3: Shift
-        ln_calc_t shifted = scaled + (ln_calc_t)beta[i];
-        
-        // Step 4: Cast and Write
-        output[i] = (data_t)shifted;
+#pragma HLS PIPELINE II=1
+        const ln_diff_t d = (ln_diff_t)((ln_acc_t)input[off + i] - mean);
+        sq += (ln_acc_t)(d * d);
+    }
+    const ln_acc_t var = sq >> 7;
+    const ln_inv_t inv = (ln_inv_t)hls::rsqrt((float)(var + eps));
+    LN_NORM:
+    for (int i = 0; i < D_MODEL; ++i) {
+#pragma HLS PIPELINE II=1
+        const ln_diff_t d = (ln_diff_t)((ln_acc_t)input[off + i] - mean);
+        const ln_z_t z = (ln_z_t)(d * inv);
+        output[out_off + i] = (data_t)(z * gamma[i] + beta[i]);
     }
 }
-
 #endif // LAYERNORM_H

@@ -1,6 +1,6 @@
 # sEMG-to-Finger-Angle Estimation on FPGA: Project Report
 
-Status as of 14 October 2026. This document records every approach tried so far, how data is processed, how the models are built and evaluated, what each costs in compute and memory, and what remains. It is written for someone joining the project with no prior context.
+Status as of 15 October 2026. This document records every approach tried so far, how data is processed, how the models are built and evaluated, what each costs in compute and memory, and what remains. It is written for someone joining the project with no prior context.
 
 ---
 
@@ -15,7 +15,7 @@ The project estimates 10 finger-joint angles from 12 channels of surface EMG (sE
 | Post-processing | Per-joint constant-gain Kalman filter fusing the two heads |
 | Deployable accuracy | R² 0.667, RMSE 0.103 (normalised angle units), 10 subjects, repetition-held-out split |
 | Fixed-point export | Verified: existing HLS layer functions reproduce the golden model at cosine ≥ 0.997 |
-| Hardware | Original HLS design runs the old model. Strided embedding, wider residual type, second head and loop unrolling are not yet implemented |
+| Hardware | HLS rewritten for the chosen model and verified bit-accurately in C simulation (all layers cosine ≥ 0.998). Estimated 9.3 ms per inference against a 25 ms budget. Not yet synthesised |
 
 The single most important lesson so far: two early results that looked excellent (R² 0.71 and R² 0.99) were artefacts of the evaluation, not real skill. Section 9 explains both, so they are not repeated.
 
@@ -53,6 +53,8 @@ All accuracy figures are in **normalised angle units**: each joint is scaled to 
 | 4. Fixes (Oct 12) | Loss rebalanced between heads, checkpoint selection on the absolute head, residual stream given a 16-bit format, QAT made to match the HLS quantisation points | Verified on real checkpoints |
 | 5. Session 2 (Oct 12) | Trained the chosen configuration with QAT and exported to HLS | R² 0.673 with true-angle seed. Export verified |
 | 6. Session 3 (Oct 13) | Evaluation only: deployable seeding and a smoothing-only baseline | R² 0.667 deployable. 83 % of the fusion gain is smoothing, 17 % the delta head |
+| 7. HLS v2 (Oct 15) | HLS rewritten for the chosen model: strided embedding, 16-bit residual type, second head, flattened and unrolled MAC loops, rounding and saturation. Bit-accurate C simulation using Xilinx's open-source `ap_fixed` headers. Firmware fuses the two heads | C model matches the numpy fixed-point reference to 0.0004. Estimated 9.3 ms per inference. Old HLS code with the new weights scored cosine −0.06 bit-accurately |
+| 8. Session 4 (prepared) | Notebook 06: per-subject bootstrap confidence intervals, 5-fold leave-subjects-out | Not yet run |
 
 ---
 
@@ -386,14 +388,45 @@ Verification of the session-2 export:
 | Fixed-point expectation, every layer | Cosine ≥ 0.998 |
 | Existing HLS layer functions, float mock, fed the golden embedding output | Every downstream dump including both heads at cosine ≥ 0.9977 |
 
-### 10.4 HLS changes still required for the chosen model
+### 10.4 HLS v2: implementation for the chosen model
 
-1. Strided embedding: kernel 8, stride 8, no padding, 25 output tokens.
-2. A `resid_t` of `ap_fixed<16,8>` for `ff_out`, `ln_in` and the attention output before the residual add.
-3. A second output head plus its weights.
-4. Rounding and saturation on every narrowing cast.
-5. Unroll MAC loops by about 2 to 4 and partition the weight ROMs to match, to get from about 37 ms to under 25 ms.
-6. A fixed-point softmax and LayerNorm in place of the float operators.
+The code in [hls_code/](hls_code/) now implements the session-2 checkpoint. The old design is in git history and stale artefacts are in `hls_code/legacy/`.
+
+| Change | Where |
+|---|---|
+| Strided embedding, kernel 8, stride 8, 25 tokens; reads the 12 × 200 channel-major AXI input | `Conv1dLayer.h` |
+| One flattened, pipelined dense kernel: `MAC_UNROLL` MACs per cycle, no per-neuron pipeline refill | `FCLayer.h` |
+| Q, K, V projected once for all tokens and heads instead of once per head | `MHANorm.h` |
+| Residual stream in `resid_t` = `ap_fixed<16,8>`; LayerNorm takes it as input | `MHANorm.h`, `FFNorm.h`, `LayerNorm.h` |
+| Separate types: `qkv_t` 18 bits so each Q·K multiply fits one DSP; `prob_t` for softmax; narrow LayerNorm multipliers | `types.h` |
+| Rounding and saturation on every narrowing type | `types.h` |
+| Second output head; output is 20 values: absolute angles, then standardised deltas | `RoFormer_Top.cpp` |
+| Firmware rescales deltas with `DELTA_SCALE` and runs the constant-gain fusion; returns 30 values | `vitis_workspace/uart_app/src/helloworld.c` |
+
+**Bit-accurate verification.** `make run` in `hls_code` builds with Xilinx's open-source `ap_fixed` headers, vendored in `hls_code/third_party/ap_types` under Apache-2.0. Vitis is not needed.
+
+| Check | Result |
+|---|---|
+| Old HLS code with v2 weights, bit-accurate | Cosine −0.06 after the FFN block: the 10-bit residual wraps around. The float mock had shown 0.9997 |
+| New code, every layer against the float golden model | Cosine 0.9981 to 0.9999. Matches `fixed_point_expectation.json` to the fourth decimal |
+| New code on 40 real test windows, against the float model | Absolute head MAE 0.024, about 3 steps of 1/128. Delta MAE 0.12 standardised |
+| New code against the numpy fixed-point simulation, same 40 windows | Absolute head 0.0004, delta 0.002: the C model is correct, and the remaining error is the format itself |
+| `MAC_UNROLL` = 2, 4, 8 | Identical outputs |
+
+The 10-bit format's error is already included in the deployable R² of 0.667, because quantisation-aware training applied the same rounding during evaluation.
+
+**Latency estimate** from the loop structure, by `hls_code/scripts/estimate_cycles.py`. These are not synthesis results.
+
+| `MAC_UNROLL` | Cycles | Time at 100 MHz |
+|---|---|---|
+| 2 | 1.75 M | 17.5 ms |
+| 4 (default) | 0.93 M | 9.3 ms |
+| 8 | 0.52 M | 5.2 ms |
+| Original design | ≥ 37.4 M | ≥ 374 ms |
+
+At the default setting, the FFN is 44 % of the time and the Q/K/V projections 33 %. Softmax and LayerNorm still use float `exp`, division and `rsqrt`; replacing them is optional, because they are under 7 % of the time.
+
+**Not yet done:** synthesis, timing closure and resource reports; co-simulation; re-export of the IP, Vivado block design update and board test. The IP interface changed: the output depth went from 10 to 20, so the block design and firmware must be rebuilt together.
 
 ---
 
@@ -438,13 +471,11 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 
 | Priority | Task |
 |---|---|
-| 1 | Implement the HLS changes in section 10.4 and run C-simulation against the session-2 export |
-| 2 | Synthesise, record utilisation and timing reports in the repository, and measure latency on the board |
-| 3 | Per-subject results with bootstrap confidence intervals, to confirm the delta-head gain holds across subjects |
-| 4 | Leave-subjects-out split, needed only to claim generalisation to new users |
-| 5 | Convert normalised RMSE to degrees using glove calibration |
-| 6 | Port the causal filter, μ-law normalisation and Kalman update to the ARM firmware using `normalization_constants.h` |
-| 7 | Replace UART with a faster host link if live streaming is required |
+| 1 | Synthesise the v2 HLS in Vitis (`vitis_workspace/transformer`), commit the utilisation and timing reports, run co-simulation, then rebuild the block design and measure latency on the board |
+| 2 | Run notebook 06 (session 4): per-subject bootstrap confidence intervals and 5-fold leave-subjects-out |
+| 3 | Convert normalised RMSE to degrees using glove calibration |
+| 4 | Port the causal filter and μ-law normalisation to the ARM firmware using `normalization_constants.h`. The fusion update is already in the firmware |
+| 5 | Replace UART with a faster host link if live streaming is required |
 
 ---
 
@@ -453,13 +484,14 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | Path | Contents |
 |---|---|
 | [kaggle_scripts/emg_common.py](kaggle_scripts/emg_common.py) | All current data, model, training, evaluation and export code |
-| [kaggle_scripts/combined-roformer-ablation.ipynb](kaggle_scripts/combined-roformer-ablation.ipynb) | Notebook currently configured as the session-3, evaluation-only run |
+| [kaggle_scripts/combined-roformer-ablation.ipynb](kaggle_scripts/combined-roformer-ablation.ipynb) | Notebook configured as the session-3, evaluation-only run |
+| [kaggle_scripts/06_subject_ci_and_loso.ipynb](kaggle_scripts/06_subject_ci_and_loso.ipynb) | Session 4: per-subject confidence intervals and leave-subjects-out |
 | `kaggle_scripts/01_` … `05_*.ipynb` | Stand-alone notebooks for each stage |
 | [kaggle_scripts/README.md](kaggle_scripts/README.md) | Kaggle setup and configuration options |
 | [roformer_output/](roformer_output/) | Session 1: grid checkpoints, `ablation_results_merged.csv`, logs |
 | [roformer_output_v2/](roformer_output_v2/) | Session 2: chosen checkpoint, report, HLS export |
 | [roformer_output_v3/](roformer_output_v3/) | Session 3: deployable evaluation report and plots |
-| [hls_code/](hls_code/) | Original HLS implementation, testbenches, verification scripts |
+| [hls_code/](hls_code/) | HLS v2 implementation, bit-accurate tests (`make run`), latency estimator, golden data from the session-2 export. Old artefacts in `hls_code/legacy/` |
 | [ip_repo/](ip_repo/), `roformer.tcl`, `transformer_wrapper.xsa`, [vitis_workspace/](vitis_workspace/) | Vivado IP, project script, platform, firmware |
 | [notebooks/](notebooks/), [kaggle_scripts/roformer.ipynb](kaggle_scripts/roformer.ipynb), [kaggle_scripts/baseline-models-joint-angles.ipynb](kaggle_scripts/baseline-models-joint-angles.ipynb) | Original notebooks, legacy pipeline |
 | [IMPROVEMENTS.md](IMPROVEMENTS.md) | Review findings and the original roadmap |
@@ -472,7 +504,7 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 4. Run notebook 01 and save its output as a dataset.
 5. Run notebook 02 with the configuration in section 9.3, then 04 and 05.
 
-**To verify an export locally,** compile the HLS layer headers with the float mock: `mock_ap_fixed.h` behind a one-line `ap_fixed.h` shim. Feed the exported `verification_data/` through the layer functions and compare each dump. Section 10.3 records the expected agreement.
+**To verify the HLS locally,** run `make run` in `hls_code`. It builds with the vendored open-source `ap_fixed` headers, compares every layer with the golden dumps in `verification_data/`, and runs the 40 windows in `hil_verification_samples/`. Do not trust the float mock `mock_ap_fixed.h`: it hid a complete numerical failure (section 10.4).
 
 ---
 

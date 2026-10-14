@@ -12,6 +12,7 @@
 #include "xuartps.h"
 #include "xscugic.h"
 #include <math.h>
+#include "normalization_constants.h"   // DELTA_SCALE, EMG_SCALE, ... (from the HLS export)
 
 
 int init_uart();
@@ -80,9 +81,16 @@ XRoformer_top Model;    // Roformer instance
 
 // --- System Sizing ---
 #define INPUT_FLOATS    2400
-#define OUTPUT_FLOATS   10
+#define NUM_JOINTS      10
+#define IP_OUTPUTS      20              // RoFormer_Top v2: [abs angle (10) | delta / DELTA_SCALE (10)]
+#define OUTPUT_FLOATS   30              // sent to PC: [abs (10) | delta (10) | fused estimate (10)]
+#define FUSION_GAIN     0.056f          // constant-gain Kalman fusion, PROJECT_REPORT.md section 7
 #define EXPECTED_BYTES  (INPUT_FLOATS * sizeof(float))
 #define OUTPUT_BYTES    (OUTPUT_FLOATS * sizeof(float))
+
+// Fusion state, carried across consecutive windows (one window per 25 ms hop).
+static float fused_est[NUM_JOINTS];
+static int   fused_valid = 0;
 
 // --- Global Instances ---
 XUartPs Uart_Ps;
@@ -212,20 +220,28 @@ xil_printf("Initializing RoFormer IP...\r\n");
                 while (!XRoformer_top_IsDone(&Model));
 
                 // INVALIDATE cache so CPU sees new data from FPGA
-                Xil_DCacheInvalidateRange(DDR_FPGA_OUT_ADDR, OUTPUT_FLOATS * sizeof(short));
+                Xil_DCacheInvalidateRange(DDR_FPGA_OUT_ADDR, IP_OUTPUTS * sizeof(short));
                 
                 XGpio_DiscreteWrite(&Gpio, 1, LED_DONE);
 
                 short *fpga_out_buffer = (short *)DDR_FPGA_OUT_ADDR;
                 float *uart_tx_buffer  = (float *)DDR_UART_TX_ADDR;
 
-                // printf("\r\n[ZYNQ] Math Complete. Reading RAM:\r\n");
-                for (int i = 0; i < OUTPUT_FLOATS; i++) {
-                    // Use your fixed_to_float helper here too!
-                    uart_tx_buffer[i] = fixed_to_float(fpga_out_buffer[i]);
-                    // printf("  RAM[%d]: %f\r\n", i, uart_tx_buffer[i]);
+                // abs head, delta head (rescaled to angle units), then fusion:
+                //   est += delta;  est += K * (abs - est);   seeded from the first abs prediction
+                for (int j = 0; j < NUM_JOINTS; j++) {
+                    const float abs_pred = fixed_to_float(fpga_out_buffer[j]);
+                    const float delta    = fixed_to_float(fpga_out_buffer[NUM_JOINTS + j]) * DELTA_SCALE[j];
+                    if (!fused_valid) fused_est[j] = abs_pred;
+                    else {
+                        fused_est[j] += delta;
+                        fused_est[j] += FUSION_GAIN * (abs_pred - fused_est[j]);
+                    }
+                    uart_tx_buffer[j]                  = abs_pred;
+                    uart_tx_buffer[NUM_JOINTS + j]     = delta;
+                    uart_tx_buffer[2 * NUM_JOINTS + j] = fused_est[j];
                 }
-                // printf("==========================================\r\n");
+                fused_valid = 1;
                 
                 // SEND REAL DATA BACK TO PC
                 XUartPs_Send(&Uart_Ps, (u8*)uart_tx_buffer, OUTPUT_BYTES);

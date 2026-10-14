@@ -7,13 +7,13 @@ import time
 COM_PORT = '/dev/ttyACM0'  # Update this
 BAUD_RATE = 115200
 INPUT_FLOATS = 2400 # 200 * 12 (seq_len * in_channels)
-OUTPUT_FLOATS = 10 # 10 joint
+OUTPUT_FLOATS = 30 # [abs angle (10) | delta per 25 ms (10) | fused estimate (10)], normalised units
 INPUT_BYTES = INPUT_FLOATS * 4
 OUTPUT_BYTES = OUTPUT_FLOATS * 4
 
 def loopback_test():
     try:
-        # We use a longer timeout here because 19,200 bytes at 115200 baud takes about 1.6 seconds to physically transmit
+        # 2,400 floats = 9,600 bytes; at 115200 baud that takes about 0.85 s, so UART is for verification, not real time
         ser = serial.Serial(COM_PORT, BAUD_RATE, timeout=3)
         print(f"[PC] Connected to {COM_PORT}")
     except Exception as e:
@@ -48,9 +48,11 @@ def loopback_test():
     if len(raw_rx_bytes) == OUTPUT_BYTES:
         # Convert the received bytes back into floats
         joints = np.frombuffer(raw_rx_bytes, dtype=np.float32)
-        print("\n[SUCCESS] Received Joint Array:")
-        for i, val in enumerate(joints):
-            print(f"  Joint[{i}]: {val:.3f}")
+        print("\n[SUCCESS] Received outputs:")
+        print(f"  {'joint':>5} {'abs':>8} {'delta':>9} {'fused':>8}")
+        for i in range(10):
+            print(f"  {i:>5} {joints[i]:8.4f} {joints[10 + i]:9.5f} {joints[20 + i]:8.4f}")
+        # Reference for this window (float model): hls_code/weights/input_output.h, arrays `output` and `delta_output`
     else:
         print(f"\n[ERROR] Timeout! Received only {len(raw_rx_bytes)} / {OUTPUT_BYTES} bytes.")
         

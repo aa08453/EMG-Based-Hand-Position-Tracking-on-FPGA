@@ -1055,6 +1055,126 @@ def kalman_sweep(preds: Sequence[dict], qs=(1e-5, 1e-4, 1e-3, 1e-2), rs=(1e-3, 3
     return grid
 
 
+def subject_name(npz_file: str) -> str:
+    return os.path.basename(os.path.dirname(npz_file))
+
+
+def _run_stats(est: np.ndarray, truth: np.ndarray) -> dict:
+    """Sufficient statistics of one run so RMSE and R^2 can be recomputed for any resample of runs."""
+    return {'n': len(truth), 'sse': ((est - truth) ** 2).sum(axis=0), 'sy': truth.sum(axis=0), 'syy': (truth ** 2).sum(axis=0)}
+
+
+def _agg_metrics(stats: Sequence[dict]) -> Tuple[float, float]:
+    """RMSE over all windows and joints; R^2 averaged over joints (sklearn 'uniform_average')."""
+    n = sum(s['n'] for s in stats)
+    sse = np.sum([s['sse'] for s in stats], axis=0)
+    sy = np.sum([s['sy'] for s in stats], axis=0)
+    syy = np.sum([s['syy'] for s in stats], axis=0)
+    sst = syy - sy ** 2 / n
+    return float(np.sqrt(sse.sum() / (n * len(sse)))), float(np.mean(1.0 - sse / np.maximum(sst, 1e-12)))
+
+
+def per_subject_eval(model: 'EMGRoFormer', npz_files: Sequence[str], cfg: Config, device, init: str = 'abs',
+                     kalman_qr: Tuple[float, float] = (1e-5, 3e-3), smooth_qr: Tuple[float, float] = (1e-5, 1e-3),
+                     n_boot: int = 2000, seed: int = 0, tag: str = '') -> 'object':
+    """Sequential (own-estimate) evaluation per subject with cluster-bootstrap 95 % CIs.
+    Runs (contiguous test segments) are resampled with replacement inside each subject; the pooled row
+    resamples runs inside every subject (stratified). Estimators: abs_only, abs_smoothed (filter with zero
+    delta) and kalman (delta + abs). 'delta_gain' = RMSE(abs_smoothed) - RMSE(kalman): > 0 means the delta
+    head helps. Returns a pandas DataFrame (one row per subject plus 'ALL')."""
+    import pandas as pd
+    rng = np.random.RandomState(seed)
+    names = ('abs_only', 'abs_smoothed', 'kalman')
+    runs_by_subj: Dict[str, List[Dict[str, dict]]] = {}
+    for f in npz_files:
+        subj = subject_name(f)
+        for run in ordered_runs(f, 'test'):
+            if len(run['angles']) < 4:
+                continue
+            p = predict_run(model, run, cfg, device, feedback=True)
+            start = p['abs'][0].copy() if init == 'abs' else p['start']
+            est = {'abs_only': p['abs'],
+                   'abs_smoothed': kalman_fuse(np.zeros_like(p['abs']), p['abs'], start, *smooth_qr, clamp=(-0.1, 1.1))}
+            est['kalman'] = (kalman_fuse(p['delta'], p['abs'], start, *kalman_qr, clamp=(-0.1, 1.1))
+                             if p['delta'] is not None else est['abs_smoothed'])
+            runs_by_subj.setdefault(subj, []).append({k: _run_stats(est[k], p['angles']) for k in names})
+
+    def summarise(groups: List[List[Dict[str, dict]]]) -> dict:
+        flat = [r for g in groups for r in g]
+        row = {'runs': len(flat), 'windows': int(sum(r['kalman']['n'] for r in flat))}
+        point = {k: _agg_metrics([r[k] for r in flat]) for k in names}
+        for k in names:
+            row[f'{k}_rmse'], row[f'{k}_r2'] = point[k]
+        boots = {k: [] for k in ('kalman_rmse', 'kalman_r2', 'delta_gain', 'smooth_gain')}
+        for _ in range(n_boot):
+            res = [g[i] for g in groups for i in rng.randint(0, len(g), len(g))]
+            m = {k: _agg_metrics([r[k] for r in res]) for k in names}
+            boots['kalman_rmse'].append(m['kalman'][0]); boots['kalman_r2'].append(m['kalman'][1])
+            boots['delta_gain'].append(m['abs_smoothed'][0] - m['kalman'][0])
+            boots['smooth_gain'].append(m['abs_only'][0] - m['abs_smoothed'][0])
+        row['delta_gain'] = point['abs_smoothed'][0] - point['kalman'][0]
+        row['smooth_gain'] = point['abs_only'][0] - point['abs_smoothed'][0]
+        for k, v in boots.items():
+            row[f'{k}_lo'], row[f'{k}_hi'] = (float(x) for x in np.percentile(v, [2.5, 97.5]))
+        row['delta_gain_p_le0'] = float(np.mean(np.asarray(boots['delta_gain']) <= 0))
+        return row
+
+    rows = []
+    for subj in sorted(runs_by_subj):
+        rows.append({'subject': subj, **summarise([runs_by_subj[subj]])})
+    rows.append({'subject': 'ALL', **summarise([runs_by_subj[s] for s in sorted(runs_by_subj)])})
+    df = pd.DataFrame(rows)
+    if tag:
+        df.insert(0, 'setting', tag)
+    return df
+
+
+def subject_folds(npz_files: Sequence[str], n_folds: int) -> List[List[str]]:
+    """Deterministic subject folds: subjects sorted by name, dealt round-robin into n_folds groups."""
+    files = sorted(npz_files, key=subject_name)
+    return [files[i::n_folds] for i in range(n_folds)]
+
+
+def run_loso(cfg: Config, npz_files: Sequence[str], n_folds: int = 5, out_dir: Optional[str] = None,
+             reuse_dirs: Sequence[str] = (), run=None, **eval_kw) -> 'object':
+    """Leave-subjects-out: for each fold, train on the other subjects' training repetitions (their test
+    repetitions are the early-stopping set) and evaluate on the held-out subjects' test repetitions.
+    Held-out subjects are normalised with constants from their own training repetitions, i.e. a short
+    calibration recording but no retraining. Folds resume: an existing fold checkpoint in out_dir or any
+    reuse_dirs is loaded instead of retrained. Results are appended to <out_dir>/loso_results.csv after
+    every fold. Returns the per-subject DataFrame for all completed folds."""
+    import pandas as pd
+    out_dir = out_dir or os.path.join(cfg.save_dir, 'loso')
+    os.makedirs(out_dir, exist_ok=True)
+    device = get_device()
+    csv = os.path.join(out_dir, 'loso_results.csv')
+    done = pd.read_csv(csv) if os.path.exists(csv) else pd.DataFrame()
+    frames = [done] if len(done) else []
+    for k, test_files in enumerate(subject_folds(npz_files, n_folds)):
+        tag = f'fold{k}'
+        if len(done) and (done['setting'] == tag).any():
+            print(f'[{tag}] already evaluated, skipping'); continue
+        test_set = set(test_files)
+        train_files = [f for f in npz_files if f not in test_set]
+        fcfg = Config.from_dict({**cfg.to_dict(), 'save_dir': out_dir})
+        fcfg.run_name = f'{cfg.run_name}_{tag}'
+        ck_name = f'{fcfg.run_name}.pt'
+        found = [os.path.join(d, ck_name) for d in (out_dir, *reuse_dirs) if os.path.exists(os.path.join(d, ck_name))]
+        print(f'[{tag}] test subjects: {[subject_name(f) for f in test_files]}  train subjects: {len(train_files)}')
+        if found:
+            model, _, extra = load_checkpoint(found[0], device)
+            print(f'[{tag}] reusing {found[0]} ({extra.get("phase")})')
+        else:
+            model, _ = train_model(fcfg, train_files, run=run, tag=fcfg.run_name)
+        model.eval()
+        df = per_subject_eval(model, test_files, fcfg, device, tag=tag, **eval_kw)
+        df = df[df['subject'] != 'ALL']
+        frames.append(df)
+        pd.concat(frames, ignore_index=True).to_csv(csv, index=False)
+        print(df[['subject', 'kalman_rmse', 'kalman_r2', 'abs_only_r2', 'delta_gain']].round(4).to_string(index=False))
+    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+
+
 def rest_energy_threshold(npz_files: Sequence[str], percentile: float = 90.0) -> float:
     """Energy threshold from TRAIN rest windows: mean mu-law amplitude below this => 'at rest'."""
     e = []
@@ -1243,8 +1363,7 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
     cos_h, sin_h = rope_tables(T, D)
     with open(os.path.join(out_dir, 'rope_tables.h'), 'w') as f:
         f.write(f'// generated: SEQ_LEN(tokens)={T}, DIM={D}, HALF_DIM={D // 2}, type ap_fixed<{cfg.rope_fmt[0]},{cfg.rope_fmt[1]}>\n')
-        f.write('#ifndef ROPE_TABLES_H\n#define ROPE_TABLES_H\n#include "types.h"\n#ifdef __SYNTHESIS__\n#include <ap_fixed.h>\n#else\n#include "mock_ap_fixed.h"\n#endif\n')
-        f.write(f'typedef ap_fixed<{cfg.rope_fmt[0]}, {cfg.rope_fmt[1]}> rope_t;\n#define ROPE_HALF_DIM {D // 2}\n\n')
+        f.write('#ifndef ROPE_TABLES_H\n#define ROPE_TABLES_H\n#include "types.h"   // defines rope_t\n#include "config.h"\n\n')
         for name, tab in (('ROPE_COS_TABLE', cos_h), ('ROPE_SIN_TABLE', sin_h)):
             f.write(f'static const rope_t {name}[{T}][{D // 2}] = {{\n')
             for t in range(T):

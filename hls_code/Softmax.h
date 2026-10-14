@@ -1,28 +1,27 @@
 #ifndef SOFTMAX_H
 #define SOFTMAX_H
-
-#include "config.h"
 #include "types.h"
-
+#include "config.h"
 #include <hls_math.h>
 
-void softmax_wide(const mha_sum_t input[], mha_sum_t output[]) {
-    // find max in mha_sum_t
-    mha_sum_t max_val = input[0];
-// #pragma HLS pipeline     
-    for (int i = 1; i < SEQ_LEN; ++i)
-        if (input[i] > max_val) max_val = input[i];
-
-    mha_sum_t sum = 0;
-    for (int i = 0; i < SEQ_LEN; ++i) {
-        mha_sum_t diff = input[i] - max_val;
-        mha_sum_t exp_x = (mha_sum_t)hls::exp((float)diff);
-        output[i] = exp_x;
-        sum += exp_x;
+// Row softmax over SEQ_LEN scores. exp is still a float operator (hls::exp); a fixed-point
+// exp table is a later optimisation (PROJECT_REPORT.md, section 10.4).
+void softmax_row(const acc_t scores[SEQ_LEN], acc_t row_max, prob_t probs[SEQ_LEN])
+{
+#pragma HLS INLINE
+    prob_t e[SEQ_LEN];
+    acc_t sum = 0;
+    SM_EXP:
+    for (int j = 0; j < SEQ_LEN; ++j) {
+#pragma HLS PIPELINE II=1
+        e[j] = (prob_t)hls::exp((float)(scores[j] - row_max));
+        sum += (acc_t)e[j];
     }
-    mha_sum_t inv_sum = (mha_sum_t)(1.0f / (float)sum);
-    for (int i = 0; i < SEQ_LEN; ++i)
-        output[i] = output[i] * inv_sum;
+    const ap_ufixed<24, 1> inv = (ap_ufixed<24, 1>)(1.0f / (float)sum);   // sum >= 1
+    SM_NORM:
+    for (int j = 0; j < SEQ_LEN; ++j) {
+#pragma HLS PIPELINE II=1
+        probs[j] = (prob_t)(e[j] * inv);
+    }
 }
-
-#endif
+#endif // SOFTMAX_H

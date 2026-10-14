@@ -1,44 +1,17 @@
 #ifndef FEEDFORWARD_H
 #define FEEDFORWARD_H
-
-#include "FCLayer.h"
+#include "types.h"
 #include "config.h"
-// #include "hls_stream.h"
-#include "types.h" 
+#include "FCLayer.h"
 
-void ff_forward(
-    const data_t input[], // d_model
-    const data_t weights1[],
-    const data_t bias1[],
-    const data_t weights2[],
-    const data_t bias2[],
-    data_t output[] // d_model
-) 
+// One token: hidden = ReLU(quantise(W1 x + b1)) in data_t; out = W2 hidden + b2 in resid_t.
+void ff_forward(const data_t input[], int off, resid_t output[D_MODEL],
+                const data_t w1[], const data_t b1[], const data_t w2[], const data_t b2[])
 {
-#pragma HLS INLINE off
-
-  // Buffer for hidden state
-  data_t hidden[D_FF];
-
-  #pragma HLS ARRAY_RESHAPE variable=hidden cyclic factor=8 dim=1
-
-
-
-  // 1. FC1: D_MODEL -> D_FF
-  linear(input, hidden, weights1, bias1, D_MODEL, D_FF);
-
-  // 2. ReLU (inline): y = max(0, x)
-  FF_RELU:
-  for (int i = 0; i < D_FF; ++i) {
-  #pragma HLS PIPELINE II=1
-  #pragma HLS UNROLL factor=8
-
-    // Use ternary operator for cleaner hardware multiplexing
-    hidden[i] = (hidden[i] < (data_t)0) ? (data_t)0 : hidden[i];
-  }
-
-  // 3. FC2: D_FF -> D_MODEL
-  linear(hidden, output, weights2, bias2, D_FF, D_MODEL);
+#pragma HLS INLINE
+    data_t hidden[D_FF];
+#pragma HLS ARRAY_PARTITION variable=hidden cyclic factor=MAC_UNROLL dim=1
+    dense<D_MODEL, D_FF, true>(input, off, hidden, 0, w1, b1);
+    dense<D_FF, D_MODEL, false>(hidden, 0, output, 0, w2, b2);
 }
-
 #endif // FEEDFORWARD_H
