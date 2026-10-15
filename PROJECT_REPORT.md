@@ -58,6 +58,7 @@ All accuracy figures are in **normalised angle units**: each joint is scaled to 
 | 7. HLS v2 (Oct 15) | HLS rewritten for the chosen model: strided embedding, 16-bit residual type, second head, flattened and unrolled MAC loops, rounding and saturation. Bit-accurate C simulation using Xilinx's open-source `ap_fixed` headers. Firmware fuses the two heads | C model matches the numpy fixed-point reference to 0.0004. Estimated 9.3 ms per inference. Old HLS code with the new weights scored cosine −0.06 bit-accurately |
 | 8. Session 4 (Oct 15) | Notebook 06: per-subject bootstrap confidence intervals, 5-fold leave-subjects-out | Delta-head gain holds in 8 of 10 subjects. The model does not generalise to unseen subjects |
 | 9. Session 5 (Oct 15) | Notebook 07: 200 ms windows with a 50 ms step, against a 100 ms control scored on the same test windows | 200 ms with 25 tokens: R² 0.688 against 0.678 for the control. 200 ms with 50 tokens: no gain |
+| 10. Session 6 (prepared) | Notebook 08: model size on the chosen 200 ms, 25-token setup, with a second-seed baseline as the noise reference | Not yet run |
 
 ---
 
@@ -540,7 +541,7 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | Priority | Task |
 |---|---|
 | 1 | Synthesise the v2 HLS in Vitis (`vitis_workspace/transformer`), commit the utilisation and timing reports, run co-simulation, then rebuild the block design and measure latency on the board |
-| 2 | Decide the step: keep 100 ms windows at 25 ms (40 Hz output), or adopt `w200ms_patch16_t25` at 50 ms (20 Hz, 2.3 % lower RMSE). If adopting it, fine-tune with QAT, export, and change the three `config.h` constants |
+| 2 | Adopted (Oct 15): 200 ms window, 50 ms step, 25 tokens (`w200ms_patch16_t25`). Fine-tune with QAT, export, and change the three `config.h` constants. Run notebook 08 first in case a larger model is chosen |
 | 2b | New-user calibration: fine-tune a leave-subjects-out model on 1 to 4 training repetitions of the held-out subject, and measure how much within-subject accuracy is recovered |
 | 3 | Convert normalised RMSE to degrees using glove calibration |
 | 4 | Port the causal filter and μ-law normalisation to the ARM firmware using `normalization_constants.h`. The fusion update is already in the firmware |
@@ -556,6 +557,7 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | [kaggle_scripts/combined-roformer-ablation.ipynb](kaggle_scripts/combined-roformer-ablation.ipynb) | Notebook configured as the session-3, evaluation-only run |
 | [kaggle_scripts/06_subject_ci_and_loso.ipynb](kaggle_scripts/06_subject_ci_and_loso.ipynb) | Session 4: per-subject confidence intervals and leave-subjects-out |
 | [kaggle_scripts/07_window_200ms.ipynb](kaggle_scripts/07_window_200ms.ipynb) | Window-length study: 200 ms windows, 50 ms step |
+| [kaggle_scripts/08_model_scaling.ipynb](kaggle_scripts/08_model_scaling.ipynb) | Model-size study with hardware cost |
 | `kaggle_scripts/01_` … `05_*.ipynb` | Stand-alone notebooks for each stage |
 | [kaggle_scripts/README.md](kaggle_scripts/README.md) | Kaggle setup and configuration options |
 | [roformer_output/](roformer_output/) | Session 1: grid checkpoints, `ablation_results_merged.csv`, logs |

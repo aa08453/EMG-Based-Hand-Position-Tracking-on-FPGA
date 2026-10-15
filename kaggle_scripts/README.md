@@ -14,6 +14,7 @@ Notebooks that implement the roadmap in [../IMPROVEMENTS.md](../IMPROVEMENTS.md)
 | `05_export_hls.ipynb` | One checkpoint to every HLS artifact: quantised weight headers with the existing array names, RoPE tables, config.h, golden dumps on a real window, HIL samples + manifest, normalisation constants, fixed-point expectation | 2.1 reconcile configuration, regenerate HIL samples |
 | `06_subject_ci_and_loso.ipynb` | Session 4: per-subject cluster-bootstrap confidence intervals for the session-2 model, and resumable 5-fold leave-subjects-out training and evaluation | 2.1 sequential metric, generalisation to new users |
 | `07_window_200ms.ipynb` | 200 ms windows with a 50 ms step: preprocesses once, trains three resumable models (100 ms control on the same test windows, 200 ms at 25 tokens, 200 ms at 50 tokens), re-tunes the Kalman filter, reports pooled and per-subject bootstrap results | Window-length study |
+| `08_model_scaling.ipynb` | Model-size study on the chosen 200 ms / 25-token setup: more layers, wider FFN, wider model, a second-seed baseline as the noise reference, with hardware cost (weights vs Zynq-7020 BRAM, latency) for each | Capacity vs deployability |
 
 The two original notebooks (`roformer.ipynb`, `baseline-models-joint-angles.ipynb`) are kept for reference.
 
