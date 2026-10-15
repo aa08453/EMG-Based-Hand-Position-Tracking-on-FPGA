@@ -1,0 +1,19 @@
+{
+  "checkpoint": "/kaggle/input/notebooks/quddusikashaf/combined-v2-roformer-ablation/outputs/patch_both_prev0_K0_qat5_v2.pt",
+  "n_boot": 2000,
+  "n_folds": 5,
+  "summary": {
+    "within_subject": {
+      "fused R\u00b2 (mean over subjects)": 0.5241993606090546,
+      "fused R\u00b2 (std over subjects)": 0.06525262969168813,
+      "fused RMSE (mean)": 0.10268950834870338,
+      "abs-head R\u00b2 (mean)": 0.3689680278301239
+    },
+    "leave_subjects_out": {
+      "fused R\u00b2 (mean over subjects)": -1.206415870785713,
+      "fused R\u00b2 (std over subjects)": 1.0493898875013419,
+      "fused RMSE (mean)": 0.20965906381607055,
+      "abs-head R\u00b2 (mean)": -1.273164097033441
+    }
+  }
+}

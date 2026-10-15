@@ -1,6 +1,6 @@
 # sEMG-to-Finger-Angle Estimation on FPGA: Project Report
 
-Status as of 15 October 2026. This document records every approach tried so far, how data is processed, how the models are built and evaluated, what each costs in compute and memory, and what remains. It is written for someone joining the project with no prior context.
+Status as of 15 October 2026, including sessions 4 and 5. This document records every approach tried so far, how data is processed, how the models are built and evaluated, what each costs in compute and memory, and what remains. It is written for someone joining the project with no prior context.
 
 ---
 
@@ -13,7 +13,9 @@ The project estimates 10 finger-joint angles from 12 channels of surface EMG (sE
 | Chosen model | Patch-embedding RoFormer, 1 encoder layer, absolute-angle head plus angle-delta head, 147,476 parameters |
 | Compute per inference | 3.75 M multiply-accumulates (MACs), 10× fewer than the original design |
 | Post-processing | Per-joint constant-gain Kalman filter fusing the two heads |
-| Deployable accuracy | R² 0.667, RMSE 0.103 (normalised angle units), 10 subjects, repetition-held-out split |
+| Deployable accuracy | Pooled over 10 subjects: R² 0.668 [0.650, 0.683], RMSE 0.103 (normalised units), repetition-held-out split. Per subject: R² 0.44 to 0.62, mean 0.52 |
+| New users | Not supported yet: leave-subjects-out RMSE doubles to 0.21 and R² is negative for 9 of 10 subjects |
+| Longer window | 200 ms windows give a small, consistent gain over 100 ms at the same 50 ms step: RMSE −0.0023, better in 9 of 10 subjects |
 | Fixed-point export | Verified: existing HLS layer functions reproduce the golden model at cosine ≥ 0.997 |
 | Hardware | HLS rewritten for the chosen model and verified bit-accurately in C simulation (all layers cosine ≥ 0.998). Estimated 9.3 ms per inference against a 25 ms budget. Not yet synthesised |
 
@@ -54,8 +56,8 @@ All accuracy figures are in **normalised angle units**: each joint is scaled to 
 | 5. Session 2 (Oct 12) | Trained the chosen configuration with QAT and exported to HLS | R² 0.673 with true-angle seed. Export verified |
 | 6. Session 3 (Oct 13) | Evaluation only: deployable seeding and a smoothing-only baseline | R² 0.667 deployable. 83 % of the fusion gain is smoothing, 17 % the delta head |
 | 7. HLS v2 (Oct 15) | HLS rewritten for the chosen model: strided embedding, 16-bit residual type, second head, flattened and unrolled MAC loops, rounding and saturation. Bit-accurate C simulation using Xilinx's open-source `ap_fixed` headers. Firmware fuses the two heads | C model matches the numpy fixed-point reference to 0.0004. Estimated 9.3 ms per inference. Old HLS code with the new weights scored cosine −0.06 bit-accurately |
-| 8. Session 4 (prepared) | Notebook 06: per-subject bootstrap confidence intervals, 5-fold leave-subjects-out | Not yet run |
-| 9. Window study (prepared) | Notebook 07: 200 ms windows with a 50 ms step, against a 100 ms control scored on the same test windows | Not yet run |
+| 8. Session 4 (Oct 15) | Notebook 06: per-subject bootstrap confidence intervals, 5-fold leave-subjects-out | Delta-head gain holds in 8 of 10 subjects. The model does not generalise to unseen subjects |
+| 9. Session 5 (Oct 15) | Notebook 07: 200 ms windows with a 50 ms step, against a 100 ms control scored on the same test windows | 200 ms with 25 tokens: R² 0.688 against 0.678 for the control. 200 ms with 50 tokens: no gain |
 
 ---
 
@@ -319,6 +321,69 @@ Conclusions:
 - The split is within-subject. The same people are in training and test, so this does not demonstrate generalisation to new users.
 - RMSE is not in degrees.
 
+### 9.5 Session 4: per subject, with confidence intervals
+
+The session-2 model, evaluated sequentially and seeded from the model, per subject. Intervals are 95 % cluster bootstraps that resample whole test runs, 80 runs per subject.
+
+| Subject | Absolute head R² | Smoothed R² | Fused R² [95 % CI] | Fused RMSE | Delta-head gain [95 % CI] |
+|---|---|---|---|---|---|
+| DB2_s1 | 0.459 | 0.570 | 0.620 [0.585, 0.647] | 0.109 | 0.0087 [0.0069, 0.0106] |
+| DB2_s10 | 0.431 | 0.532 | 0.551 [0.488, 0.596] | 0.104 | 0.0027 [0.0015, 0.0038] |
+| DB2_s11 | 0.257 | 0.427 | 0.442 [0.292, 0.523] | 0.084 | 0.0016 [0.0002, 0.0031] |
+| DB2_s12 | 0.367 | 0.513 | 0.538 [0.472, 0.589] | 0.095 | 0.0029 [0.0015, 0.0044] |
+| DB2_s13 | 0.385 | 0.542 | 0.579 [0.526, 0.616] | 0.104 | 0.0053 [0.0030, 0.0076] |
+| DB2_s14 | 0.276 | 0.431 | 0.453 [0.362, 0.534] | 0.092 | 0.0020 [0.0010, 0.0032] |
+| DB2_s15 | 0.325 | 0.465 | 0.459 [0.382, 0.519] | 0.112 | −0.0002 [−0.0018, 0.0013] |
+| DB2_s16 | 0.315 | 0.442 | 0.466 [0.413, 0.506] | 0.109 | 0.0026 [0.0014, 0.0038] |
+| DB2_s17 | 0.471 | 0.595 | 0.600 [0.548, 0.637] | 0.101 | 0.0009 [−0.0004, 0.0022] |
+| DB2_s18 | 0.402 | 0.499 | 0.534 [0.493, 0.568] | 0.119 | 0.0051 [0.0039, 0.0063] |
+| **Pooled** | 0.555 | 0.648 | **0.668 [0.650, 0.683]** | **0.103** | **0.0032 [0.0027, 0.0038]** |
+
+Conclusions:
+
+- **The delta head's gain is real but small.** It is positive in 9 of 10 subjects, and its interval excludes zero in 8. Smoothing contributes about four times as much, 0.0136 RMSE.
+- **Pooled R² is higher than any single subject's R².** RMSE is about 0.10 in both views. Pooled R² divides by the variance of all subjects together, which includes differences between subjects. Per-subject R² divides by one subject's variance only. Quote per-subject R², mean 0.52 ± 0.07, beside the pooled figure.
+
+### 9.6 Session 4: leave-subjects-out
+
+Five folds. Each trains on 8 subjects and tests on the held-out repetitions of the other 2. The held-out subjects are normalised with their own training repetitions, as a short calibration recording would allow, but the model is not retrained.
+
+| | Within-subject | Leave-subjects-out |
+|---|---|---|
+| Fused RMSE, mean over subjects | 0.103 | 0.210 |
+| Fused R², mean over subjects | 0.52 | −1.21 |
+| Subjects with R² > 0 | 10 of 10 | 1 of 10 |
+
+The model does not transfer to unseen subjects. Negative R² means it is worse than predicting each subject's average pose. This is common for sEMG without per-user adaptation, because electrode placement, anatomy and glove fit differ between people. Fine-tuning on a few repetitions from the new user is the standard remedy and has not been tried yet.
+
+### 9.7 Session 5: 200 ms windows
+
+New preprocessing: 400-sample (200 ms) windows with a 100-sample (50 ms) step, about 42,900 windows per subject. All three models are float, with no QAT, and have the Kalman filter re-tuned for the 50 ms step. The control uses the last 100 ms of each window, so every model is scored on windows ending at the same samples.
+
+| Model | Window | Tokens | MACs | Absolute head R² | Fused R² [95 % CI] | Fused RMSE |
+|---|---|---|---|---|---|---|
+| Control | 100 ms | 25 | 3.75 M | 0.568 | 0.678 [0.659, 0.692] | 0.1015 |
+| **`w200ms_patch16_t25`** | **200 ms** | **25** | **4.05 M** | **0.603** | **0.688 [0.669, 0.703]** | **0.0993** |
+| `w200ms_patch8_t50` | 200 ms | 50 | 7.81 M | 0.598 | 0.667 [0.649, 0.683] | 0.1030 |
+
+Paired against the control, subject by subject:
+
+| Model | Mean RMSE change | Subjects improved | 95 % CI of the mean change |
+|---|---|---|---|
+| `w200ms_patch16_t25` | −0.0023 | 9 of 10 | [−0.0035, −0.0011] |
+| `w200ms_patch8_t50` | +0.0014 | 3 of 10 | [−0.0006, +0.0033] |
+
+The interval comes from resampling subjects.
+
+Conclusions:
+
+- **A longer window helps the absolute head most.** Its R² rises by 0.035, but fusion already integrates over time, so the fused gain is smaller: 2.3 % RMSE.
+- **The gain is consistent across subjects.** The pooled intervals overlap, but the paired comparison is decisive.
+- **Finer tokens do not help.** The 50-token model doubles the compute for no benefit.
+- **Hardware cost is small.** The 25-token model adds 8 % MACs and 12 k parameters. In the HLS it only changes three constants in `config.h`: `RAW_SEQ_LEN` to 400, and `KERNEL_SIZE` and `CONV_STRIDE` to 16.
+- **The trade-off is the update rate.** A 50 ms step gives 20 outputs per second, against 40 with the current 25 ms step. Whether 20 Hz is fast enough depends on the application.
+- **Not directly comparable with session 3.** Session 3 used a 25 ms step and different test windows.
+
 ---
 
 ## 10. Hardware
@@ -464,7 +529,9 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 5. **Separate smoothing from model skill.** Compare fusion against a smoothing-only baseline before crediting a new head.
 6. **Keep one source of truth for configuration.** Regenerate golden dumps and HIL samples from the deployed checkpoint every time.
 7. **Kaggle sessions are capped at 12 hours.** Keep grids to about three configurations per session. Click "Save Version", or the output folder is lost.
-8. **Secrets.** The original baseline notebook contains a plaintext Weights & Biases API key. It should be revoked. The new scripts read the key from a Kaggle secret named `wandb_key`.
+8. **Report per-subject metrics beside pooled ones.** Pooled R² over several subjects counts between-subject differences as explained variance. Here it read 0.67 while the per-subject mean was 0.52.
+9. **Check the accelerator before a long run.** Session 4 ran on the CPU because the GPU was not switched on. It finished, but took 9.3 hours instead of about 3.
+10. **Secrets.** The original baseline notebook contains a plaintext Weights & Biases API key. It should be revoked. The new scripts read the key from a Kaggle secret named `wandb_key`.
 
 ---
 
@@ -473,8 +540,8 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | Priority | Task |
 |---|---|
 | 1 | Synthesise the v2 HLS in Vitis (`vitis_workspace/transformer`), commit the utilisation and timing reports, run co-simulation, then rebuild the block design and measure latency on the board |
-| 2 | Run notebook 06 (session 4): per-subject bootstrap confidence intervals and 5-fold leave-subjects-out |
-| 2b | Run notebook 07: does a 200 ms window improve on 100 ms? Compare with its own 100 ms control, not with session 3 |
+| 2 | Decide the step: keep 100 ms windows at 25 ms (40 Hz output), or adopt `w200ms_patch16_t25` at 50 ms (20 Hz, 2.3 % lower RMSE). If adopting it, fine-tune with QAT, export, and change the three `config.h` constants |
+| 2b | New-user calibration: fine-tune a leave-subjects-out model on 1 to 4 training repetitions of the held-out subject, and measure how much within-subject accuracy is recovered |
 | 3 | Convert normalised RMSE to degrees using glove calibration |
 | 4 | Port the causal filter and μ-law normalisation to the ARM firmware using `normalization_constants.h`. The fusion update is already in the firmware |
 | 5 | Replace UART with a faster host link if live streaming is required |

@@ -1118,13 +1118,25 @@ def per_subject_eval(model: 'EMGRoFormer', npz_files: Sequence[str], cfg: Config
         point = {k: _agg_metrics([r[k] for r in flat]) for k in names}
         for k in names:
             row[f'{k}_rmse'], row[f'{k}_r2'] = point[k]
-        boots = {k: [] for k in ('kalman_rmse', 'kalman_r2', 'delta_gain', 'smooth_gain')}
-        for _ in range(n_boot):
-            res = [g[i] for g in groups for i in rng.randint(0, len(g), len(g))]
-            m = {k: _agg_metrics([r[k] for r in res]) for k in names}
-            boots['kalman_rmse'].append(m['kalman'][0]); boots['kalman_r2'].append(m['kalman'][1])
-            boots['delta_gain'].append(m['abs_smoothed'][0] - m['kalman'][0])
-            boots['smooth_gain'].append(m['abs_only'][0] - m['abs_smoothed'][0])
+        # Vectorised cluster bootstrap: a (n_boot x runs) count matrix, resampling runs inside each group
+        # (stratum), then every statistic is a matrix product. Same estimator as resampling lists of runs.
+        sizes = [len(g) for g in groups]; R = sum(sizes)
+        counts = np.zeros((n_boot, R))
+        off = 0
+        for sz in sizes:
+            idx = off + rng.randint(0, sz, (n_boot, sz))
+            np.add.at(counts, (np.arange(n_boot)[:, None], idx), 1.0)
+            off += sz
+        boot = {}
+        for k in names:
+            n = np.array([r[k]['n'] for r in flat], dtype=np.float64)
+            sse = np.stack([r[k]['sse'] for r in flat]); sy = np.stack([r[k]['sy'] for r in flat]); syy = np.stack([r[k]['syy'] for r in flat])
+            N = counts @ n; SSE = counts @ sse; SY = counts @ sy; SYY = counts @ syy
+            SST = np.maximum(SYY - SY ** 2 / N[:, None], 1e-12)
+            boot[k] = (np.sqrt(SSE.sum(1) / (N * sse.shape[1])), np.mean(1.0 - SSE / SST, axis=1))
+        boots = {'kalman_rmse': boot['kalman'][0], 'kalman_r2': boot['kalman'][1],
+                 'delta_gain': boot['abs_smoothed'][0] - boot['kalman'][0],
+                 'smooth_gain': boot['abs_only'][0] - boot['abs_smoothed'][0]}
         row['delta_gain'] = point['abs_smoothed'][0] - point['kalman'][0]
         row['smooth_gain'] = point['abs_only'][0] - point['abs_smoothed'][0]
         for k, v in boots.items():
@@ -1140,6 +1152,23 @@ def per_subject_eval(model: 'EMGRoFormer', npz_files: Sequence[str], cfg: Config
     if tag:
         df.insert(0, 'setting', tag)
     return df
+
+
+def hw_cost(cfg: Config, model: Optional['EMGRoFormer'] = None, weight_bits: int = 10,
+            bram_mbit: float = 4.9, weight_budget_mbit: float = 3.5) -> dict:
+    """Hardware cost of a configuration on the Zynq-7020 (xc7z020): parameters, MACs, weight ROM size at
+    `weight_bits` per parameter, and a latency estimate for the v2 HLS (dense MACs / MAC_UNROLL plus about
+    0.1 M cycles of fixed overhead at 25 tokens, 100 MHz). `fits_on_chip` keeps weights under
+    `weight_budget_mbit` of the 4.9 Mbit block RAM, leaving room for activations. Estimates, not synthesis."""
+    params = count_params(model) if model is not None else count_params(EMGRoFormer(cfg))
+    macs = estimate_macs(cfg)['total']
+    overhead = 0.1e6 * cfg.num_layers * cfg.num_tokens / 25
+    out = {'params': params, 'MACs_M': macs / 1e6, 'weights_mbit': params * weight_bits / 1e6}
+    for u in (4, 8):
+        out[f'latency_ms_U{u}'] = (macs / u + overhead) / 1e5
+    out['fits_on_chip'] = out['weights_mbit'] <= weight_budget_mbit
+    out['hls_supported'] = cfg.num_layers == 1      # the v2 HLS implements one encoder layer
+    return out
 
 
 def subject_folds(npz_files: Sequence[str], n_folds: int) -> List[List[str]]:

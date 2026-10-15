@@ -1,0 +1,168 @@
+8.2s 1 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+8.2s 2 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+8.2s 3 0.00s - to python to disable frozen modules.
+8.2s 4 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+9.0s 5 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+9.0s 6 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+9.0s 7 0.00s - to python to disable frozen modules.
+9.0s 8 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+16.6s 9 torch 2.11.0+cpu | cuda False | emg_common /kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py
+17.0s 10 10 subjects: ['DB2_s1', 'DB2_s10', 'DB2_s11', 'DB2_s12', 'DB2_s13', 'DB2_s14', 'DB2_s15', 'DB2_s16', 'DB2_s17', 'DB2_s18']
+17.5s 11 checkpoint /kaggle/input/notebooks/quddusikashaf/combined-v2-roformer-ablation/outputs/patch_both_prev0_K0_qat5_v2.pt | phase qat
+2341.8s 12 delta head helps in 9 of 10 subjects; CI excludes zero (gain > 0) in 8; pooled gain 0.0032 [0.0027, 0.0038]
+2343.1s 13 fold checkpoints available for reuse: []
+2343.1s 14 [fold0] test subjects: ['DB2_s1', 'DB2_s14']  train subjects: 8
+2381.9s 15 checkpoint selection on: val_abs
+2381.9s 16 [loso_patch_both_fold0] params=147,476 tokens=25 train_batches=4230 val_batches=3452 MACs=3,746,560
+2641.0s 17 float ep   1 train 2.39631 val 1.56757 abs=0.5930 abs_rmse=0.1189 delta=0.9745 (253s)
+2892.8s 18 float ep   2 train 2.12197 val 1.46218 abs=0.5150 abs_rmse=0.1100 delta=0.9472 (252s)
+3145.0s 19 float ep   3 train 2.02036 val 1.44703 abs=0.5286 abs_rmse=0.1119 delta=0.9184 (252s)
+3399.1s 20 float ep   4 train 1.95751 val 1.39393 abs=0.4831 abs_rmse=0.1070 delta=0.9108 (254s)
+3659.6s 21 float ep   5 train 1.91662 val 1.38067 abs=0.4796 abs_rmse=0.1063 delta=0.9010 (261s)
+3915.5s 22 float ep   6 train 1.88916 val 1.38223 abs=0.4826 abs_rmse=0.1073 delta=0.8996 (256s)
+4172.8s 23 float ep   7 train 1.86549 val 1.39350 abs=0.4916 abs_rmse=0.1085 delta=0.9019 (257s)
+4430.3s 24 float ep   8 train 1.84897 val 1.37042 abs=0.4744 abs_rmse=0.1058 delta=0.8961 (257s)
+4689.1s 25 float ep   9 train 1.83251 val 1.36795 abs=0.4716 abs_rmse=0.1064 delta=0.8963 (259s)
+4948.5s 26 float ep  10 train 1.81854 val 1.35968 abs=0.4690 abs_rmse=0.1056 delta=0.8907 (259s)
+5206.5s 27 float ep  11 train 1.80667 val 1.36295 abs=0.4838 abs_rmse=0.1084 delta=0.8791 (258s)
+5467.2s 28 float ep  12 train 1.79453 val 1.36887 abs=0.4924 abs_rmse=0.1091 delta=0.8764 (261s)
+5733.1s 29 float ep  13 train 1.78642 val 1.38628 abs=0.5060 abs_rmse=0.1108 delta=0.8803 (266s)
+5995.4s 30 float ep  14 train 1.77770 val 1.32914 abs=0.4538 abs_rmse=0.1035 delta=0.8753 (262s)
+6254.5s 31 float ep  15 train 1.76714 val 1.33368 abs=0.4582 abs_rmse=0.1047 delta=0.8755 (259s)
+6514.9s 32 float ep  16 train 1.75995 val 1.37022 abs=0.4904 abs_rmse=0.1085 delta=0.8798 (260s)
+6775.2s 33 float ep  17 train 1.75178 val 1.35814 abs=0.4855 abs_rmse=0.1087 delta=0.8726 (260s)
+7034.0s 34 float ep  18 train 1.74381 val 1.34762 abs=0.4774 abs_rmse=0.1073 delta=0.8702 (259s)
+7292.5s 35 float ep  19 train 1.70581 val 1.34992 abs=0.4837 abs_rmse=0.1076 delta=0.8662 (258s)
+7553.4s 36 float ep  20 train 1.69857 val 1.36179 abs=0.4968 abs_rmse=0.1095 delta=0.8650 (261s)
+7816.6s 37 float ep  21 train 1.69617 val 1.35725 abs=0.4918 abs_rmse=0.1095 delta=0.8654 (263s)
+8077.2s 38 float ep  22 train 1.69121 val 1.35800 abs=0.4930 abs_rmse=0.1098 delta=0.8650 (260s)
+8077.2s 39 early stop (float)
+8540.7s 40 subject  kalman_rmse  kalman_r2  abs_only_r2  delta_gain
+8540.7s 41 DB2_s1       0.1673     0.1395      -0.0102      0.0042
+8540.7s 42 DB2_s14       0.2372    -2.9224      -2.7545     -0.0124
+8540.7s 43 [fold1] test subjects: ['DB2_s10', 'DB2_s15']  train subjects: 8
+8582.4s 44 checkpoint selection on: val_abs
+8582.4s 45 [loso_patch_both_fold1] params=147,476 tokens=25 train_batches=4242 val_batches=3454 MACs=3,746,560
+8846.1s 46 float ep   1 train 2.29055 val 1.51095 abs=0.5472 abs_rmse=0.1190 delta=0.9637 (264s)
+9109.0s 47 float ep   2 train 2.02149 val 1.42257 abs=0.4805 abs_rmse=0.1112 delta=0.9420 (263s)
+9369.4s 48 float ep   3 train 1.92309 val 1.39606 abs=0.4796 abs_rmse=0.1114 delta=0.9165 (260s)
+9641.5s 49 float ep   4 train 1.86618 val 1.36450 abs=0.4701 abs_rmse=0.1102 delta=0.8944 (272s)
+9905.0s 50 float ep   5 train 1.82836 val 1.33706 abs=0.4510 abs_rmse=0.1077 delta=0.8860 (263s)
+10162.4s 51 float ep   6 train 1.80114 val 1.34471 abs=0.4645 abs_rmse=0.1095 delta=0.8802 (257s)
+10422.6s 52 float ep   7 train 1.78055 val 1.30409 abs=0.4306 abs_rmse=0.1053 delta=0.8735 (260s)
+10684.7s 53 float ep   8 train 1.76434 val 1.30914 abs=0.4399 abs_rmse=0.1061 delta=0.8692 (262s)
+10942.5s 54 float ep   9 train 1.74901 val 1.33573 abs=0.4648 abs_rmse=0.1088 delta=0.8709 (258s)
+11200.1s 55 float ep  10 train 1.73574 val 1.31247 abs=0.4348 abs_rmse=0.1063 delta=0.8776 (258s)
+11461.4s 56 float ep  11 train 1.72300 val 1.29043 abs=0.4250 abs_rmse=0.1045 delta=0.8654 (261s)
+11726.8s 57 float ep  12 train 1.71173 val 1.31739 abs=0.4494 abs_rmse=0.1083 delta=0.8680 (265s)
+11986.0s 58 float ep  13 train 1.70268 val 1.29889 abs=0.4360 abs_rmse=0.1058 delta=0.8629 (259s)
+12246.2s 59 float ep  14 train 1.69314 val 1.33812 abs=0.4720 abs_rmse=0.1109 delta=0.8661 (260s)
+12501.7s 60 float ep  15 train 1.68457 val 1.32526 abs=0.4639 abs_rmse=0.1098 delta=0.8614 (256s)
+12755.6s 61 float ep  16 train 1.64293 val 1.29588 abs=0.4430 abs_rmse=0.1072 delta=0.8529 (254s)
+13014.6s 62 float ep  17 train 1.63585 val 1.29871 abs=0.4527 abs_rmse=0.1086 delta=0.8460 (259s)
+13269.4s 63 float ep  18 train 1.63136 val 1.27314 abs=0.4275 abs_rmse=0.1054 delta=0.8457 (255s)
+13527.9s 64 float ep  19 train 1.62618 val 1.30842 abs=0.4571 abs_rmse=0.1099 delta=0.8513 (258s)
+13527.9s 65 early stop (float)
+13995.6s 66 subject  kalman_rmse  kalman_r2  abs_only_r2  delta_gain
+13995.6s 67 DB2_s10       0.2104    -0.7530      -0.8943      0.0010
+13995.6s 68 DB2_s15       0.1741    -0.2959      -0.5201      0.0019
+13995.6s 69 [fold2] test subjects: ['DB2_s11', 'DB2_s16']  train subjects: 8
+14036.4s 70 checkpoint selection on: val_abs
+14036.4s 71 [loso_patch_both_fold2] params=147,476 tokens=25 train_batches=4099 val_batches=3445 MACs=3,746,560
+14289.7s 72 float ep   1 train 2.37577 val 1.54134 abs=0.5778 abs_rmse=0.1212 delta=0.9636 (253s)
+14548.2s 73 float ep   2 train 2.10100 val 1.45439 abs=0.5245 abs_rmse=0.1161 delta=0.9299 (258s)
+14799.5s 74 float ep   3 train 1.99687 val 1.41611 abs=0.5025 abs_rmse=0.1128 delta=0.9136 (251s)
+15053.7s 75 float ep   4 train 1.93309 val 1.39165 abs=0.4922 abs_rmse=0.1118 delta=0.8995 (254s)
+15306.1s 76 float ep   5 train 1.89340 val 1.33565 abs=0.4585 abs_rmse=0.1081 delta=0.8771 (252s)
+15556.3s 77 float ep   6 train 1.86323 val 1.35560 abs=0.4767 abs_rmse=0.1106 delta=0.8789 (250s)
+15808.8s 78 float ep   7 train 1.84106 val 1.33239 abs=0.4620 abs_rmse=0.1087 delta=0.8704 (253s)
+16066.2s 79 float ep   8 train 1.82198 val 1.32379 abs=0.4630 abs_rmse=0.1088 delta=0.8608 (257s)
+16322.1s 80 float ep   9 train 1.80408 val 1.32524 abs=0.4602 abs_rmse=0.1092 delta=0.8650 (256s)
+16573.7s 81 float ep  10 train 1.79100 val 1.33110 abs=0.4752 abs_rmse=0.1107 delta=0.8559 (252s)
+16831.2s 82 float ep  11 train 1.77779 val 1.31663 abs=0.4577 abs_rmse=0.1083 delta=0.8590 (258s)
+17107.3s 83 float ep  12 train 1.76577 val 1.34721 abs=0.4821 abs_rmse=0.1125 delta=0.8651 (276s)
+17411.4s 84 float ep  13 train 1.75550 val 1.34582 abs=0.4840 abs_rmse=0.1120 delta=0.8618 (304s)
+17707.3s 85 float ep  14 train 1.74522 val 1.34041 abs=0.4890 abs_rmse=0.1125 delta=0.8514 (296s)
+18031.9s 86 float ep  15 train 1.73771 val 1.34948 abs=0.4993 abs_rmse=0.1141 delta=0.8502 (325s)
+18278.1s 87 float ep  16 train 1.69378 val 1.29399 abs=0.4527 abs_rmse=0.1080 delta=0.8413 (246s)
+18522.8s 88 float ep  17 train 1.68700 val 1.31744 abs=0.4748 abs_rmse=0.1109 delta=0.8427 (245s)
+18767.8s 89 float ep  18 train 1.68231 val 1.31807 abs=0.4789 abs_rmse=0.1114 delta=0.8392 (245s)
+19015.2s 90 float ep  19 train 1.67800 val 1.33058 abs=0.4894 abs_rmse=0.1127 delta=0.8411 (247s)
+19265.2s 91 float ep  20 train 1.67431 val 1.32747 abs=0.4894 abs_rmse=0.1138 delta=0.8381 (250s)
+19529.9s 92 float ep  21 train 1.65186 val 1.30001 abs=0.4682 abs_rmse=0.1107 delta=0.8318 (265s)
+19778.2s 93 float ep  22 train 1.64785 val 1.31510 abs=0.4786 abs_rmse=0.1117 delta=0.8365 (248s)
+20026.2s 94 float ep  23 train 1.64499 val 1.29685 abs=0.4644 abs_rmse=0.1097 delta=0.8325 (248s)
+20276.6s 95 float ep  24 train 1.64352 val 1.29150 abs=0.4607 abs_rmse=0.1093 delta=0.8308 (250s)
+20276.6s 96 early stop (float)
+20740.5s 97 subject  kalman_rmse  kalman_r2  abs_only_r2  delta_gain
+20740.5s 98 DB2_s11       0.2131    -2.8515      -3.5912      0.0225
+20740.5s 99 DB2_s16       0.1910    -0.5450      -0.7091      0.0025
+20740.5s 100 [fold3] test subjects: ['DB2_s12', 'DB2_s17']  train subjects: 8
+20782.1s 101 checkpoint selection on: val_abs
+20782.1s 102 [loso_patch_both_fold3] params=147,476 tokens=25 train_batches=4063 val_batches=3454 MACs=3,746,560
+21030.6s 103 float ep   1 train 2.36927 val 1.57270 abs=0.6115 abs_rmse=0.1252 delta=0.9612 (248s)
+21284.9s 104 float ep   2 train 2.10635 val 1.45712 abs=0.5208 abs_rmse=0.1143 delta=0.9363 (254s)
+21533.6s 105 float ep   3 train 2.00857 val 1.39482 abs=0.4790 abs_rmse=0.1089 delta=0.9158 (249s)
+21783.9s 106 float ep   4 train 1.94689 val 1.36097 abs=0.4603 abs_rmse=0.1073 delta=0.9007 (250s)
+22039.4s 107 float ep   5 train 1.90956 val 1.37911 abs=0.4842 abs_rmse=0.1107 delta=0.8949 (255s)
+22293.0s 108 float ep   6 train 1.88117 val 1.35618 abs=0.4668 abs_rmse=0.1087 delta=0.8894 (254s)
+22551.7s 109 float ep   7 train 1.85964 val 1.36383 abs=0.4763 abs_rmse=0.1105 delta=0.8875 (259s)
+22804.2s 110 float ep   8 train 1.84163 val 1.34434 abs=0.4691 abs_rmse=0.1095 delta=0.8752 (252s)
+23055.9s 111 float ep   9 train 1.82502 val 1.35120 abs=0.4684 abs_rmse=0.1095 delta=0.8828 (252s)
+23316.0s 112 float ep  10 train 1.81230 val 1.33243 abs=0.4568 abs_rmse=0.1074 delta=0.8757 (260s)
+23574.2s 113 float ep  11 train 1.79904 val 1.32884 abs=0.4572 abs_rmse=0.1077 delta=0.8716 (258s)
+23837.3s 114 float ep  12 train 1.78720 val 1.33585 abs=0.4636 abs_rmse=0.1086 delta=0.8722 (263s)
+24085.7s 115 float ep  13 train 1.77666 val 1.34926 abs=0.4817 abs_rmse=0.1112 delta=0.8676 (248s)
+24338.8s 116 float ep  14 train 1.76894 val 1.35136 abs=0.4837 abs_rmse=0.1116 delta=0.8677 (253s)
+24591.9s 117 float ep  15 train 1.76005 val 1.39017 abs=0.5186 abs_rmse=0.1157 delta=0.8716 (253s)
+24857.0s 118 float ep  16 train 1.71791 val 1.32176 abs=0.4626 abs_rmse=0.1087 delta=0.8591 (265s)
+25106.1s 119 float ep  17 train 1.70981 val 1.34039 abs=0.4801 abs_rmse=0.1105 delta=0.8603 (249s)
+25356.7s 120 float ep  18 train 1.70525 val 1.34452 abs=0.4868 abs_rmse=0.1122 delta=0.8577 (250s)
+25356.7s 121 early stop (float)
+25831.7s 122 subject  kalman_rmse  kalman_r2  abs_only_r2  delta_gain
+25831.7s 123 DB2_s12       0.2452    -1.8407      -1.4807     -0.0221
+25831.7s 124 DB2_s17       0.2390    -1.4230      -0.9446     -0.0271
+25831.7s 125 [fold4] test subjects: ['DB2_s13', 'DB2_s18']  train subjects: 8
+25874.4s 126 checkpoint selection on: val_abs
+25874.4s 127 [loso_patch_both_fold4] params=147,476 tokens=25 train_batches=4216 val_batches=3451 MACs=3,746,560
+26134.0s 128 float ep   1 train 2.28671 val 1.52039 abs=0.5493 abs_rmse=0.1150 delta=0.9711 (260s)
+26396.8s 129 float ep   2 train 2.02250 val 1.44250 abs=0.4933 abs_rmse=0.1094 delta=0.9492 (263s)
+26658.7s 130 float ep   3 train 1.93115 val 1.40646 abs=0.4823 abs_rmse=0.1083 delta=0.9242 (262s)
+26922.2s 131 float ep   4 train 1.87399 val 1.37879 abs=0.4583 abs_rmse=0.1059 delta=0.9205 (263s)
+27183.2s 132 float ep   5 train 1.83206 val 1.37540 abs=0.4707 abs_rmse=0.1088 delta=0.9047 (261s)
+27442.6s 133 float ep   6 train 1.80685 val 1.34307 abs=0.4410 abs_rmse=0.1032 delta=0.9021 (259s)
+27714.5s 134 float ep   7 train 1.78474 val 1.34544 abs=0.4537 abs_rmse=0.1062 delta=0.8917 (272s)
+27986.2s 135 float ep   8 train 1.76694 val 1.32876 abs=0.4406 abs_rmse=0.1040 delta=0.8881 (272s)
+28255.6s 136 float ep   9 train 1.75363 val 1.32277 abs=0.4385 abs_rmse=0.1043 delta=0.8843 (269s)
+28519.0s 137 float ep  10 train 1.74006 val 1.31992 abs=0.4366 abs_rmse=0.1030 delta=0.8834 (263s)
+28777.9s 138 float ep  11 train 1.72680 val 1.34240 abs=0.4525 abs_rmse=0.1060 delta=0.8899 (259s)
+29041.5s 139 float ep  12 train 1.71664 val 1.33361 abs=0.4500 abs_rmse=0.1052 delta=0.8836 (264s)
+29304.4s 140 float ep  13 train 1.70710 val 1.30337 abs=0.4235 abs_rmse=0.1015 delta=0.8799 (263s)
+29567.6s 141 float ep  14 train 1.69810 val 1.32979 abs=0.4549 abs_rmse=0.1062 delta=0.8749 (263s)
+29829.1s 142 float ep  15 train 1.68876 val 1.33791 abs=0.4663 abs_rmse=0.1084 delta=0.8716 (262s)
+30091.7s 143 float ep  16 train 1.67919 val 1.30839 abs=0.4330 abs_rmse=0.1037 delta=0.8753 (263s)
+30357.6s 144 float ep  17 train 1.67208 val 1.32339 abs=0.4501 abs_rmse=0.1060 delta=0.8733 (266s)
+30627.5s 145 float ep  18 train 1.63227 val 1.28417 abs=0.4170 abs_rmse=0.1013 delta=0.8672 (270s)
+30897.6s 146 float ep  19 train 1.62735 val 1.31884 abs=0.4545 abs_rmse=0.1061 delta=0.8644 (270s)
+31170.3s 147 float ep  20 train 1.62202 val 1.29933 abs=0.4341 abs_rmse=0.1034 delta=0.8653 (273s)
+31449.3s 148 float ep  21 train 1.61874 val 1.33609 abs=0.4749 abs_rmse=0.1085 delta=0.8612 (279s)
+31729.9s 149 float ep  22 train 1.61463 val 1.34508 abs=0.4735 abs_rmse=0.1082 delta=0.8715 (281s)
+32007.3s 150 float ep  23 train 1.59414 val 1.31579 abs=0.4543 abs_rmse=0.1066 delta=0.8615 (277s)
+32282.0s 151 float ep  24 train 1.59167 val 1.32396 abs=0.4608 abs_rmse=0.1069 delta=0.8631 (275s)
+32556.9s 152 float ep  25 train 1.59100 val 1.32414 abs=0.4607 abs_rmse=0.1068 delta=0.8634 (275s)
+32829.8s 153 float ep  26 train 1.58818 val 1.30402 abs=0.4415 abs_rmse=0.1043 delta=0.8625 (273s)
+32829.8s 154 early stop (float)
+33320.3s 155 subject  kalman_rmse  kalman_r2  abs_only_r2  delta_gain
+33320.3s 156 DB2_s13       0.2092    -1.0809      -1.3116     -0.0009
+33320.3s 157 DB2_s18       0.2100    -0.4912      -0.5153     -0.0017
+33328.3s 158 /usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+33328.3s 159 cells[i][c] = re.sub('\\\\\|', '|', cell)
+33328.5s 160 /usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+33328.5s 161 text = re.sub(r'_', '\_', text) # Escape underscores in display text
+33329.7s 162 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+33329.8s 163 [NbConvertApp] Writing 147488 bytes to __notebook__.ipynb
+33333.3s 164 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+33334.1s 165 [NbConvertApp] Support files will be in __results___files/
+33334.1s 166 [NbConvertApp] Making directory __results___files
+33334.1s 167 [NbConvertApp] Making directory __results___files
+33334.1s 168 [NbConvertApp] Writing 336963 bytes to __results__.html
