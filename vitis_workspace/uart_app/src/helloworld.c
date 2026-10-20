@@ -33,34 +33,38 @@ int init_uart();
 #define DDR_FPGA_OUT_ADDR 0x0C000000 // Where FPGA writes 16-bit fixed-point results
 #define DDR_UART_TX_ADDR  0x0C010000 // Where ARM writes 32-bit floats to send to PC
 
-// --- Conversion helpers (example for ap_fixed<16,8>) ---
-// CHANGE THESE TO MATCH YOUR data_t:
+// --- Conversion helpers for the IP's data_t = ap_fixed<TOTAL_BITS, INT_BITS> (one 16-bit word per value) ---
+// The format comes from normalization_constants.h (written by the same HLS export as the weights);
+// the defaults are the v2 model's ap_fixed<10,3>.
+#ifdef ACT_TOTAL_BITS
+#define TOTAL_BITS   ACT_TOTAL_BITS
+#define INT_BITS     ACT_INT_BITS
+#else
 #define TOTAL_BITS   10
 #define INT_BITS     3
-#define FRAC_BITS    (TOTAL_BITS - INT_BITS)  // = 7
+#endif
+#define FRAC_BITS    (TOTAL_BITS - INT_BITS)  // 7 for <10,3>
 
 int16_t float_to_fixed(float val) {
-    float scaled = val * (1 << FRAC_BITS);  // multiply by 128 for <10,3>
-    
-    // Clamp to representable range for a 10-bit signed number
-    // Max = 511, Min = -512
-    float max_val = 511.0f;
-    float min_val = -512.0f;
-    
+    float scaled = val * (1 << FRAC_BITS);
+
+    // Clamp to the representable range of a TOTAL_BITS signed number (511 / -512 for 10 bits)
+    float max_val = (float)((1 << (TOTAL_BITS - 1)) - 1);
+    float min_val = -(float)(1 << (TOTAL_BITS - 1));
+
     if (scaled > max_val) scaled = max_val;
     if (scaled < min_val) scaled = min_val;
-    
-    // FIX: Round to nearest integer before casting to prevent truncation bias
-    return (int16_t)roundf(scaled); 
+
+    // Round to nearest integer before casting to prevent truncation bias
+    return (int16_t)roundf(scaled);
 }
 
 float fixed_to_float(int16_t val) {
-    if (val & 0x0200) { 
-        // 0xFC00 in binary is 1111 1100 0000 0000
-        // This forces the top 6 padding bits to become 1s, restoring the negative sign.
-        val |= 0xFC00;  
+    if (val & (1 << (TOTAL_BITS - 1))) {
+        // Sign-extend: set the padding bits above TOTAL_BITS (0xFC00 for 10 bits)
+        val |= (int16_t)~((1 << TOTAL_BITS) - 1);
     }
-    
+
     return (float)val / (float)(1 << FRAC_BITS);
 }
 
@@ -80,15 +84,26 @@ XRoformer_top Model;    // Roformer instance
 #define UART_INT_IRQ_ID 82
 
 // --- System Sizing ---
+// Sizes and the fusion gain come from normalization_constants.h (HLS export of the installed model);
+// the fallbacks are the v2 model (100 ms windows, 25 ms step).
+#ifdef MODEL_IN_WORDS
+#define INPUT_FLOATS    MODEL_IN_WORDS  // 12 channels x MODEL_SEQ_LEN samples, channel-major
+#define IP_OUTPUTS      MODEL_OUT_WORDS // RoFormer_Top: [abs angle (10) | delta / DELTA_SCALE (10)]
+#else
 #define INPUT_FLOATS    2400
+#define IP_OUTPUTS      20
+#endif
 #define NUM_JOINTS      10
-#define IP_OUTPUTS      20              // RoFormer_Top v2: [abs angle (10) | delta / DELTA_SCALE (10)]
 #define OUTPUT_FLOATS   30              // sent to PC: [abs (10) | delta (10) | fused estimate (10)]
-#define FUSION_GAIN     0.056f          // constant-gain Kalman fusion, PROJECT_REPORT.md section 7
+#ifdef MODEL_FUSION_GAIN
+#define FUSION_GAIN     MODEL_FUSION_GAIN   // steady-state gain of the Kalman filter tuned for this model
+#else
+#define FUSION_GAIN     0.056f          // v2 model at 25 ms steps, PROJECT_REPORT.md section 7
+#endif
 #define EXPECTED_BYTES  (INPUT_FLOATS * sizeof(float))
 #define OUTPUT_BYTES    (OUTPUT_FLOATS * sizeof(float))
 
-// Fusion state, carried across consecutive windows (one window per 25 ms hop).
+// Fusion state, carried across consecutive windows (one window per step: MODEL_STRIDE samples).
 static float fused_est[NUM_JOINTS];
 static int   fused_valid = 0;
 

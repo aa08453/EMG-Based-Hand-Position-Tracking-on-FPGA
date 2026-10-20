@@ -116,7 +116,7 @@ class Config:
     resid_fmt: Tuple[int, int] = (16, 8)     # residual stream: branch outputs and pre-norm sums (FFN outputs reach |100|+)
     weight_fmt: Tuple[int, int] = (10, 3)
     rope_fmt: Tuple[int, int] = (8, 2)
-    export_weight_type: str = 'data_t'       # change to 'weight_t' after adding a typedef in types.h
+    export_weight_type: str = 'wrom_t'       # unused (kept so old checkpoints load); headers always use wrom_t (types.h)
 
     # ---- logging ----
     project_name: str = 'ninapro_db2_roformer'
@@ -472,21 +472,17 @@ class SequenceDataset(Dataset):
 def ordered_runs(npz_file: str, split: str) -> List[dict]:
     """Time-ordered contiguous runs of windows for sequential evaluation (no shuffling, no balancing)."""
     want = 0 if split == 'train' else 1
-    dd = np.load(npz_file)
-    idx = np.where(dd['split'] == want)[0]
-    runs, cur = [], [idx[0]] if len(idx) else []
-    for p, q in zip(idx[:-1], idx[1:]):
-        if dd['segment'][p] == dd['segment'][q] and dd['has_prev'][q] == 1 and q == p + 1:
-            cur.append(q)
-        else:
-            runs.append(cur); cur = [q]
-    if cur:
-        runs.append(cur)
-    out = []
-    for r in runs:
-        r = np.asarray(r)
-        out.append({k: dd[k][r] for k in ['sEMG', 'angles', 'angles_prev', 'delta_stride', 'restim', 'rep', 't_index']})
-    return out
+    # NpzFile decompresses an array on EVERY dd[key] access: read each array once (indexing dd[...] inside
+    # the loops below made sequential evaluation take about an hour per model).
+    with np.load(npz_file) as dd:
+        sp, seg, hp = dd['split'], dd['segment'], dd['has_prev']
+        idx = np.where(sp == want)[0]
+        data = {k: dd[k][idx] for k in ['sEMG', 'angles', 'angles_prev', 'delta_stride', 'restim', 'rep', 't_index']}
+    if not len(idx):
+        return []
+    brk = (seg[idx[1:]] != seg[idx[:-1]]) | (hp[idx[1:]] != 1) | (idx[1:] != idx[:-1] + 1)
+    bounds = np.concatenate([[0], np.where(brk)[0] + 1, [len(idx)]])
+    return [{k: v[a:b] for k, v in data.items()} for a, b in zip(bounds[:-1], bounds[1:])]
 
 
 # =====================================================================================
@@ -852,12 +848,17 @@ def load_checkpoint(path: str, device=None) -> Tuple[EMGRoFormer, Config, dict]:
     return model.to(device or 'cpu'), cfg, ck['extra']
 
 
-def train_model(cfg: Config, npz_files: Sequence[str], run=None, tag: str = '') -> Tuple[EMGRoFormer, dict]:
-    """Float training, optional QAT fine-tuning, early stopping on validation loss. Returns best model."""
+def train_model(cfg: Config, npz_files: Sequence[str], run=None, tag: str = '',
+                init_model: Optional[EMGRoFormer] = None) -> Tuple[EMGRoFormer, dict]:
+    """Float training, optional QAT fine-tuning, early stopping on the selection metric. Returns best model.
+    init_model: start from these (float) weights instead of a random init; with cfg.epochs=0 the float phase
+    is skipped, so cfg.qat_epochs > 0 QAT-fine-tunes an already trained model."""
     seed_everything(cfg.seed)
     device = get_device()
     os.makedirs(cfg.save_dir, exist_ok=True)
     model = EMGRoFormer(cfg).to(device)
+    if init_model is not None:
+        model.load_state_dict(init_model.state_dict())
     if hasattr(model, 'fc_delta'):
         model.set_delta_scale(delta_scale_from_train(npz_files))
     model.set_angle_var(angle_var_from_train(npz_files))
@@ -900,7 +901,8 @@ def train_model(cfg: Config, npz_files: Sequence[str], run=None, tag: str = '') 
                     print(f'  early stop ({phase})'); break
         model.load_state_dict(torch.load(ck_path, map_location=device)['state_dict'])
 
-    _fit(cfg.epochs, cfg.lr, 'float')
+    if cfg.epochs > 0:
+        _fit(cfg.epochs, cfg.lr, 'float')
     if cfg.qat_epochs > 0:
         convert_to_qat(model, cfg); model.to(device)
         _fit(cfg.qat_epochs, cfg.qat_lr, 'qat')
@@ -975,6 +977,13 @@ def kalman_fuse(delta: np.ndarray, abs_pred: np.ndarray, start: np.ndarray, q: f
             x = np.clip(x, *clamp)
         out[t] = x
     return out.astype(np.float32)
+
+
+def kalman_gain(q: float, r: float) -> float:
+    """Steady-state gain of kalman_fuse's scalar filter: the constant K the firmware uses
+    (est += delta; est += K * (abs - est)). Solves P = (P + q) r / (P + q + r)."""
+    p = (-q + math.sqrt(q * q + 4 * q * r)) / 2          # prior variance minus q at steady state
+    return float((p + q) / (p + q + r))
 
 
 def fixed_point_integrate(delta: np.ndarray, start: np.ndarray, frac_bits: int, rounding: str = 'floor') -> np.ndarray:
@@ -1154,20 +1163,38 @@ def per_subject_eval(model: 'EMGRoFormer', npz_files: Sequence[str], cfg: Config
     return df
 
 
-def hw_cost(cfg: Config, model: Optional['EMGRoFormer'] = None, weight_bits: int = 10,
+def hls_unsupported(cfg: Config) -> List[str]:
+    """Reasons the HLS in hls_code/ cannot implement this configuration (empty list = supported).
+    The HLS loops over NUM_LAYERS identical encoder layers; LayerNorm and the attention scale use shifts
+    that assume D_MODEL=128 and HEAD_DIM=16."""
+    why = []
+    if cfg.d_model != 128: why.append('d_model != 128')
+    if cfg.head_dim != 16: why.append('head_dim != 16')
+    if not cfg.use_attention: why.append('no attention')
+    if cfg.causal: why.append('causal attention')
+    if cfg.norm != 'layernorm': why.append('rmsnorm')
+    if cfg.pooling != 'mean': why.append('last-token pooling')
+    if cfg.cond_prev: why.append('cond_prev input')
+    if cfg.heads == 'delta': why.append('no absolute head')
+    return why
+
+
+def hw_cost(cfg: Config, model: Optional['EMGRoFormer'] = None, weight_bits: Optional[int] = None,
             bram_mbit: float = 4.9, weight_budget_mbit: float = 3.5) -> dict:
     """Hardware cost of a configuration on the Zynq-7020 (xc7z020): parameters, MACs, weight ROM size at
-    `weight_bits` per parameter, and a latency estimate for the v2 HLS (dense MACs / MAC_UNROLL plus about
-    0.1 M cycles of fixed overhead at 25 tokens, 100 MHz). `fits_on_chip` keeps weights under
-    `weight_budget_mbit` of the 4.9 Mbit block RAM, leaving room for activations. Estimates, not synthesis."""
+    `weight_bits` per parameter (default: cfg.weight_fmt), and a latency estimate for the HLS (dense MACs /
+    MAC_UNROLL plus about 0.1 M cycles of fixed overhead per layer at 25 tokens, 100 MHz). `fits_on_chip`
+    keeps weights under `weight_budget_mbit` of the 4.9 Mbit block RAM, leaving room for activations.
+    Estimates, not synthesis."""
+    weight_bits = weight_bits or int(cfg.weight_fmt[0])
     params = count_params(model) if model is not None else count_params(EMGRoFormer(cfg))
     macs = estimate_macs(cfg)['total']
     overhead = 0.1e6 * cfg.num_layers * cfg.num_tokens / 25
-    out = {'params': params, 'MACs_M': macs / 1e6, 'weights_mbit': params * weight_bits / 1e6}
+    out = {'params': params, 'MACs_M': macs / 1e6, 'weight_bits': weight_bits, 'weights_mbit': params * weight_bits / 1e6}
     for u in (4, 8):
         out[f'latency_ms_U{u}'] = (macs / u + overhead) / 1e5
     out['fits_on_chip'] = out['weights_mbit'] <= weight_budget_mbit
-    out['hls_supported'] = cfg.num_layers == 1      # the v2 HLS implements one encoder layer
+    out['hls_supported'] = not hls_unsupported(cfg)
     return out
 
 
@@ -1345,15 +1372,23 @@ def _write_header_array(f, ctype, name, values, per_line=8, suffix=''):
 
 def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarray, sample_prev: Optional[np.ndarray],
                hil_windows: Sequence[Tuple[np.ndarray, np.ndarray, int, int]] = (),
-               norm_stats: Optional[dict] = None) -> dict:
+               norm_stats: Optional[dict] = None, fusion_gain: Optional[float] = None) -> dict:
     """Writes everything the HLS project consumes, all derived from ONE checkpoint:
       verification_data/*.txt   golden intermediates on a REAL window + float weights (full_*.txt)
-      weights/*.h               quantised weight headers (names identical to the existing HLS)
-      rope_tables.h, config.h, results.h, input_output.h, types_suggested.h
+      weights/*.h               quantised weight headers: conv1d_weights.h, encoder_weights.h (every layer's
+                                arrays stacked, layer-major), fc_weights.h, results.h, input_output.h
+      model_config.h            model dimensions and fixed-point formats (hls_code/config.h includes it)
+      rope_tables.h
       hil_verification_samples/ real windows + float-model outputs + manifest
-      normalization_constants.{json,h}  per-channel EMG scale, glove min/max, mu, causal SOS filter
-    sample_x: [C, seq_len] channel-major real input. Returns the fixed-point simulation error report."""
-    assert cfg.num_layers == 1, 'HLS currently implements NUM_LAYERS=1'
+      normalization_constants.{json,h}  per-channel EMG scale, glove min/max, mu, causal SOS filter, I/O sizes
+    Install into hls_code/ with hls_code/scripts/install_export.py.
+    sample_x: [C, >= seq_len] channel-major real input (the last seq_len samples are used).
+    fusion_gain: steady-state gain of the tuned Kalman filter (kalman_gain(q, r)); written for the firmware.
+    Returns the fixed-point simulation error report."""
+    why = hls_unsupported(cfg)
+    assert not why, f'the HLS cannot implement this model: {why}'
+    sample_x = crop_last(np.asarray(sample_x), cfg.seq_len, axis=1)
+    hil_windows = [(crop_last(np.asarray(xw), cfg.seq_len, axis=1), pw, a, b) for xw, pw, a, b in hil_windows]
     model = model.cpu().eval()
     # self-check against a float twin (a QAT model fake-quantises in forward, the numpy reference is float)
     float_model = EMGRoFormer(cfg); float_model.load_state_dict(model.state_dict()); float_model.eval()
@@ -1380,24 +1415,35 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
         _write_txt(os.path.join(vd, f'full_{k}.txt'), v)
     delta_scale = w.pop('delta_scale', None)
 
-    # --- quantised weight headers (same array names as hls_code/weights/*.h) ---
-    wt = cfg.export_weight_type
+    # --- fixed-point simulation of the same window (what a correct HLS build reproduces almost exactly) ---
+    Qa = lambda a: quantise_array(a, cfg.act_fmt)
+    Qr = lambda a: quantise_array(a, cfg.resid_fmt)
+    wq = {k: quantise_array(v, cfg.weight_fmt) for k, v in w.items()}
+    if delta_scale is not None:
+        wq['delta_scale'] = delta_scale
+    fx = numpy_forward(wq, cfg, sample_x, sample_prev, Q=Qa, rope_fmt=cfg.rope_fmt, Qr=Qr)
+
+    # --- quantised weight headers. Encoder arrays hold all layers, layer-major: enc_q_w[l*D*D + o*D + i] ---
+    L = cfg.num_layers
+    stack = lambda key: np.concatenate([np.asarray(w[f'l{li}_{key}']).ravel() for li in range(L)])
+    enc = [('enc_q_w', 'mha_q_w'), ('enc_k_w', 'mha_k_w'), ('enc_v_w', 'mha_v_w'), ('enc_o_w', 'mha_o_w'),
+           ('enc_q_b', 'mha_q_b'), ('enc_k_b', 'mha_k_b'), ('enc_v_b', 'mha_v_b'), ('enc_o_b', 'mha_o_b'),
+           ('enc_ln1_g', 'ln1_g'), ('enc_ln1_b', 'ln1_b'), ('enc_ff_w1', 'ff_w1'), ('enc_ff_b1', 'ff_b1'),
+           ('enc_ff_w2', 'ff_w2'), ('enc_ff_b2', 'ff_b2'), ('enc_ln2_g', 'ln2_g'), ('enc_ln2_b', 'ln2_b')]
     groups = {
-        'conv1d_weights.h': [('conv_w_flat', 'conv_w'), ('conv_b_flat', 'conv_b')],
-        'l0_mha_weights.h': [(f'l0_{n}_w_flat', f'l0_mha_{n}_w') for n in 'qkvo'] + [(f'l0_{n}_b_flat', f'l0_mha_{n}_b') for n in 'qkvo'],
-        'l0_ln_weights.h': [('l0_ln1_g_flat', 'l0_ln1_g'), ('l0_ln1_b_flat', 'l0_ln1_b'), ('l0_ln2_g_flat', 'l0_ln2_g'), ('l0_ln2_b_flat', 'l0_ln2_b')],
-        'l0_ff_weights.h': [('l0_ff_w1_flat', 'l0_ff_w1'), ('l0_ff_b1_flat', 'l0_ff_b1'), ('l0_ff_w2_flat', 'l0_ff_w2'), ('l0_ff_b2_flat', 'l0_ff_b2')],
-        'fc_weights.h': [('fc_w_flat', 'fc_w'), ('fc_b_flat', 'fc_b'), ('fc_delta_w_flat', 'fc_delta_w'),
-                         ('fc_delta_b_flat', 'fc_delta_b'), ('prev_w_flat', 'prev_w'), ('prev_b_flat', 'prev_b')],
+        'conv1d_weights.h': [('conv_w_flat', w['conv_w']), ('conv_b_flat', w['conv_b'])],
+        'encoder_weights.h': [(c, stack(k)) for c, k in enc],
+        'fc_weights.h': [(c, w[k]) for c, k in (('fc_w_flat', 'fc_w'), ('fc_b_flat', 'fc_b'), ('fc_delta_w_flat', 'fc_delta_w'),
+                                                ('fc_delta_b_flat', 'fc_delta_b')) if k in w],
     }
     for fname, items in groups.items():
         guard = fname.upper().replace('.', '_')
         with open(os.path.join(wd, fname), 'w') as f:
             f.write(f'#ifndef {guard}\n#define {guard}\n#include "../types.h"\n\n')
-            f.write(f'// generated by emg_common.export_hls  weight format ap_fixed<{cfg.weight_fmt[0]},{cfg.weight_fmt[1]}>\n\n')
-            for cname, key in items:
-                if key in w:
-                    _write_header_array(f, wt, cname, quantise_array(w[key], cfg.weight_fmt))
+            f.write(f'// generated by emg_common.export_hls  weight_t = ap_fixed<{cfg.weight_fmt[0]},{cfg.weight_fmt[1]}>'
+                    + (f', {L} encoder layers stacked layer-major' if fname == 'encoder_weights.h' else '') + '\n\n')
+            for cname, arr in items:
+                _write_header_array(f, 'wrom_t', cname, quantise_array(arr, cfg.weight_fmt))   # wrom_t: types.h
             f.write(f'#endif // {guard}\n')
 
     # --- RoPE tables (half-dim, 2-D, same shape as hls_code/rope_tables.h) ---
@@ -1413,27 +1459,32 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
             f.write('};\n\n')
         f.write('#endif // ROPE_TABLES_H\n')
 
-    # --- config.h ---
-    with open(os.path.join(out_dir, 'config.h'), 'w') as f:
-        f.write(f'#define OUT_DIM {cfg.num_angles}\n#define SEQ_LEN {cfg.num_tokens}\n#define RAW_SEQ_LEN {cfg.seq_len}\n')
+    # --- model_config.h: dimensions and fixed-point formats (hls_code/config.h adds the hardware settings) ---
+    with open(os.path.join(out_dir, 'model_config.h'), 'w') as f:
+        f.write('#ifndef MODEL_CONFIG_H\n#define MODEL_CONFIG_H\n')
+        f.write(f'// generated by emg_common.export_hls from run "{cfg.run_name}" ({count_params(model):,} parameters)\n')
+        f.write(f'#define OUT_DIM {cfg.num_angles}\n#define SEQ_LEN {cfg.num_tokens}            // tokens after the strided embedding\n')
+        f.write(f'#define RAW_SEQ_LEN {cfg.seq_len}       // EMG samples per window\n')
         f.write(f'#define D_MODEL {D}\n#define IN_CHANNELS {cfg.num_channels}\n#define OUT_CHANNELS {D}\n')
         f.write(f'#define KERNEL_SIZE {cfg.conv_kernel}\n#define CONV_STRIDE {cfg.conv_stride}\n#define CONV_PADDING {cfg.conv_padding}\n')
         f.write(f'#define NUM_HEADS {cfg.num_heads}\n#define HEAD_DIM {cfg.head_dim}\n#define D_FF {cfg.d_ff}\n')
         f.write(f'#define ROPE_HALF_DIM {D // 2}\n#define NUM_LAYERS {cfg.num_layers}\n')
-        f.write(f'#define USE_ATTENTION {int(cfg.use_attention)}\n#define CAUSAL_ATTENTION {int(cfg.causal)}\n')
-        f.write(f'#define NORM_IS_RMS {int(cfg.norm == "rmsnorm")}\n#define POOL_LAST_TOKEN {int(cfg.pooling == "last")}\n')
-        f.write(f'#define HAS_ABS_HEAD {int("fc_w" in w)}\n#define HAS_DELTA_HEAD {int("fc_delta_w" in w)}\n#define COND_PREV {int(cfg.cond_prev)}\n')
-    with open(os.path.join(out_dir, 'types_suggested.h'), 'w') as f:
-        f.write(f'typedef ap_fixed<{cfg.act_fmt[0]}, {cfg.act_fmt[1]}, AP_RND, AP_SAT> data_t;\n')
-        f.write(f'typedef ap_fixed<{cfg.weight_fmt[0]}, {cfg.weight_fmt[1]}, AP_RND, AP_SAT> weight_t;\n')
-        f.write(f'typedef ap_fixed<{cfg.rope_fmt[0]}, {cfg.rope_fmt[1]}, AP_RND, AP_SAT> rope_t;\n')
-        f.write(f'typedef ap_fixed<{cfg.resid_fmt[0]}, {cfg.resid_fmt[1]}, AP_RND, AP_SAT> resid_t;  // branch outputs + pre-norm residual sums (ff_out, ln_in)\n')
+        f.write(f'#define HAS_DELTA_HEAD {int("fc_delta_w" in w)}\n')
+        f.write('// ap_fixed<W, I> formats used in QAT (act_fmt, weight_fmt, resid_fmt, rope_fmt)\n')
+        for nm, fmt in (('ACT', cfg.act_fmt), ('WEIGHT', cfg.weight_fmt), ('RESID', cfg.resid_fmt), ('ROPE', cfg.rope_fmt)):
+            f.write(f'#define {nm}_W {int(fmt[0])}\n#define {nm}_I {int(fmt[1])}\n')
+        f.write('#endif // MODEL_CONFIG_H\n')
 
     # --- results.h and input_output.h for the C testbench ---
     with open(os.path.join(wd, 'results.h'), 'w') as f:
         f.write('#ifndef RESULTS_H\n#define RESULTS_H\n#include "../types.h"\n\n')
-        for k, v in ref.items():
-            _write_header_array(f, 'float', f'ref_{k}', v)
+        # ref_*: float model. fx_*: numpy fixed-point simulation (the hardware should match it closely).
+        # ref_enc_* / fx_enc_*: per-layer intermediates stacked layer-major, for the layer loop in tests/test_layers.cpp
+        for pre, src in (('ref', ref), ('fx', fx)):
+            for k, v in src.items():
+                _write_header_array(f, 'float', f'{pre}_{k}', v)
+            for nm, key in (('rope_out', 'rope_out'), ('norm1_out', 'add_norm1_out'), ('norm2_out', 'add_norm2_out')):
+                _write_header_array(f, 'float', f'{pre}_enc_{nm}', np.concatenate([src[f'l{li}_{key}'].ravel() for li in range(L)]))
         f.write('#endif // RESULTS_H\n')
     with open(os.path.join(wd, 'input_output.h'), 'w') as f:
         f.write('#ifndef INPUT_OUTPUT_H\n#define INPUT_OUTPUT_H\n#include "../types.h"\n\n')
@@ -1444,15 +1495,22 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
             _write_header_array(f, 'float', 'output', ref['full_output'])
         if 'delta_output' in ref:
             _write_header_array(f, 'float', 'delta_output', ref['delta_output'])
+        for k in ('full_output', 'delta_output'):      # numpy fixed-point simulation: what the IP should return
+            if k in fx:
+                _write_header_array(f, 'float', 'fixed_' + k, fx[k])
         f.write('#endif // INPUT_OUTPUT_H\n')
 
-    # --- HIL samples (real windows, float-model outputs) ---
+    # --- HIL samples (real windows, float-model outputs, plus the numpy fixed-point outputs in sample_*_fixed.txt
+    #     = what a correct HLS build must reproduce: [abs | delta_std]) ---
     if delta_scale is not None:
         w['delta_scale'] = delta_scale
     with open(os.path.join(hd, 'manifest.txt'), 'w') as mf:
         mf.write('idx subject restim rep input_file abs_output... | delta_output...\n')
         for i, (xw, pw, restim, rep) in enumerate(hil_windows):
             r = numpy_forward(w, cfg, xw, pw)
+            rq = numpy_forward(wq, cfg, xw, pw, Q=Qa, rope_fmt=cfg.rope_fmt, Qr=Qr)
+            _write_txt(os.path.join(hd, f'sample_{i:03d}_fixed.txt'),
+                       np.concatenate([rq[k] for k in ('full_output', 'delta_output') if k in rq]))
             _write_txt(os.path.join(hd, f'sample_{i:03d}_input.txt'), xw)
             if pw is not None:
                 _write_txt(os.path.join(hd, f'sample_{i:03d}_prev.txt'), pw)
@@ -1467,14 +1525,23 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
     if norm_stats is not None:
         sos = bandpass_sos(cfg)
         ns = {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in norm_stats.items()}
-        ns.update({'causal_filter': cfg.causal_filter, 'sos': sos.tolist(), 'fs': cfg.fs, 'seq_len': cfg.seq_len, 'stride': cfg.stride})
+        n_out = cfg.num_angles * (2 if 'fc_delta_w' in w else 1)
+        ns.update({'causal_filter': cfg.causal_filter, 'sos': sos.tolist(), 'fs': cfg.fs, 'seq_len': cfg.seq_len, 'stride': cfg.stride,
+                   'in_words': cfg.num_channels * cfg.seq_len, 'out_words': n_out, 'act_fmt': list(cfg.act_fmt),
+                   'fusion_gain': fusion_gain})
         if delta_scale is not None:
             ns['delta_scale'] = delta_scale.tolist()
         with open(os.path.join(out_dir, 'normalization_constants.json'), 'w') as f:
             json.dump(ns, f, indent=2)
         with open(os.path.join(out_dir, 'normalization_constants.h'), 'w') as f:
             f.write('#ifndef NORMALIZATION_CONSTANTS_H\n#define NORMALIZATION_CONSTANTS_H\n')
-            f.write(f'#define EMG_MU {cfg.mu}\n#define EMG_FS {cfg.fs}\n#define EMG_SOS_SECTIONS {len(sos)}\n\n')
+            f.write(f'#define EMG_MU {cfg.mu}\n#define EMG_FS {cfg.fs}\n#define EMG_SOS_SECTIONS {len(sos)}\n')
+            f.write('// IP interface (RoFormer_Top): input words (channel-major), output words, data_t = ap_fixed<ACT_TOTAL_BITS, ACT_INT_BITS>\n')
+            f.write(f'#define MODEL_SEQ_LEN {cfg.seq_len}\n#define MODEL_STRIDE {cfg.stride}\n#define MODEL_IN_WORDS {cfg.num_channels * cfg.seq_len}\n')
+            f.write(f'#define MODEL_OUT_WORDS {n_out}\n#define ACT_TOTAL_BITS {int(cfg.act_fmt[0])}\n#define ACT_INT_BITS {int(cfg.act_fmt[1])}\n')
+            if fusion_gain is not None:
+                f.write(f'#define MODEL_FUSION_GAIN {float(fusion_gain):.6f}f   // est += delta; est += K * (abs - est)\n')
+            f.write('\n')
             _write_header_array(f, 'float', 'EMG_SCALE', norm_stats['emg_scale'])
             _write_header_array(f, 'float', 'GLOVE_MIN', norm_stats['glove_min'])
             _write_header_array(f, 'float', 'GLOVE_MAX', norm_stats['glove_max'])
@@ -1483,13 +1550,7 @@ def export_hls(model: EMGRoFormer, cfg: Config, out_dir: str, sample_x: np.ndarr
                 _write_header_array(f, 'float', 'DELTA_SCALE', delta_scale)
             f.write('#endif\n')
 
-    w.pop('delta_scale', None)
-    # --- expected fixed-point error (what a correct HLS build should reproduce) ---
-    Qa = lambda a: quantise_array(a, cfg.act_fmt)
-    wq = {k: quantise_array(v, cfg.weight_fmt) for k, v in w.items()}
-    if delta_scale is not None:
-        w['delta_scale'] = delta_scale; wq['delta_scale'] = delta_scale
-    fx = numpy_forward(wq, cfg, sample_x, sample_prev, Q=Qa, rope_fmt=cfg.rope_fmt, Qr=lambda a: quantise_array(a, cfg.resid_fmt))
+    # --- expected fixed-point error against the float model (what a correct HLS build should reproduce) ---
     report = {}
     for k in ref:
         a, b = ref[k].ravel(), fx[k].ravel()

@@ -6,19 +6,18 @@
 #include "Softmax.h"
 #include "LayerNorm.h"
 #include "RotaryEmbedding.h"
-#include "./weights/l0_mha_weights.h"
-#include "./weights/l0_ln_weights.h"
+#include "./weights/encoder_weights.h"
 
-// out = LN1( x + O( MHA( Q(rope(x)), K(rope(x)), V(x) ) ) )
+// out = LN1( x + O( MHA( Q(rope(x)), K(rope(x)), V(x) ) ) ) for encoder layer `layer`.
 // Q, K, V are projected once for all tokens and heads (no per-head recomputation).
 // Quantisation points match QAT: projections qkv_t, context data_t, O output and residual sum resid_t.
-void mha_norm_forward(const data_t input[SEQ_LEN * D_MODEL], data_t output[SEQ_LEN * D_MODEL])
+void mha_norm_forward(int layer, const data_t input[SEQ_LEN * D_MODEL], data_t output[SEQ_LEN * D_MODEL])
 {
 #pragma HLS INLINE off
-#pragma HLS ARRAY_PARTITION variable=l0_q_w_flat cyclic factor=MAC_UNROLL dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_k_w_flat cyclic factor=MAC_UNROLL dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_v_w_flat cyclic factor=MAC_UNROLL dim=1
-#pragma HLS ARRAY_PARTITION variable=l0_o_w_flat cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=enc_q_w cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=enc_k_w cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=enc_v_w cyclic factor=MAC_UNROLL dim=1
+#pragma HLS ARRAY_PARTITION variable=enc_o_w cyclic factor=MAC_UNROLL dim=1
 
     data_t  rope_out[SEQ_LEN * D_MODEL];
     qkv_t   q_all[SEQ_LEN * D_MODEL], k_all[SEQ_LEN * D_MODEL], v_all[SEQ_LEN * D_MODEL];
@@ -34,9 +33,9 @@ void mha_norm_forward(const data_t input[SEQ_LEN * D_MODEL], data_t output[SEQ_L
 
     MHA_PROJ:
     for (int t = 0; t < SEQ_LEN; ++t) {
-        dense<D_MODEL, D_MODEL, false>(rope_out, t * D_MODEL, q_all, t * D_MODEL, l0_q_w_flat, l0_q_b_flat);
-        dense<D_MODEL, D_MODEL, false>(rope_out, t * D_MODEL, k_all, t * D_MODEL, l0_k_w_flat, l0_k_b_flat);
-        dense<D_MODEL, D_MODEL, false>(input,    t * D_MODEL, v_all, t * D_MODEL, l0_v_w_flat, l0_v_b_flat);
+        dense<D_MODEL, D_MODEL, false>(rope_out, t * D_MODEL, q_all, t * D_MODEL, enc_q_w, enc_q_b, layer);
+        dense<D_MODEL, D_MODEL, false>(rope_out, t * D_MODEL, k_all, t * D_MODEL, enc_k_w, enc_k_b, layer);
+        dense<D_MODEL, D_MODEL, false>(input,    t * D_MODEL, v_all, t * D_MODEL, enc_v_w, enc_v_b, layer);
     }
 
     MHA_HEAD:
@@ -83,13 +82,13 @@ void mha_norm_forward(const data_t input[SEQ_LEN * D_MODEL], data_t output[SEQ_L
 
     MHA_OUT:
     for (int t = 0; t < SEQ_LEN; ++t) {
-        dense<D_MODEL, D_MODEL, false>(ctx, t * D_MODEL, o_tok, 0, l0_o_w_flat, l0_o_b_flat);
+        dense<D_MODEL, D_MODEL, false>(ctx, t * D_MODEL, o_tok, 0, enc_o_w, enc_o_b, layer);
         MHA_RESID:
         for (int d = 0; d < D_MODEL; ++d) {
 #pragma HLS PIPELINE II=1
             ln_in[d] = (resid_t)(input[t * D_MODEL + d] + o_tok[d]);
         }
-        ln_forward<resid_t>(ln_in, 0, output, t * D_MODEL, l0_ln1_g_flat, l0_ln1_b_flat);
+        ln_forward<resid_t>(ln_in, 0, output, t * D_MODEL, enc_ln1_g, enc_ln1_b, layer * D_MODEL);
     }
 }
 #endif // MHANORM_H

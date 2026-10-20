@@ -1,8 +1,9 @@
-// RoFormer_Top (v2): sEMG window -> 10 absolute joint angles + 10 standardised 25 ms deltas.
-//   input_axi : IN_WORDS = 12 x 200 data_t, channel-major (channel 0 samples 0..199, then channel 1, ...)
+// RoFormer_Top: sEMG window -> 10 absolute joint angles + 10 standardised per-step deltas.
+//   input_axi : IN_WORDS = 12 x RAW_SEQ_LEN data_t, channel-major (channel 0 samples 0..RAW_SEQ_LEN-1, then channel 1, ...)
 //   output_axi: NUM_OUTPUTS = [ abs angle (10) | delta / DELTA_SCALE (10) ]
+// NUM_LAYERS encoder layers run one after another on the same hardware; only the weight offset changes.
 // Firmware multiplies the delta outputs by DELTA_SCALE (normalization_constants.h) and fuses
-// est += delta; est += K * (abs - est), K ~ 0.056 (PROJECT_REPORT.md, section 7).
+// est += delta; est += K * (abs - est), with K from the filter tuned for the model (PROJECT_REPORT.md, section 7).
 #include "types.h"
 #include "config.h"
 #include "Conv1dLayer.h"
@@ -39,10 +40,13 @@ void RoFormer_Top(const data_t input_axi[IN_WORDS], data_t output_axi[NUM_OUTPUT
         in_buf[i] = input_axi[i];
     }
 
-    conv1d_forward(in_buf, act_A);      // [12 x 200] -> [25 x 128]
-    mha_norm_forward(act_A, act_B);     // attention + residual + LN1
-    ffn_norm_forward(act_B, act_A);     // FFN + residual + LN2
-    pooling(act_A, pooled);             // mean over tokens
+    conv1d_forward(in_buf, act_A);              // [12 x RAW_SEQ_LEN] -> [SEQ_LEN x 128]
+    ENCODER:
+    for (int l = 0; l < NUM_LAYERS; ++l) {
+        mha_norm_forward(l, act_A, act_B);      // attention + residual + LN1
+        ffn_norm_forward(l, act_B, act_A);      // FFN + residual + LN2
+    }
+    pooling(act_A, pooled);                     // mean over tokens
 
     dense<D_MODEL, OUT_DIM, false>(pooled, 0, result, 0, fc_w_flat, fc_b_flat);
 #if HAS_DELTA_HEAD

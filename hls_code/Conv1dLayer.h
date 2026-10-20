@@ -35,9 +35,9 @@ void conv1d_forward(const data_t input[IN_WORDS], data_t output[SEQ_LEN * D_MODE
             acc_t partial = 0;
             for (int k = 0; k < KERNEL_SIZE; ++k) {
 #pragma HLS UNROLL
-                partial += (acc_t)(window[c][k] * conv_w_flat[(o * IN_CHANNELS + c) * KERNEL_SIZE + k]);
+                partial += (acc_t)(window[c][k] * (weight_t)conv_w_flat[(o * IN_CHANNELS + c) * KERNEL_SIZE + k]);
             }
-            const acc_t s = (c == 0 ? (acc_t)conv_b_flat[o] : sum) + partial;
+            const acc_t s = (c == 0 ? (acc_t)(weight_t)conv_b_flat[o] : sum) + partial;
             sum = s;
             if (c == IN_CHANNELS - 1) output[t * D_MODEL + o] = (data_t)s;
         }

@@ -3,17 +3,21 @@ import numpy as np
 import sys
 import time
 
+import json, os
+
 # --- Config ---
 COM_PORT = '/dev/ttyACM0'  # Update this
 BAUD_RATE = 115200
-INPUT_FLOATS = 2400 # 200 * 12 (seq_len * in_channels)
-OUTPUT_FLOATS = 30 # [abs angle (10) | delta per 25 ms (10) | fused estimate (10)], normalised units
+# Input size of the installed model (hls_code/scripts/install_export.py writes this file): 12 x seq_len
+_NC = 'hls_code/verification_data/normalization_constants.json'
+INPUT_FLOATS = json.load(open(_NC)).get('in_words', 2400) if os.path.exists(_NC) else 2400
+OUTPUT_FLOATS = 30 # [abs angle (10) | delta per step (10) | fused estimate (10)], normalised units
 INPUT_BYTES = INPUT_FLOATS * 4
 OUTPUT_BYTES = OUTPUT_FLOATS * 4
 
 def loopback_test():
     try:
-        # 2,400 floats = 9,600 bytes; at 115200 baud that takes about 0.85 s, so UART is for verification, not real time
+        # 2,400 floats = 9,600 bytes take about 0.85 s at 115200 baud (4,800 floats: 1.7 s): UART is for verification, not real time
         ser = serial.Serial(COM_PORT, BAUD_RATE, timeout=3)
         print(f"[PC] Connected to {COM_PORT}")
     except Exception as e:

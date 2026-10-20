@@ -6,9 +6,10 @@
 
 // y = (x - mean) / sqrt(var + eps) * gamma + beta, over D_MODEL values. Input is the residual
 // stream (resid_t), output data_t. Wide sums because pre-norm values reach |70| (variance 117).
+// gamma/beta are read at p_off (the layer's block of the stacked arrays).
 template <typename TI>
 void ln_forward(const TI input[], int off, data_t output[], int out_off,
-                const data_t gamma[], const data_t beta[])
+                const wrom_t gamma[], const wrom_t beta[], int p_off)
 {
 #pragma HLS INLINE
     const ln_acc_t eps = 1e-5;                       // PyTorch LayerNorm default
@@ -33,7 +34,7 @@ void ln_forward(const TI input[], int off, data_t output[], int out_off,
 #pragma HLS PIPELINE II=1
         const ln_diff_t d = (ln_diff_t)((ln_acc_t)input[off + i] - mean);
         const ln_z_t z = (ln_z_t)(d * inv);
-        output[out_off + i] = (data_t)(z * gamma[i] + beta[i]);
+        output[out_off + i] = (data_t)(z * (weight_t)gamma[p_off + i] + (weight_t)beta[p_off + i]);
     }
 }
 #endif // LAYERNORM_H

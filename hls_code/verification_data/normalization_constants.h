@@ -3,6 +3,13 @@
 #define EMG_MU 255
 #define EMG_FS 2000
 #define EMG_SOS_SECTIONS 4
+// IP interface (RoFormer_Top): input words (channel-major), output words, data_t = ap_fixed<ACT_TOTAL_BITS, ACT_INT_BITS>
+#define MODEL_SEQ_LEN 200
+#define MODEL_STRIDE 50
+#define MODEL_IN_WORDS 2400
+#define MODEL_OUT_WORDS 20
+#define ACT_TOTAL_BITS 10
+#define ACT_INT_BITS 3
 
 static const float EMG_SCALE[12] = {
     0.00043403, 0.00027864, 0.00034872, 0.00041324, 0.00009623, 0.00012720, 0.00052414, 0.00049511,

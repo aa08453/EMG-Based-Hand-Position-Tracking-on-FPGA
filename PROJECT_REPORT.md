@@ -58,7 +58,9 @@ All accuracy figures are in **normalised angle units**: each joint is scaled to 
 | 7. HLS v2 (Oct 15) | HLS rewritten for the chosen model: strided embedding, 16-bit residual type, second head, flattened and unrolled MAC loops, rounding and saturation. Bit-accurate C simulation using Xilinx's open-source `ap_fixed` headers. Firmware fuses the two heads | C model matches the numpy fixed-point reference to 0.0004. Estimated 9.3 ms per inference. Old HLS code with the new weights scored cosine −0.06 bit-accurately |
 | 8. Session 4 (Oct 15) | Notebook 06: per-subject bootstrap confidence intervals, 5-fold leave-subjects-out | Delta-head gain holds in 8 of 10 subjects. The model does not generalise to unseen subjects |
 | 9. Session 5 (Oct 15) | Notebook 07: 200 ms windows with a 50 ms step, against a 100 ms control scored on the same test windows | 200 ms with 25 tokens: R² 0.688 against 0.678 for the control. 200 ms with 50 tokens: no gain |
-| 10. Session 6 (prepared) | Notebook 08: model size on the chosen 200 ms, 25-token setup, with a second-seed baseline as the noise reference | Not yet run |
+| 10. Session 6 (Oct 20) | Notebook 08: model size on the chosen 200 ms, 25-token setup, with a second-seed baseline as the noise reference | Depth helps: 2 layers R² 0.757, 3 layers 0.783, against 0.688, better in all 10 subjects. Wider models do not help. All float |
+| 11. Multi-layer HLS (Oct 20) | HLS loops over N encoder layers with stacked weights; fixed-point formats and dimensions come from the export (`model_config.h`); install script; per-layer checks against a fixed-point reference | 1-, 2- and 3-layer models (incl. 8-bit weights, 12-bit activations) match the numpy fixed-point simulation within 1–3 LSB at every layer |
+| 12. Session 7 (prepared) | Notebook 09: QAT of the deep models, deployable evaluation, export of the best model that fits; schedule check | Not yet run |
 
 ---
 
@@ -385,6 +387,35 @@ Conclusions:
 - **The trade-off is the update rate.** A 50 ms step gives 20 outputs per second, against 40 with the current 25 ms step. Whether 20 Hz is fast enough depends on the application.
 - **Not directly comparable with session 3.** Session 3 used a 25 ms step and different test windows.
 
+### 9.8 Session 6: model size
+
+Notebook 08, on the chosen 200 ms / 50 ms / 25-token setup. All models are float (no QAT), trained with dropout growing with size
+(0.10 up to 200 k parameters, 0.15 up to 400 k, 0.20 above), Kalman filter re-tuned per model, deployable seeding. A second training
+of the baseline with another seed sets the noise level: 0.0023 mean per-subject RMSE.
+
+| Model | Params | Fused R² [95 % CI] | Per-subject mean R² | RMSE change vs base | Subjects better | Weights (10-bit) | Fits on chip |
+|---|---|---|---|---|---|---|---|
+| base (1 layer, d 128, FFN 256) | 160 k | 0.688 [0.669, 0.704] | 0.544 | | | 1.60 Mbit | yes |
+| base, second seed | 160 k | 0.677 | 0.533 | +0.0023 | 0 | 1.60 | yes |
+| FFN 512 | 226 k | 0.692 | 0.549 | −0.0008 | 7 | 2.26 | yes |
+| width 192 | 338 k | 0.677 | 0.531 | +0.0020 | 4 | 3.38 | yes |
+| width 256 | 582 k | 0.616 | 0.442 | +0.0102 | 0 | 5.82 | no |
+| **2 layers** | 292 k | **0.757 [0.740, 0.771]** | **0.635** | **−0.0114** | **10** | 2.92 | **yes** |
+| 2 layers, FFN 512 | 424 k | 0.747 | 0.622 | −0.0097 | 9 | 4.24 | no |
+| **3 layers** | 425 k | **0.783 [0.766, 0.796]** | **0.682** | **−0.0164** | **10** | 4.25 | no (yes at 8-bit weights) |
+
+Conclusions:
+
+- **Depth is the lever.** Each added layer helps, with diminishing returns (+0.069 then +0.026 R²), and the weakest subject improves
+  most (0.44 → 0.58 with 3 layers). The absolute head alone improves just as much, so this is the model, not the filter.
+- **Parameters alone do not help.** Wider FFNs are within noise, width 192 is no better, and 2 layers with FFN 512 is worse than plain 2 layers.
+- **Width 256 failed to train well** (unstable validation, stopped at epoch 15). It probably needs a lower learning rate.
+- **Caveat: training schedule.** Early stopping (patience 8, absolute-head score) and the learning-rate scheduler (patience 3, total loss)
+  watch different signals; the 1-layer runs stopped exactly when the rate was first halved, while L3 benefited from two halvings.
+  Before any halving L3 was already far ahead (0.339 against base's best 0.420 validation score), so the gain is real, but its size
+  is checked in notebook 09 by retraining base and L2 with patience 12.
+- **Evaluation was slow** (55 minutes per model, 7.3 of 9.6 hours) because `ordered_runs` decompressed whole arrays once per window. Fixed.
+
 ---
 
 ## 10. Hardware
@@ -438,15 +469,18 @@ The HIL manifest outputs did not match the exported weights. The notebook, the H
 
 ### 10.3 Export flow (current)
 
-`export_hls` in [emg_common.py](kaggle_scripts/emg_common.py), notebook section 05. It writes every hardware artefact from one checkpoint and one real test window:
+`export_hls` in [emg_common.py](kaggle_scripts/emg_common.py), notebooks 05 and 09. It writes every hardware artefact from one checkpoint and one real test window:
 
-- Weight headers with the array names the HLS already uses.
-- RoPE tables and a `config.h` with new macros such as `CONV_STRIDE`, `HAS_DELTA_HEAD` and `COND_PREV`.
-- A suggested `types.h` with rounding, saturation and the `resid_t` type.
-- Golden intermediates for every layer.
-- 40 hardware-in-the-loop samples with a manifest.
-- Firmware constants: EMG scale, glove range, μ, filter coefficients and `DELTA_SCALE`.
-- `fixed_point_expectation.json`, the per-layer error a correct HLS build should reproduce.
+- Weight headers: `conv1d_weights.h`, `encoder_weights.h` (all encoder layers stacked, layer-major) and `fc_weights.h`.
+- `model_config.h`: dimensions, number of layers and the four fixed-point formats used in QAT. The hand-written `config.h` includes it.
+- RoPE tables.
+- Golden intermediates for every layer, from the float model and from the numpy fixed-point simulation.
+- 40 hardware-in-the-loop samples with float and fixed-point outputs and a manifest.
+- Firmware constants: EMG scale, glove range, μ, filter coefficients, `DELTA_SCALE`, input/output sizes, the data format and, when given, the fusion gain.
+- `fixed_point_expectation.json`, the per-layer error against the float model a correct HLS build should reproduce.
+
+`python hls_code/scripts/install_export.py <export dir>` puts all of it in place (HLS, HIL samples, firmware) and removes the previous model's files.
+The export refuses configurations the HLS cannot implement (`hls_unsupported`).
 
 Verification of the session-2 export:
 
@@ -495,6 +529,43 @@ At the default setting, the FFN is 44 % of the time and the Q/K/V projections 33
 
 **Not yet done:** synthesis, timing closure and resource reports; co-simulation; re-export of the IP, Vivado block design update and board test. The IP interface changed: the output depth went from 10 to 20, so the block design and firmware must be rebuilt together.
 
+### 10.5 Multi-layer HLS (Oct 20)
+
+Notebook 08 made a 2- or 3-layer model the target, so the HLS now runs any number of encoder layers on one set of hardware:
+
+| Change | Where |
+|---|---|
+| `for (l = 0; l < NUM_LAYERS; ++l) { mha_norm_forward(l, A, B); ffn_norm_forward(l, B, A); }` | `RoFormer_Top.cpp` |
+| Layer index selects a block of the stacked weight arrays (`dense(..., layer)`, LayerNorm parameter offset); layers share DSPs, only weight memory grows | `FCLayer.h`, `MHANorm.h`, `FFNorm.h`, `LayerNorm.h` |
+| Formats (`data_t`, `weight_t`, `resid_t`, `rope_t`) and dimensions from the generated `model_config.h`; checks on the fixed dimensions (d_model 128, head dim 16) and the patch geometry | `types.h`, `config.h` |
+| Weight arrays stored as `float` in C simulation and as `weight_t` in synthesis (`wrom_t`); every read converts to `weight_t`, so the arithmetic is identical. Builds take 8 s instead of running out of memory | `types.h` |
+| Accumulator widened to `ap_fixed<34,14>` (same fractional bits) for 12-bit activations | `types.h` |
+| Each layer check passes on agreement with the numpy fixed-point reference; the float gap is printed for information | `tests/test_layers.cpp`, `tests/check.h`, `tests/test_vitis_roformer.cpp` |
+| Firmware takes input size, data format and fusion gain from `normalization_constants.h` | `vitis_workspace/uart_app/src/helloworld.c` |
+
+Verification (local C simulation; the deep models were exported from their float notebook 08 checkpoints, with 400-sample inputs made by
+joining two real 200-sample windows):
+
+| Model | Formats (act / weight) | Every layer vs numpy fixed point | 20–40 HIL windows vs fixed point (abs / delta) |
+|---|---|---|---|
+| v2 (1 layer, 100 ms) | 10,3 / 10,3 | max error 1 LSB; outputs identical to before the refactor | 0.0004 / 0.0020 |
+| L2 (2 layers) | 10,3 / 10,3 | max 2 LSB | 0.0007 / 0.0038 |
+| L3 (3 layers) | 12,4 / 8,2 | max 3 LSB | 0.0004 / 0.0020 |
+
+The float models were not trained with QAT, and that shows: L2's second-layer LayerNorm output reaches 7.9 against the ±4 range of
+`data_t` (attention block cosine 0.988 against float). Notebook 09 QAT-trains them and compares 10- and 12-bit activations.
+
+Latency estimate at 25 tokens from 400 samples, 100 MHz (`scripts/estimate_cycles.py --layers N --raw 400`):
+
+| Layers | `MAC_UNROLL` 4 | `MAC_UNROLL` 8 |
+|---|---|---|
+| 1 | 9.4 ms | 5.3 ms |
+| 2 | 18.2 ms | 10.0 ms |
+| 3 | 27.1 ms | 14.8 ms |
+
+All are inside the 50 ms step. Weight memory is the binding limit: 2.9 Mbit for L2 at 10 bits, 3.4 Mbit for L3 at 8 bits, of 4.9 Mbit block RAM.
+Synthesis will show whether the ROM packing and the activation buffers fit alongside.
+
 ---
 
 ## 11. Resource consumption overview
@@ -532,7 +603,8 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 7. **Kaggle sessions are capped at 12 hours.** Keep grids to about three configurations per session. Click "Save Version", or the output folder is lost.
 8. **Report per-subject metrics beside pooled ones.** Pooled R² over several subjects counts between-subject differences as explained variance. Here it read 0.67 while the per-subject mean was 0.52.
 9. **Check the accelerator before a long run.** Session 4 ran on the CPU because the GPU was not switched on. It finished, but took 9.3 hours instead of about 3.
-10. **Secrets.** The original baseline notebook contains a plaintext Weights & Biases API key. It should be revoked. The new scripts read the key from a Kaggle secret named `wandb_key`.
+10. **Do not index a compressed `.npz` inside a loop.** `np.load` returns a lazy archive that decompresses the whole array on every access; this made evaluation 20 times slower than training.
+11. **Secrets.** The original baseline notebook contains a plaintext Weights & Biases API key. It should be revoked. The new scripts read the key from a Kaggle secret named `wandb_key`.
 
 ---
 
@@ -541,7 +613,7 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | Priority | Task |
 |---|---|
 | 1 | Synthesise the v2 HLS in Vitis (`vitis_workspace/transformer`), commit the utilisation and timing reports, run co-simulation, then rebuild the block design and measure latency on the board |
-| 2 | Adopted (Oct 15): 200 ms window, 50 ms step, 25 tokens (`w200ms_patch16_t25`). Fine-tune with QAT, export, and change the three `config.h` constants. Run notebook 08 first in case a larger model is chosen |
+| 2 | Run notebook 09: QAT of L2 (10- and 12-bit activations) and L3 (8-bit weights), deployable evaluation, export of the best model that fits; install it with `install_export.py` and run `make run` |
 | 2b | New-user calibration: fine-tune a leave-subjects-out model on 1 to 4 training repetitions of the held-out subject, and measure how much within-subject accuracy is recovered |
 | 3 | Convert normalised RMSE to degrees using glove calibration |
 | 4 | Port the causal filter and μ-law normalisation to the ARM firmware using `normalization_constants.h`. The fusion update is already in the firmware |
@@ -558,12 +630,11 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | [kaggle_scripts/06_subject_ci_and_loso.ipynb](kaggle_scripts/06_subject_ci_and_loso.ipynb) | Session 4: per-subject confidence intervals and leave-subjects-out |
 | [kaggle_scripts/07_window_200ms.ipynb](kaggle_scripts/07_window_200ms.ipynb) | Window-length study: 200 ms windows, 50 ms step |
 | [kaggle_scripts/08_model_scaling.ipynb](kaggle_scripts/08_model_scaling.ipynb) | Model-size study with hardware cost |
+| [kaggle_scripts/09_qat_export_deep.ipynb](kaggle_scripts/09_qat_export_deep.ipynb) | QAT and export of the deep model, schedule check |
 | `kaggle_scripts/01_` … `05_*.ipynb` | Stand-alone notebooks for each stage |
 | [kaggle_scripts/README.md](kaggle_scripts/README.md) | Kaggle setup and configuration options |
-| [roformer_output/](roformer_output/) | Session 1: grid checkpoints, `ablation_results_merged.csv`, logs |
-| [roformer_output_v2/](roformer_output_v2/) | Session 2: chosen checkpoint, report, HLS export |
-| [roformer_output_v3/](roformer_output_v3/) | Session 3: deployable evaluation report and plots |
-| [hls_code/](hls_code/) | HLS v2 implementation, bit-accurate tests (`make run`), latency estimator, golden data from the session-2 export. Old artefacts in `hls_code/legacy/` |
+| [notebook_outputs/](notebook_outputs/) | Results of every session: `roformer_output/` (session 1), `roformer_output_v2/` (session 2, chosen checkpoint and export), `roformer_output_v3/` (session 3), `notebook_06_outputs/` … `notebook_08_outputs/` |
+| [hls_code/](hls_code/) | Multi-layer HLS, bit-accurate tests (`make run`), `scripts/install_export.py`, latency estimator; currently holds the session-2 model. Old artefacts in `hls_code/legacy/` |
 | [ip_repo/](ip_repo/), `roformer.tcl`, `transformer_wrapper.xsa`, [vitis_workspace/](vitis_workspace/) | Vivado IP, project script, platform, firmware |
 | [notebooks/](notebooks/), [kaggle_scripts/roformer.ipynb](kaggle_scripts/roformer.ipynb), [kaggle_scripts/baseline-models-joint-angles.ipynb](kaggle_scripts/baseline-models-joint-angles.ipynb) | Original notebooks, legacy pipeline |
 | [IMPROVEMENTS.md](IMPROVEMENTS.md) | Review findings and the original roadmap |
@@ -576,7 +647,7 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 4. Run notebook 01 and save its output as a dataset.
 5. Run notebook 02 with the configuration in section 9.3, then 04 and 05.
 
-**To verify the HLS locally,** run `make run` in `hls_code`. It builds with the vendored open-source `ap_fixed` headers, compares every layer with the golden dumps in `verification_data/`, and runs the 40 windows in `hil_verification_samples/`. Do not trust the float mock `mock_ap_fixed.h`: it hid a complete numerical failure (section 10.4).
+**To verify the HLS locally,** run `make run` in `hls_code`. It builds with the vendored open-source `ap_fixed` headers, compares every layer with the fixed-point and float golden dumps from the export, and runs the windows in `hil_verification_samples/`. To switch models, run `python hls_code/scripts/install_export.py <export dir>` first. Do not trust the float mock `mock_ap_fixed.h`: it hid a complete numerical failure (section 10.4).
 
 ---
 
