@@ -10,6 +10,13 @@
 #define MAC_UNROLL 4
 #endif
 
+// Q/K/V and attention-output buffers are split into 16 banks of 200 words each (64 small banks).
+// In LUT-RAM (about 4.6 k LUTs) they leave the block RAM to the weights, which need about 210 of the 280 BRAM18
+// for 3 layers at 8 bits. Set to 0 (syn.cflags=-DLUTRAM_ATTN_BUFFERS=0) if LUTs run short instead.
+#ifndef LUTRAM_ATTN_BUFFERS
+#define LUTRAM_ATTN_BUFFERS 1
+#endif
+
 #define NUM_OUTPUTS (OUT_DIM * (1 + HAS_DELTA_HEAD))   // [abs(10) | delta_std(10)]
 #define IN_WORDS (IN_CHANNELS * RAW_SEQ_LEN)
 

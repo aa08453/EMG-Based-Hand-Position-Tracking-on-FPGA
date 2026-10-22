@@ -28,6 +28,12 @@ void mha_norm_forward(int layer, const data_t input[SEQ_LEN * D_MODEL], data_t o
 #pragma HLS ARRAY_PARTITION variable=k_all cyclic factor=HEAD_DIM dim=1
 #pragma HLS ARRAY_PARTITION variable=v_all cyclic factor=HEAD_DIM dim=1
 #pragma HLS ARRAY_PARTITION variable=ctx cyclic factor=HEAD_DIM dim=1
+#if LUTRAM_ATTN_BUFFERS
+#pragma HLS BIND_STORAGE variable=q_all type=ram_1p impl=lutram
+#pragma HLS BIND_STORAGE variable=k_all type=ram_1p impl=lutram
+#pragma HLS BIND_STORAGE variable=v_all type=ram_1p impl=lutram
+#pragma HLS BIND_STORAGE variable=ctx type=ram_1p impl=lutram
+#endif
 
     rope_forward(input, rope_out);
 
