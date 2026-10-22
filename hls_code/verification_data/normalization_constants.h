@@ -4,12 +4,13 @@
 #define EMG_FS 2000
 #define EMG_SOS_SECTIONS 4
 // IP interface (RoFormer_Top): input words (channel-major), output words, data_t = ap_fixed<ACT_TOTAL_BITS, ACT_INT_BITS>
-#define MODEL_SEQ_LEN 200
-#define MODEL_STRIDE 50
-#define MODEL_IN_WORDS 2400
+#define MODEL_SEQ_LEN 400
+#define MODEL_STRIDE 100
+#define MODEL_IN_WORDS 4800
 #define MODEL_OUT_WORDS 20
-#define ACT_TOTAL_BITS 10
-#define ACT_INT_BITS 3
+#define ACT_TOTAL_BITS 12
+#define ACT_INT_BITS 4
+#define MODEL_FUSION_GAIN 0.095125f   // est += delta; est += K * (abs - est)
 
 static const float EMG_SCALE[12] = {
     0.00043403, 0.00027864, 0.00034872, 0.00041324, 0.00009623, 0.00012720, 0.00052414, 0.00049511,
@@ -34,8 +35,8 @@ static const float EMG_SOS[24] = {
 };
 
 static const float DELTA_SCALE[10] = {
-    0.00555190, 0.00597730, 0.00581230, 0.00579587, 0.00608638, 0.00565778, 0.00573982, 0.00603799,
-    0.00558406, 0.00607191,
+    0.01062697, 0.01156893, 0.01124218, 0.01129860, 0.01179319, 0.01099338, 0.01113373, 0.01170297,
+    0.01079930, 0.01178783,
 };
 
 #endif
