@@ -1,0 +1,196 @@
+[{"stream_name":"stderr","time":6.411696687,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.411739021,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.411743333,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.411745935,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":6.998549661,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.998587059,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.998591911,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.998595358,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":15.852957423,"data":"torch 2.11.0+cu128 | cuda True | emg_common /kaggle/usr/lib/notebooks/quddusikashaf/emg_common/emg_common.py\n"}
+,{"stream_name":"stdout","time":25.789014482,"data":"10 subjects from /kaggle/input/notebooks/quddusikashaf/07-window-200ms/db2_processed_w400_s100\n"}
+,{"stream_name":"stdout","time":29.137794167,"data":"base      \u003c- /kaggle/input/notebooks/quddusikashaf/07-window-200ms/w200/outputs/w200ms_patch16_t25.pt  layers 1  params 159,764  phase float\n"}
+,{"stream_name":"stdout","time":31.910040387,"data":"L2        \u003c- /kaggle/input/notebooks/quddusikashaf/08-model-scaling/scale/outputs/scale_L2.pt  layers 2  params 292,244  phase float\n"}
+,{"stream_name":"stdout","time":35.128329544,"data":"L3        \u003c- /kaggle/input/notebooks/quddusikashaf/08-model-scaling/scale/outputs/scale_L3.pt  layers 3  params 424,724  phase float\n"}
+,{"stream_name":"stdout","time":35.128364588,"data":"\n"}
+,{"stream_name":"stdout","time":35.128367807,"data":"=== base_p12: base retrained, patience 12 (seed 42)\n"}
+,{"stream_name":"stdout","time":39.234489259,"data":"[wandb] no key found, logging disabled\n"}
+,{"stream_name":"stdout","time":83.155215412,"data":"  checkpoint selection on: val_abs\n"}
+,{"stream_name":"stdout","time":83.155249313,"data":"[base_p12] params=159,764 tokens=25 train_batches=2606 val_batches=2132 MACs=4,053,760\n"}
+,{"stream_name":"stdout","time":126.446886019,"data":"  float ep   1 train 2.46736 val 1.59452 abs=0.6042 abs_rmse=0.1259 delta=0.9903 (38s)\n"}
+,{"stream_name":"stdout","time":163.422950121,"data":"  float ep   2 train 2.16826 val 1.53152 abs=0.5739 abs_rmse=0.1236 delta=0.9576 (37s)\n"}
+,{"stream_name":"stdout","time":200.356191574,"data":"  float ep   3 train 2.04156 val 1.41555 abs=0.4873 abs_rmse=0.1135 delta=0.9283 (37s)\n"}
+,{"stream_name":"stdout","time":237.763487013,"data":"  float ep   4 train 1.95050 val 1.36380 abs=0.4684 abs_rmse=0.1106 delta=0.8954 (37s)\n"}
+,{"stream_name":"stdout","time":275.421461931,"data":"  float ep   5 train 1.88403 val 1.33519 abs=0.4498 abs_rmse=0.1087 delta=0.8854 (38s)\n"}
+,{"stream_name":"stdout","time":312.170348327,"data":"  float ep   6 train 1.84064 val 1.33355 abs=0.4661 abs_rmse=0.1114 delta=0.8674 (37s)\n"}
+,{"stream_name":"stdout","time":348.738323534,"data":"  float ep   7 train 1.80876 val 1.32981 abs=0.4635 abs_rmse=0.1111 delta=0.8663 (37s)\n"}
+,{"stream_name":"stdout","time":385.082044188,"data":"  float ep   8 train 1.78039 val 1.30950 abs=0.4595 abs_rmse=0.1106 delta=0.8500 (36s)\n"}
+,{"stream_name":"stdout","time":422.100365681,"data":"  float ep   9 train 1.75974 val 1.27801 abs=0.4307 abs_rmse=0.1067 delta=0.8473 (37s)\n"}
+,{"stream_name":"stdout","time":459.70972339,"data":"  float ep  10 train 1.73859 val 1.28894 abs=0.4431 abs_rmse=0.1089 delta=0.8458 (38s)\n"}
+,{"stream_name":"stdout","time":495.9107867,"data":"  float ep  11 train 1.71925 val 1.26941 abs=0.4389 abs_rmse=0.1079 delta=0.8305 (36s)\n"}
+,{"stream_name":"stdout","time":533.373000584,"data":"  float ep  12 train 1.70442 val 1.27405 abs=0.4487 abs_rmse=0.1097 delta=0.8254 (37s)\n"}
+,{"stream_name":"stdout","time":570.942783484,"data":"  float ep  13 train 1.69036 val 1.24622 abs=0.4215 abs_rmse=0.1058 delta=0.8247 (38s)\n"}
+,{"stream_name":"stdout","time":607.520856043,"data":"  float ep  14 train 1.68062 val 1.26547 abs=0.4398 abs_rmse=0.1082 delta=0.8257 (37s)\n"}
+,{"stream_name":"stdout","time":644.016614795,"data":"  float ep  15 train 1.66758 val 1.28295 abs=0.4622 abs_rmse=0.1105 delta=0.8207 (36s)\n"}
+,{"stream_name":"stdout","time":680.849189478,"data":"  float ep  16 train 1.65801 val 1.26889 abs=0.4509 abs_rmse=0.1101 delta=0.8180 (37s)\n"}
+,{"stream_name":"stdout","time":718.345572098,"data":"  float ep  17 train 1.64728 val 1.26134 abs=0.4429 abs_rmse=0.1087 delta=0.8185 (37s)\n"}
+,{"stream_name":"stdout","time":754.992275262,"data":"  float ep  18 train 1.59740 val 1.23931 abs=0.4301 abs_rmse=0.1073 delta=0.8092 (37s)\n"}
+,{"stream_name":"stdout","time":791.725713411,"data":"  float ep  19 train 1.58921 val 1.25377 abs=0.4406 abs_rmse=0.1085 delta=0.8131 (37s)\n"}
+,{"stream_name":"stdout","time":828.177134856,"data":"  float ep  20 train 1.58108 val 1.22916 abs=0.4186 abs_rmse=0.1055 delta=0.8105 (36s)\n"}
+,{"stream_name":"stdout","time":865.237367094,"data":"  float ep  21 train 1.57902 val 1.22831 abs=0.4215 abs_rmse=0.1065 delta=0.8068 (37s)\n"}
+,{"stream_name":"stdout","time":901.508763913,"data":"  float ep  22 train 1.57265 val 1.22930 abs=0.4264 abs_rmse=0.1067 delta=0.8029 (36s)\n"}
+,{"stream_name":"stdout","time":938.029477385,"data":"  float ep  23 train 1.57131 val 1.24122 abs=0.4382 abs_rmse=0.1087 delta=0.8030 (37s)\n"}
+,{"stream_name":"stdout","time":974.678514482,"data":"  float ep  24 train 1.56577 val 1.22912 abs=0.4220 abs_rmse=0.1060 delta=0.8071 (37s)\n"}
+,{"stream_name":"stdout","time":1011.805768463,"data":"  float ep  25 train 1.56351 val 1.22853 abs=0.4264 abs_rmse=0.1068 delta=0.8021 (37s)\n"}
+,{"stream_name":"stdout","time":1048.258537287,"data":"  float ep  26 train 1.53598 val 1.22483 abs=0.4262 abs_rmse=0.1071 delta=0.7987 (36s)\n"}
+,{"stream_name":"stdout","time":1084.872651931,"data":"  float ep  27 train 1.53213 val 1.22782 abs=0.4301 abs_rmse=0.1074 delta=0.7977 (37s)\n"}
+,{"stream_name":"stdout","time":1121.799915348,"data":"  float ep  28 train 1.52939 val 1.21307 abs=0.4196 abs_rmse=0.1062 delta=0.7934 (37s)\n"}
+,{"stream_name":"stdout","time":1158.635512469,"data":"  float ep  29 train 1.52867 val 1.22743 abs=0.4258 abs_rmse=0.1066 delta=0.8016 (37s)\n"}
+,{"stream_name":"stdout","time":1195.259115286,"data":"  float ep  30 train 1.52548 val 1.21445 abs=0.4208 abs_rmse=0.1059 delta=0.7937 (37s)\n"}
+,{"stream_name":"stdout","time":1232.273989583,"data":"  float ep  31 train 1.52313 val 1.23229 abs=0.4376 abs_rmse=0.1084 delta=0.7947 (37s)\n"}
+,{"stream_name":"stdout","time":1269.588462164,"data":"  float ep  32 train 1.52287 val 1.22366 abs=0.4253 abs_rmse=0.1066 delta=0.7983 (37s)\n"}
+,{"stream_name":"stdout","time":1269.588506157,"data":"  early stop (float)\n"}
+,{"stream_name":"stdout","time":1269.58851251,"data":"base_p12: 20.5 min\n"}
+,{"stream_name":"stdout","time":1269.588517206,"data":"\n"}
+,{"stream_name":"stdout","time":1269.588522222,"data":"=== L2_p12: L2 retrained, patience 12 (seed 42)\n"}
+,{"stream_name":"stdout","time":1273.678385457,"data":"[wandb] no key found, logging disabled\n"}
+,{"stream_name":"stdout","time":1314.255287366,"data":"  checkpoint selection on: val_abs\n"}
+,{"stream_name":"stdout","time":1314.255321636,"data":"[L2_p12] params=292,244 tokens=25 train_batches=2606 val_batches=2132 MACs=7,490,560\n"}
+,{"stream_name":"stdout","time":1360.294519686,"data":"  float ep   1 train 2.42032 val 1.55366 abs=0.5708 abs_rmse=0.1225 delta=0.9829 (46s)\n"}
+,{"stream_name":"stdout","time":1406.006704554,"data":"  float ep   2 train 2.05875 val 1.39953 abs=0.4879 abs_rmse=0.1134 delta=0.9116 (46s)\n"}
+,{"stream_name":"stdout","time":1451.821549139,"data":"  float ep   3 train 1.90383 val 1.33632 abs=0.4638 abs_rmse=0.1104 delta=0.8725 (46s)\n"}
+,{"stream_name":"stdout","time":1497.551847116,"data":"  float ep   4 train 1.80025 val 1.27100 abs=0.4269 abs_rmse=0.1063 delta=0.8441 (46s)\n"}
+,{"stream_name":"stdout","time":1542.282745077,"data":"  float ep   5 train 1.72314 val 1.22341 abs=0.4026 abs_rmse=0.1029 delta=0.8208 (45s)\n"}
+,{"stream_name":"stdout","time":1588.138393938,"data":"  float ep   6 train 1.66139 val 1.22554 abs=0.4187 abs_rmse=0.1053 delta=0.8069 (46s)\n"}
+,{"stream_name":"stdout","time":1634.126311177,"data":"  float ep   7 train 1.61316 val 1.17880 abs=0.3814 abs_rmse=0.0998 delta=0.7974 (46s)\n"}
+,{"stream_name":"stdout","time":1680.249791793,"data":"  float ep   8 train 1.57618 val 1.21034 abs=0.4063 abs_rmse=0.1037 delta=0.8041 (46s)\n"}
+,{"stream_name":"stdout","time":1725.400182785,"data":"  float ep   9 train 1.54338 val 1.16113 abs=0.3779 abs_rmse=0.0997 delta=0.7833 (45s)\n"}
+,{"stream_name":"stdout","time":1771.070985143,"data":"  float ep  10 train 1.51009 val 1.14616 abs=0.3770 abs_rmse=0.1000 delta=0.7691 (46s)\n"}
+,{"stream_name":"stdout","time":1816.64119522,"data":"  float ep  11 train 1.48428 val 1.13919 abs=0.3709 abs_rmse=0.0987 delta=0.7683 (46s)\n"}
+,{"stream_name":"stdout","time":1861.45469085,"data":"  float ep  12 train 1.46137 val 1.15809 abs=0.3790 abs_rmse=0.1002 delta=0.7791 (45s)\n"}
+,{"stream_name":"stdout","time":1906.782757024,"data":"  float ep  13 train 1.43765 val 1.12262 abs=0.3707 abs_rmse=0.0992 delta=0.7519 (45s)\n"}
+,{"stream_name":"stdout","time":1951.895359424,"data":"  float ep  14 train 1.41634 val 1.16974 abs=0.4039 abs_rmse=0.1035 delta=0.7658 (45s)\n"}
+,{"stream_name":"stdout","time":1997.21178958,"data":"  float ep  15 train 1.39784 val 1.12282 abs=0.3489 abs_rmse=0.0959 delta=0.7739 (45s)\n"}
+,{"stream_name":"stdout","time":2042.605398381,"data":"  float ep  16 train 1.38043 val 1.10160 abs=0.3582 abs_rmse=0.0971 delta=0.7434 (45s)\n"}
+,{"stream_name":"stdout","time":2087.536772541,"data":"  float ep  17 train 1.36702 val 1.14240 abs=0.3787 abs_rmse=0.1003 delta=0.7637 (45s)\n"}
+,{"stream_name":"stdout","time":2133.388517808,"data":"  float ep  18 train 1.35213 val 1.14468 abs=0.3720 abs_rmse=0.0995 delta=0.7727 (46s)\n"}
+,{"stream_name":"stdout","time":2179.253806166,"data":"  float ep  19 train 1.33423 val 1.12941 abs=0.3841 abs_rmse=0.1012 delta=0.7454 (46s)\n"}
+,{"stream_name":"stdout","time":2223.963704414,"data":"  float ep  20 train 1.32307 val 1.10005 abs=0.3533 abs_rmse=0.0969 delta=0.7467 (45s)\n"}
+,{"stream_name":"stdout","time":2268.988193287,"data":"  float ep  21 train 1.30972 val 1.15152 abs=0.3689 abs_rmse=0.0992 delta=0.7827 (45s)\n"}
+,{"stream_name":"stdout","time":2314.169040646,"data":"  float ep  22 train 1.29935 val 1.11056 abs=0.3602 abs_rmse=0.0979 delta=0.7504 (45s)\n"}
+,{"stream_name":"stdout","time":2359.308256612,"data":"  float ep  23 train 1.28463 val 1.07913 abs=0.3404 abs_rmse=0.0949 delta=0.7387 (45s)\n"}
+,{"stream_name":"stdout","time":2404.818214161,"data":"  float ep  24 train 1.27517 val 1.11343 abs=0.3708 abs_rmse=0.0997 delta=0.7426 (46s)\n"}
+,{"stream_name":"stdout","time":2450.3885666,"data":"  float ep  25 train 1.26219 val 1.13238 abs=0.3813 abs_rmse=0.1007 delta=0.7511 (46s)\n"}
+,{"stream_name":"stdout","time":2496.183316663,"data":"  float ep  26 train 1.25737 val 1.11852 abs=0.3788 abs_rmse=0.1007 delta=0.7398 (46s)\n"}
+,{"stream_name":"stdout","time":2542.56395068,"data":"  float ep  27 train 1.24414 val 1.12442 abs=0.3669 abs_rmse=0.0988 delta=0.7575 (46s)\n"}
+,{"stream_name":"stdout","time":2587.934575103,"data":"  float ep  28 train 1.17854 val 1.07426 abs=0.3431 abs_rmse=0.0956 delta=0.7312 (45s)\n"}
+,{"stream_name":"stdout","time":2632.319518783,"data":"  float ep  29 train 1.16800 val 1.11307 abs=0.3613 abs_rmse=0.0980 delta=0.7518 (44s)\n"}
+,{"stream_name":"stdout","time":2677.903288744,"data":"  float ep  30 train 1.15867 val 1.10192 abs=0.3624 abs_rmse=0.0983 delta=0.7396 (46s)\n"}
+,{"stream_name":"stdout","time":2723.264032904,"data":"  float ep  31 train 1.15509 val 1.11897 abs=0.3532 abs_rmse=0.0971 delta=0.7658 (45s)\n"}
+,{"stream_name":"stdout","time":2768.440946718,"data":"  float ep  32 train 1.14784 val 1.11300 abs=0.3579 abs_rmse=0.0979 delta=0.7551 (45s)\n"}
+,{"stream_name":"stdout","time":2812.890517363,"data":"  float ep  33 train 1.11397 val 1.08868 abs=0.3470 abs_rmse=0.0962 delta=0.7417 (44s)\n"}
+,{"stream_name":"stdout","time":2857.452084059,"data":"  float ep  34 train 1.10850 val 1.07446 abs=0.3434 abs_rmse=0.0959 delta=0.7310 (45s)\n"}
+,{"stream_name":"stdout","time":2901.990183086,"data":"  float ep  35 train 1.10681 val 1.10973 abs=0.3546 abs_rmse=0.0972 delta=0.7551 (44s)\n"}
+,{"stream_name":"stdout","time":2901.990234137,"data":"  early stop (float)\n"}
+,{"stream_name":"stdout","time":2901.990240905,"data":"L2_p12: 27.1 min\n"}
+,{"stream_name":"stdout","time":2901.990245992,"data":"\n"}
+,{"stream_name":"stdout","time":2901.990250226,"data":"=== L2_q10: QAT from L2, act (10, 3), weights (10, 3) | weights 2.92 Mbit, fits on chip: True, HLS: True\n"}
+,{"stream_name":"stdout","time":2906.216287101,"data":"[wandb] no key found, logging disabled\n"}
+,{"stream_name":"stdout","time":2945.908255098,"data":"  checkpoint selection on: val_abs\n"}
+,{"stream_name":"stdout","time":2945.90829748,"data":"[L2_q10] params=292,244 tokens=25 train_batches=2606 val_batches=2132 MACs=7,490,560\n"}
+,{"stream_name":"stdout","time":3022.815158458,"data":"  qat ep   1 train 1.26758 val 1.10721 abs=0.3523 abs_rmse=0.0972 delta=0.7549 (77s)\n"}
+,{"stream_name":"stdout","time":3097.995649137,"data":"  qat ep   2 train 1.26052 val 1.12709 abs=0.3714 abs_rmse=0.0992 delta=0.7557 (75s)\n"}
+,{"stream_name":"stdout","time":3174.001814575,"data":"  qat ep   3 train 1.26044 val 1.13792 abs=0.3774 abs_rmse=0.1004 delta=0.7605 (76s)\n"}
+,{"stream_name":"stdout","time":3250.303143521,"data":"  qat ep   4 train 1.26474 val 1.12288 abs=0.3642 abs_rmse=0.0989 delta=0.7587 (76s)\n"}
+,{"stream_name":"stdout","time":3325.532521357,"data":"  qat ep   5 train 1.26526 val 1.10434 abs=0.3432 abs_rmse=0.0958 delta=0.7611 (75s)\n"}
+,{"stream_name":"stdout","time":3400.747202431,"data":"  qat ep   6 train 1.26688 val 1.12594 abs=0.3570 abs_rmse=0.0980 delta=0.7689 (75s)\n"}
+,{"stream_name":"stdout","time":3476.877396818,"data":"  qat ep   7 train 1.27047 val 1.13276 abs=0.3653 abs_rmse=0.0985 delta=0.7674 (76s)\n"}
+,{"stream_name":"stdout","time":3552.523691209,"data":"  qat ep   8 train 1.27291 val 1.10330 abs=0.3365 abs_rmse=0.0945 delta=0.7668 (75s)\n"}
+,{"stream_name":"stdout","time":3552.523721783,"data":"L2_q10: 10.8 min\n"}
+,{"stream_name":"stdout","time":3552.523727004,"data":"\n"}
+,{"stream_name":"stdout","time":3552.523747354,"data":"=== L2_q12: QAT from L2, act (12, 4), weights (10, 3) | weights 2.92 Mbit, fits on chip: True, HLS: True\n"}
+,{"stream_name":"stdout","time":3556.619863967,"data":"[wandb] no key found, logging disabled\n"}
+,{"stream_name":"stdout","time":3596.183962464,"data":"  checkpoint selection on: val_abs\n"}
+,{"stream_name":"stdout","time":3596.183999336,"data":"[L2_q12] params=292,244 tokens=25 train_batches=2606 val_batches=2132 MACs=7,490,560\n"}
+,{"stream_name":"stdout","time":3672.216733247,"data":"  qat ep   1 train 1.20370 val 1.09512 abs=0.3580 abs_rmse=0.0984 delta=0.7371 (76s)\n"}
+,{"stream_name":"stdout","time":3747.414344464,"data":"  qat ep   2 train 1.19222 val 1.07943 abs=0.3474 abs_rmse=0.0961 delta=0.7320 (75s)\n"}
+,{"stream_name":"stdout","time":3823.460341906,"data":"  qat ep   3 train 1.18780 val 1.08662 abs=0.3518 abs_rmse=0.0972 delta=0.7348 (76s)\n"}
+,{"stream_name":"stdout","time":3899.34269855,"data":"  qat ep   4 train 1.18666 val 1.08618 abs=0.3488 abs_rmse=0.0963 delta=0.7374 (76s)\n"}
+,{"stream_name":"stdout","time":3975.402000805,"data":"  qat ep   5 train 1.18265 val 1.09572 abs=0.3632 abs_rmse=0.0980 delta=0.7325 (76s)\n"}
+,{"stream_name":"stdout","time":4051.549467185,"data":"  qat ep   6 train 1.17728 val 1.07509 abs=0.3355 abs_rmse=0.0946 delta=0.7396 (76s)\n"}
+,{"stream_name":"stdout","time":4127.872959821,"data":"  qat ep   7 train 1.17576 val 1.10931 abs=0.3780 abs_rmse=0.1003 delta=0.7313 (76s)\n"}
+,{"stream_name":"stdout","time":4202.585252362,"data":"  qat ep   8 train 1.17530 val 1.07801 abs=0.3422 abs_rmse=0.0955 delta=0.7358 (75s)\n"}
+,{"stream_name":"stdout","time":4202.585280892,"data":"L2_q12: 10.8 min\n"}
+,{"stream_name":"stdout","time":4202.58528445,"data":"\n"}
+,{"stream_name":"stdout","time":4202.585287339,"data":"=== L3_w8: QAT from L3, act (12, 4), weights (8, 2) | weights 3.40 Mbit, fits on chip: True, HLS: True\n"}
+,{"stream_name":"stdout","time":4207.063709847,"data":"[wandb] no key found, logging disabled\n"}
+,{"stream_name":"stdout","time":4246.794244182,"data":"  checkpoint selection on: val_abs\n"}
+,{"stream_name":"stdout","time":4246.794276784,"data":"[L3_w8] params=424,724 tokens=25 train_batches=2606 val_batches=2132 MACs=10,927,360\n"}
+,{"stream_name":"stdout","time":4341.367678943,"data":"  qat ep   1 train 1.08476 val 1.09546 abs=0.3648 abs_rmse=0.0991 delta=0.7307 (95s)\n"}
+,{"stream_name":"stdout","time":4434.966596664,"data":"  qat ep   2 train 1.09157 val 1.08101 abs=0.3491 abs_rmse=0.0972 delta=0.7319 (94s)\n"}
+,{"stream_name":"stdout","time":4530.430339287,"data":"  qat ep   3 train 1.08403 val 1.08153 abs=0.3474 abs_rmse=0.0969 delta=0.7341 (95s)\n"}
+,{"stream_name":"stdout","time":4625.818166823,"data":"  qat ep   4 train 1.07959 val 1.09855 abs=0.3668 abs_rmse=0.0981 delta=0.7318 (95s)\n"}
+,{"stream_name":"stdout","time":4721.152606483,"data":"  qat ep   5 train 1.07477 val 1.07477 abs=0.3535 abs_rmse=0.0970 delta=0.7213 (95s)\n"}
+,{"stream_name":"stdout","time":4814.819515278,"data":"  qat ep   6 train 1.07166 val 1.05181 abs=0.3282 abs_rmse=0.0926 delta=0.7236 (94s)\n"}
+,{"stream_name":"stdout","time":4909.482796618,"data":"  qat ep   7 train 1.06959 val 1.09572 abs=0.3535 abs_rmse=0.0970 delta=0.7422 (95s)\n"}
+,{"stream_name":"stdout","time":5002.986373983,"data":"  qat ep   8 train 1.06645 val 1.07199 abs=0.3362 abs_rmse=0.0945 delta=0.7358 (93s)\n"}
+,{"stream_name":"stdout","time":5002.986426781,"data":"L3_w8: 13.3 min\n"}
+,{"stream_name":"stdout","time":5002.986433518,"data":"\n"}
+,{"stream_name":"stdout","time":5002.986438296,"data":"models: ['base', 'L2', 'L3', 'base_p12', 'L2_p12', 'L2_q10', 'L2_q12', 'L3_w8', 'L2_ptq10']\n"}
+,{"stream_name":"stdout","time":5003.106465609,"data":"candidate fusion gains: [0.031, 0.044, 0.061, 0.08, 0.095, 0.115, 0.146, 0.181, 0.232, 0.292, 0.358]\n"}
+,{"stream_name":"stdout","time":5086.013372101,"data":"base: fused R2 0.6884 [0.6692, 0.7040] RMSE 0.0993 | per-subject mean 0.544 | eval 83s\n"}
+,{"stream_name":"stdout","time":5170.819480888,"data":"L2: fused R2 0.7577 [0.7402, 0.7712] RMSE 0.0878 | per-subject mean 0.636 | eval 85s\n"}
+,{"stream_name":"stdout","time":5257.263542752,"data":"L3: fused R2 0.7829 [0.7660, 0.7959] RMSE 0.0830 | per-subject mean 0.682 | eval 86s\n"}
+,{"stream_name":"stdout","time":5340.515401509,"data":"base_p12: fused R2 0.6774 [0.6588, 0.6928] RMSE 0.1013 | per-subject mean 0.525 | eval 83s\n"}
+,{"stream_name":"stdout","time":5426.073725687,"data":"L2_p12: fused R2 0.7554 [0.7389, 0.7682] RMSE 0.0881 | per-subject mean 0.635 | eval 86s\n"}
+,{"stream_name":"stdout","time":5516.356502441,"data":"L2_q10: fused R2 0.7662 [0.7485, 0.7795] RMSE 0.0862 | per-subject mean 0.650 | eval 90s\n"}
+,{"stream_name":"stdout","time":5606.341087214,"data":"L2_q12: fused R2 0.7624 [0.7457, 0.7756] RMSE 0.0870 | per-subject mean 0.647 | eval 90s\n"}
+,{"stream_name":"stdout","time":5701.78067622,"data":"L3_w8: fused R2 0.7753 [0.7584, 0.7886] RMSE 0.0843 | per-subject mean 0.672 | eval 95s\n"}
+,{"stream_name":"stdout","time":5793.020493863,"data":"L2_ptq10: fused R2 0.7398 [0.7220, 0.7539] RMSE 0.0912 | per-subject mean 0.592 | eval 91s\n"}
+,{"stream_name":"stdout","time":5794.809200843,"data":"exporting L3_w8: fused R2 0.7753, act (12, 4), weights (8, 2) (3.40 Mbit), fusion gain 0.0951\n"}
+,{"stream_name":"stdout","time":5798.57696724,"data":"#ifndef MODEL_CONFIG_H\n"}
+,{"stream_name":"stdout","time":5798.57702989,"data":"#define MODEL_CONFIG_H\n"}
+,{"stream_name":"stdout","time":5798.577262311,"data":"// generated by emg_common.export_hls from run \"L3_w8\" (424,724 parameters)\n"}
+,{"stream_name":"stdout","time":5798.577289148,"data":"#define OUT_DIM 10\n"}
+,{"stream_name":"stdout","time":5798.577295567,"data":"#define SEQ_LEN 25            // tokens after the strided embedding\n"}
+,{"stream_name":"stdout","time":5798.577301233,"data":"#define RAW_SEQ_LEN 400       // EMG samples per window\n"}
+,{"stream_name":"stdout","time":5798.577306643,"data":"#define D_MODEL 128\n"}
+,{"stream_name":"stdout","time":5798.577311847,"data":"#define IN_CHANNELS 12\n"}
+,{"stream_name":"stdout","time":5798.577317235,"data":"#define OUT_CHANNELS 128\n"}
+,{"stream_name":"stdout","time":5798.577322329,"data":"#define KERNEL_SIZE 16\n"}
+,{"stream_name":"stdout","time":5798.57732742,"data":"#define CONV_STRIDE 16\n"}
+,{"stream_name":"stdout","time":5798.577332475,"data":"#define CONV_PADDING 0\n"}
+,{"stream_name":"stdout","time":5798.577337479,"data":"#define NUM_HEADS 8\n"}
+,{"stream_name":"stdout","time":5798.577342405,"data":"#define HEAD_DIM 16\n"}
+,{"stream_name":"stdout","time":5798.577347291,"data":"#define D_FF 256\n"}
+,{"stream_name":"stdout","time":5798.577352239,"data":"#define ROPE_HALF_DIM 64\n"}
+,{"stream_name":"stdout","time":5798.577357243,"data":"#define NUM_LAYERS 3\n"}
+,{"stream_name":"stdout","time":5798.577362146,"data":"#define HAS_DELTA_HEAD 1\n"}
+,{"stream_name":"stdout","time":5798.577367619,"data":"// ap_fixed\u003cW, I\u003e formats used in QAT (act_fmt, weight_fmt, resid_fmt, rope_fmt)\n"}
+,{"stream_name":"stdout","time":5798.577373509,"data":"#define ACT_W 12\n"}
+,{"stream_name":"stdout","time":5798.577378498,"data":"#define ACT_I 4\n"}
+,{"stream_name":"stdout","time":5798.577383421,"data":"#define WEIGHT_W 8\n"}
+,{"stream_name":"stdout","time":5798.577388358,"data":"#define WEIGHT_I 2\n"}
+,{"stream_name":"stdout","time":5798.577393239,"data":"#define RESID_W 16\n"}
+,{"stream_name":"stdout","time":5798.577398369,"data":"#define RESID_I 8\n"}
+,{"stream_name":"stdout","time":5798.577403949,"data":"#define ROPE_W 8\n"}
+,{"stream_name":"stdout","time":5798.577408822,"data":"#define ROPE_I 2\n"}
+,{"stream_name":"stdout","time":5798.577422318,"data":"#endif // MODEL_CONFIG_H\n"}
+,{"stream_name":"stdout","time":5798.577426642,"data":"\n"}
+,{"stream_name":"stdout","time":5799.327653045,"data":"archive: /kaggle/working/qat/hls_export_L3_w8.zip\n"}
+,{"stream_name":"stdout","time":5799.327699891,"data":"\n"}
+,{"stream_name":"stdout","time":5799.327703397,"data":"Install locally (repository root), then run the bit-accurate C simulation:\n"}
+,{"stream_name":"stdout","time":5799.327706046,"data":"  unzip hls_export_L3_w8.zip -d hls_export_L3_w8\n"}
+,{"stream_name":"stdout","time":5799.327728153,"data":"  python hls_code/scripts/install_export.py hls_export_L3_w8\n"}
+,{"stream_name":"stdout","time":5799.327732296,"data":"  cd hls_code \u0026\u0026 make clean \u0026\u0026 make run          # every layer must PASS against the fixed-point reference\n"}
+,{"stream_name":"stdout","time":5799.327736871,"data":"Vitis: re-run C synthesis with the same hls_config.cfg (file list already updated); MAC_UNROLL=8 keeps latency near 17 ms.\n"}
+,{"stream_name":"stderr","time":5804.7662974,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":5804.766327293,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":5804.929479514,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":5804.929503187,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":5805.897547282,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":5805.989269086,"data":"[NbConvertApp] Writing 123288 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":5808.654723528,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":5809.254327462,"data":"[NbConvertApp] Support files will be in __results___files/\n"}
+,{"stream_name":"stderr","time":5809.254363679,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":5809.254785629,"data":"[NbConvertApp] Writing 393222 bytes to __results__.html\n"}
+]
