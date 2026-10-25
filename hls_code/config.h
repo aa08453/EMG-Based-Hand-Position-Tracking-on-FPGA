@@ -7,7 +7,7 @@
 // Hardware parallelism: multiply-accumulates per cycle in each dense layer.
 // Per encoder layer at 25 tokens and 100 MHz: about 4.7 ms with 4, 2.6 ms with 8 (scripts/estimate_cycles.py).
 #ifndef MAC_UNROLL
-#define MAC_UNROLL 4
+#define MAC_UNROLL 16
 #endif
 
 // Q/K/V and attention-output buffers are split into 16 banks of 200 words each (64 small banks).

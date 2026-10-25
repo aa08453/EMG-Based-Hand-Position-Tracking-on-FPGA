@@ -14,7 +14,6 @@ test_vitis_roformer
 *.o
 *.out
 *.zip
-!report.zip
 
 # IDE Files
 .vscode/
@@ -49,3 +48,11 @@ vivado_project/vivado_project.xpr
 # local C-simulation binaries
 hls_code/test_layers
 hls_code/test_top
+
+roformer_hls/sol
+roformer_hls/sol1/.autopilot
+roformer_hls/sol1/.debug
+roformer_hls/sol1/impl
+roformer_hls/sol1/csim
+# !roformer_hls/sol1/syn/report/RoFormer_Top_csynth.rpt
+!/roformer_hls/sol1/syn/report

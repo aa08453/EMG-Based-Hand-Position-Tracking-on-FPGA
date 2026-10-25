@@ -1,0 +1,178 @@
+
+
+================================================================
+== Vitis HLS Report for 'encoder_pipeline_Loop_FINI_BUF_proc'
+================================================================
+* Date:           Mon Oct 26 01:52:29 2026
+
+* Version:        2025.2 (Build 6295257 on Nov 14 2025)
+* Project:        roformer_hls
+* Solution:       sol1 (Vivado IP Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg484-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  |  10.00 ns|  8.335 ns|     1.25 ns|
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+------+------+------------------------------------------------+
+    |  Latency (cycles) |   Latency (absolute)  |   Interval  |                    Pipeline                    |
+    |   min   |   max   |    min    |    max    |  min |  max |                      Type                      |
+    +---------+---------+-----------+-----------+------+------+------------------------------------------------+
+    |     3202|     3202|  32.020 us|  32.020 us|  3200|  3200|  loop auto-rewind stp (delay=0 clock cycles(s))|
+    +---------+---------+-----------+-----------+------+------+------------------------------------------------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +------------+---------+---------+----------+-----------+-----------+------+----------+
+        |            |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        |  Loop Name |   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +------------+---------+---------+----------+-----------+-----------+------+----------+
+        |- FINI_BUF  |     3200|     3200|         2|          1|          1|  3200|       yes|
+        +------------+---------+---------+----------+-----------+-----------+------+----------+
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|     30|    -|
+|FIFO             |        -|    -|       -|      -|    -|
+|Instance         |        -|    -|       0|     20|    -|
+|Memory           |        -|    -|       -|      -|    -|
+|Multiplexer      |        -|    -|       0|     36|    -|
+|Register         |        -|    -|      58|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |        0|    0|      58|     86|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        0|    0|      ~0|     ~0|    0|
++-----------------+---------+-----+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +----------------------------+----------------------+---------+----+---+----+-----+
+    |          Instance          |        Module        | BRAM_18K| DSP| FF| LUT| URAM|
+    +----------------------------+----------------------+---------+----+---+----+-----+
+    |sparsemux_9_2_12_1_1_U2421  |sparsemux_9_2_12_1_1  |        0|   0|  0|  20|    0|
+    +----------------------------+----------------------+---------+----+---+----+-----+
+    |Total                       |                      |        0|   0|  0|  20|    0|
+    +----------------------------+----------------------+---------+----+---+----+-----+
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +---------------------------+----------+----+---+----+------------+------------+
+    |       Variable Name       | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +---------------------------+----------+----+---+----+------------+------------+
+    |i_12_fu_198_p2             |         +|   0|  0|  12|          12|           1|
+    |ap_condition_138           |       and|   0|  0|   2|           1|           1|
+    |icmp_ln124_fu_214_p2       |      icmp|   0|  0|  12|          12|          11|
+    |ap_block_pp0_stage0_11001  |        or|   0|  0|   2|           1|           1|
+    |ap_enable_pp0              |       xor|   0|  0|   2|           1|           2|
+    +---------------------------+----------+----+---+----+------------+------------+
+    |Total                      |          |   0|  0|  30|          27|          16|
+    +---------------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +----------------------------------+----+-----------+-----+-----------+
+    |               Name               | LUT| Input Size| Bits| Total Bits|
+    +----------------------------------+----+-----------+-----+-----------+
+    |ap_done_int                       |   9|          2|    1|          2|
+    |ap_loop_exit_ready_pp0_iter1_reg  |   9|          2|    1|          2|
+    |ap_sig_allocacmp_i                |   9|          2|   12|         24|
+    |i45_fu_60                         |   9|          2|   12|         24|
+    +----------------------------------+----+-----------+-----+-----------+
+    |Total                             |  36|          8|   26|         52|
+    +----------------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +----------------------------------+----+----+-----+-----------+
+    |               Name               | FF | LUT| Bits| Const Bits|
+    +----------------------------------+----+----+-----+-----------+
+    |act_out_0_addr_reg_284            |  10|   0|   10|          0|
+    |act_out_1_addr_reg_289            |  10|   0|   10|          0|
+    |act_out_2_addr_reg_294            |  10|   0|   10|          0|
+    |act_out_3_addr_reg_299            |  10|   0|   10|          0|
+    |ap_CS_fsm                         |   1|   0|    1|          0|
+    |ap_done_reg                       |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter1           |   1|   0|    1|          0|
+    |ap_loop_exit_ready_pp0_iter1_reg  |   1|   0|    1|          0|
+    |i45_fu_60                         |  12|   0|   12|          0|
+    |trunc_ln124_reg_259               |   2|   0|    2|          0|
+    +----------------------------------+----+----+-----+-----------+
+    |Total                             |  58|   0|   58|          0|
+    +----------------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++-------------------------+-----+-----+------------+-------------------------------------+--------------+
+|        RTL Ports        | Dir | Bits|  Protocol  |            Source Object            |    C Type    |
++-------------------------+-----+-----+------------+-------------------------------------+--------------+
+|ap_clk                   |   in|    1|  ap_ctrl_hs|  encoder_pipeline_Loop_FINI_BUF_proc|  return value|
+|ap_rst                   |   in|    1|  ap_ctrl_hs|  encoder_pipeline_Loop_FINI_BUF_proc|  return value|
+|ap_start                 |   in|    1|  ap_ctrl_hs|  encoder_pipeline_Loop_FINI_BUF_proc|  return value|
+|ap_done                  |  out|    1|  ap_ctrl_hs|  encoder_pipeline_Loop_FINI_BUF_proc|  return value|
+|ap_continue              |   in|    1|  ap_ctrl_hs|  encoder_pipeline_Loop_FINI_BUF_proc|  return value|
+|ap_idle                  |  out|    1|  ap_ctrl_hs|  encoder_pipeline_Loop_FINI_BUF_proc|  return value|
+|ap_ready                 |  out|    1|  ap_ctrl_hs|  encoder_pipeline_Loop_FINI_BUF_proc|  return value|
+|act_out_3_address0       |  out|   10|   ap_memory|                            act_out_3|         array|
+|act_out_3_ce0            |  out|    1|   ap_memory|                            act_out_3|         array|
+|act_out_3_we0            |  out|    1|   ap_memory|                            act_out_3|         array|
+|act_out_3_d0             |  out|   12|   ap_memory|                            act_out_3|         array|
+|act_out_2_address0       |  out|   10|   ap_memory|                            act_out_2|         array|
+|act_out_2_ce0            |  out|    1|   ap_memory|                            act_out_2|         array|
+|act_out_2_we0            |  out|    1|   ap_memory|                            act_out_2|         array|
+|act_out_2_d0             |  out|   12|   ap_memory|                            act_out_2|         array|
+|act_out_1_address0       |  out|   10|   ap_memory|                            act_out_1|         array|
+|act_out_1_ce0            |  out|    1|   ap_memory|                            act_out_1|         array|
+|act_out_1_we0            |  out|    1|   ap_memory|                            act_out_1|         array|
+|act_out_1_d0             |  out|   12|   ap_memory|                            act_out_1|         array|
+|act_out_0_address0       |  out|   10|   ap_memory|                            act_out_0|         array|
+|act_out_0_ce0            |  out|    1|   ap_memory|                            act_out_0|         array|
+|act_out_0_we0            |  out|    1|   ap_memory|                            act_out_0|         array|
+|act_out_0_d0             |  out|   12|   ap_memory|                            act_out_0|         array|
+|layer_acts_3_0_address0  |  out|   10|   ap_memory|                       layer_acts_3_0|         array|
+|layer_acts_3_0_ce0       |  out|    1|   ap_memory|                       layer_acts_3_0|         array|
+|layer_acts_3_0_q0        |   in|   12|   ap_memory|                       layer_acts_3_0|         array|
+|layer_acts_3_1_address0  |  out|   10|   ap_memory|                       layer_acts_3_1|         array|
+|layer_acts_3_1_ce0       |  out|    1|   ap_memory|                       layer_acts_3_1|         array|
+|layer_acts_3_1_q0        |   in|   12|   ap_memory|                       layer_acts_3_1|         array|
+|layer_acts_3_2_address0  |  out|   10|   ap_memory|                       layer_acts_3_2|         array|
+|layer_acts_3_2_ce0       |  out|    1|   ap_memory|                       layer_acts_3_2|         array|
+|layer_acts_3_2_q0        |   in|   12|   ap_memory|                       layer_acts_3_2|         array|
+|layer_acts_3_3_address0  |  out|   10|   ap_memory|                       layer_acts_3_3|         array|
+|layer_acts_3_3_ce0       |  out|    1|   ap_memory|                       layer_acts_3_3|         array|
+|layer_acts_3_3_q0        |   in|   12|   ap_memory|                       layer_acts_3_3|         array|
++-------------------------+-----+-----+------------+-------------------------------------+--------------+
+

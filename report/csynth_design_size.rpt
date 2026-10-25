@@ -1,0 +1,74 @@
+================================================================
+== Design Size Report
+================================================================
+
+* Total Instructions per Compilation Phase
++---------------+----------------------------+--------------+----------------------------------------------------------------------------------------+
+| Phase         | Step                       | Instructions | Description                                                                            |
++---------------+----------------------------+--------------+----------------------------------------------------------------------------------------+
+| Compile/Link  |                            | 28,063       | After all functions are compiled and linked into a single design                       |
+|               |                            |              |                                                                                        |
+| Unroll/Inline |                            |              | After user unroll and inline pragmas are applied                                       |
+|               | (1) unroll                 | 38,754       | user unroll pragmas are applied                                                        |
+|               | (2) simplification         | 15,306       | simplification of applied user unroll pragmas                                          |
+|               | (3) inline                 | 13,707       | user inline pragmas are applied                                                        |
+|               | (4) simplification         | 13,164       | simplification of applied user inline pragmas                                          |
+|               |                            |              |                                                                                        |
+| Array/Struct  |                            |              | After user array partition and struct aggregate/disaggregate pragmas are applied       |
+|               | (1) array partition        | 66,573       | user array partition pragmas are applied                                               |
+|               | (2) simplification         | 21,080       | simplification of applied user array partition & struct aggregate/disaggregate pragmas |
+|               | (3) aggregate/disaggregate | 21,080       | user struct aggregate/disaggregate pragmas are applied                                 |
+|               | (4) array reshape          | 21,080       | apply array reshape pragmas                                                            |
+|               | (5) access patterns        | 21,308       | array access pattern optmizations                                                      |
+|               |                            |              |                                                                                        |
+| Performance   |                            |              | After transformations are applied to meet performance pragma targets                   |
+|               | (1) loop simplification    | 21,308       | loop and instruction simplification                                                    |
+|               | (2) parallelization        | 21,047       | loops are unrolled or pipelined to meet performance targets                            |
+|               | (3) array partition        | 21,039       | arrays are partitioned to meet performance targets                                     |
+|               | (4) simplification         | 21,039       | simplification of design after performance transformations                             |
+|               |                            |              |                                                                                        |
+| HW Transforms |                            |              | After hardware transfomations                                                          |
+|               | (1) lowering               | 21,045       | initial conversion to HW specific instructions                                         |
+|               | (2) optimizations          | 21,738       | high level synthesis optimizations                                                     |
++---------------+----------------------------+--------------+----------------------------------------------------------------------------------------+
+
+* Instructions per Function for each Compilation Phase
++----------------------------------------+----------------------+-----------------+-----------------+------------------+------------------+------------------+
+| Function                               | Location             | Compile/Link    | Unroll/Inline   | Array/Struct     | Performance      | HW Transforms    |
++----------------------------------------+----------------------+-----------------+-----------------+------------------+------------------+------------------+
+| + RoFormer_Top                         | RoFormer_Top.cpp:157 | 28,063          | 13,164          | 21,308           | 21,039           | 21,738           |
+|    stream_to_conv                      | RoFormer_Top.cpp:67  |    26           |     9           |   780            |   780            |   788            |
+|  + conv_stage                          | RoFormer_Top.cpp:77  | 1,654           | 4,331           | 8,340            | 8,148            | 8,558            |
+|   + conv1d_forward                     | Conv1dLayer.h:196    | 1,651           | 4,329           | 8,338            | 8,146            | 8,555            |
+|      load_conv_weights                 | Conv1dLayer.h:119    |   104           |   782           |   782            |   782            | 1,173            |
+|      compute_conv_tokens               | Conv1dLayer.h:137    | 1,528           | 3,538           | 7,547            | 7,355            | 7,371            |
+|  + encoder_pipeline                    | RoFormer_Top.cpp:96  | 22,464          | 8,454           | 11,138           | 11,061           | 11,305           |
+|   + encoder_layer_proc                 | RoFormer_Top.cpp:84  | 22,405          | 8,421 (3 calls) | 10,956 (3 calls) | 10,887 (3 calls) | 11,115 (3 calls) |
+|    + mha_norm_forward                  | MHANorm.h:14         | 15,035          | 6,870 (3 calls) | 9,045 (3 calls)  | 8,982 (3 calls)  | 9,159 (3 calls)  |
+|       rope_forward                     | RotaryEmbedding.h:9  | 1,738           |                 |                  |                  |                  |
+|       dense<128, 128, false, ap_fi...  | FCLayer.h:14         | 3,822 (3 calls) |                 |                  |                  |                  |
+|     + softmax_row                      | Softmax.h:9          | 2,277           |                 |                  |                  |                  |
+|      + exp                             | expfloat.cpp:15      |     4           |                 |                  |                  |                  |
+|         exp                            | hls_exp_float.cpp:15 |     2           |                 |                  |                  |                  |
+|       dense<128, 128, false, ap_fi...  | FCLayer.h:14         | 1,274           |                 |                  |                  |                  |
+|     + ln_forward<ap_fixed<16, 8, (...  | LayerNorm.h:11       | 3,793           |                 |                  |                  |                  |
+|        rsqrt                           | rsqrtfloat.cpp:15    |     2           |                 |                  |                  |                  |
+|    + ffn_norm_forward                  | FFNorm.h:10          | 7,357           | 1,533 (3 calls) | 1,866 (3 calls)  | 1,860 (3 calls)  | 1,908 (3 calls)  |
+|     + ff_forward                       | FeedForward.h:9      | 3,193           |                 |                  |                  |                  |
+|        dense<128, 256, true, ap_fix... | FCLayer.h:14         | 1,908           |                 |                  |                  |                  |
+|        dense<256, 128, false, ap_fi... | FCLayer.h:14         | 1,274           |                 |                  |                  |                  |
+|     + ln_forward<ap_fixed<16, 8, (...  | LayerNorm.h:11       | 3,793           |                 |                  |                  |                  |
+|        rsqrt                           | rsqrtfloat.cpp:15    |     2           |                 |                  |                  |                  |
+|  + run_pooling_and_fc                  | RoFormer_Top.cpp:131 | 3,883           |   349           |   402            |   402            |   434            |
+|     pooling                            | Pooling.h:7          | 1,298           |    84           |   112            |   112            |   128            |
+|     dense<128, 10, false, ap_fix...    | FCLayer.h:14         | 2,548 (2 calls) |                 |                  |                  |                  |
++----------------------------------------+----------------------+-----------------+-----------------+------------------+------------------+------------------+
+
+* Design Size Message Settings
++---------------------------------------------+--------+------------------------------------------------------------------+
+| Message Setting                             | Value  | Description                                                      |
++---------------------------------------------+--------+------------------------------------------------------------------+
+| config_compile -design_size_maximum_warning | 100000 | Show a warning when total design instructions exceeds this value |
++---------------------------------------------+--------+------------------------------------------------------------------+
+
+

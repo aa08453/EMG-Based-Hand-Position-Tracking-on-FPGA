@@ -1,0 +1,174 @@
+
+
+================================================================
+== Vitis HLS Report for 'mha_norm_forward_Pipeline_MHA_RESID'
+================================================================
+* Date:           Mon Oct 26 01:52:27 2026
+
+* Version:        2025.2 (Build 6295257 on Nov 14 2025)
+* Project:        roformer_hls
+* Solution:       sol1 (Vivado IP Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg484-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  |  10.00 ns|  8.136 ns|     1.25 ns|
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+-------------------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval |      Pipeline     |
+    |   min   |   max   |    min   |    max   | min | max |        Type       |
+    +---------+---------+----------+----------+-----+-----+-------------------+
+    |      131|      131|  1.310 us|  1.310 us|    0|    0|  loop pipeline stp|
+    +---------+---------+----------+----------+-----+-----+-------------------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +-------------+---------+---------+----------+-----------+-----------+------+----------+
+        |             |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        |  Loop Name  |   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +-------------+---------+---------+----------+-----------+-----------+------+----------+
+        |- MHA_RESID  |      129|      129|         3|          1|          1|   128|       yes|
+        +-------------+---------+---------+----------+-----------+-----------+------+----------+
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|    117|    -|
+|FIFO             |        -|    -|       -|      -|    -|
+|Instance         |        -|    -|       0|     20|    -|
+|Memory           |        -|    -|       -|      -|    -|
+|Multiplexer      |        -|    -|       0|     36|    -|
+|Register         |        -|    -|      47|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |        0|    0|      47|    173|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        0|    0|      ~0|     ~0|    0|
++-----------------+---------+-----+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +----------------------------+----------------------+---------+----+---+----+-----+
+    |          Instance          |        Module        | BRAM_18K| DSP| FF| LUT| URAM|
+    +----------------------------+----------------------+---------+----+---+----+-----+
+    |sparsemux_9_2_12_1_1_U2251  |sparsemux_9_2_12_1_1  |        0|   0|  0|  20|    0|
+    +----------------------------+----------------------+---------+----+---+----+-----+
+    |Total                       |                      |        0|   0|  0|  20|    0|
+    +----------------------------+----------------------+---------+----+---+----+-----+
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +--------------------------+----------+----+---+----+------------+------------+
+    |       Variable Name      | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +--------------------------+----------+----+---+----+------------+------------+
+    |add_ln100_1_fu_271_p2     |         +|   0|  0|  23|          16|          16|
+    |add_ln100_fu_253_p2       |         +|   0|  0|  24|          17|          17|
+    |add_ln98_fu_176_p2        |         +|   0|  0|  15|           8|           1|
+    |and_ln100_fu_291_p2       |       and|   0|  0|   2|           1|           1|
+    |icmp_ln98_fu_170_p2       |      icmp|   0|  0|  14|           8|           9|
+    |select_ln100_1_fu_311_p3  |    select|   0|  0|  16|           1|          16|
+    |select_ln100_fu_303_p3    |    select|   0|  0|  17|           1|          15|
+    |ap_enable_pp0             |       xor|   0|  0|   2|           1|           2|
+    |xor_ln100_1_fu_297_p2     |       xor|   0|  0|   2|           1|           1|
+    |xor_ln100_fu_285_p2       |       xor|   0|  0|   2|           1|           2|
+    +--------------------------+----------+----+---+----+------------+------------+
+    |Total                     |          |   0|  0| 117|          55|          80|
+    +--------------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +-------------------------+----+-----------+-----+-----------+
+    |           Name          | LUT| Input Size| Bits| Total Bits|
+    +-------------------------+----+-----------+-----+-----------+
+    |ap_done_int              |   9|          2|    1|          2|
+    |ap_enable_reg_pp0_iter1  |   9|          2|    1|          2|
+    |ap_sig_allocacmp_d_3     |   9|          2|    8|         16|
+    |d_fu_74                  |   9|          2|    8|         16|
+    +-------------------------+----+-----------+-----+-----------+
+    |Total                    |  36|          8|   18|         36|
+    +-------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +----------------------------------+----+----+-----+-----------+
+    |               Name               | FF | LUT| Bits| Const Bits|
+    +----------------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                         |   1|   0|    1|          0|
+    |ap_done_reg                       |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter1           |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter2           |   1|   0|    1|          0|
+    |ap_loop_exit_ready_pp0_iter1_reg  |   1|   0|    1|          0|
+    |d_fu_74                           |   8|   0|    8|          0|
+    |select_ln100_1_reg_365            |  16|   0|   16|          0|
+    |trunc_ln98_reg_335                |   2|   0|    2|          0|
+    |zext_ln98_reg_330                 |   8|   0|   64|         56|
+    |zext_ln98_reg_330_pp0_iter1_reg   |   8|   0|   64|         56|
+    +----------------------------------+----+----+-----+-----------+
+    |Total                             |  47|   0|  159|        112|
+    +----------------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++------------------+-----+-----+------------+-------------------------------------+--------------+
+|     RTL Ports    | Dir | Bits|  Protocol  |            Source Object            |    C Type    |
++------------------+-----+-----+------------+-------------------------------------+--------------+
+|ap_clk            |   in|    1|  ap_ctrl_hs|  mha_norm_forward_Pipeline_MHA_RESID|  return value|
+|ap_rst            |   in|    1|  ap_ctrl_hs|  mha_norm_forward_Pipeline_MHA_RESID|  return value|
+|ap_start          |   in|    1|  ap_ctrl_hs|  mha_norm_forward_Pipeline_MHA_RESID|  return value|
+|ap_done           |  out|    1|  ap_ctrl_hs|  mha_norm_forward_Pipeline_MHA_RESID|  return value|
+|ap_idle           |  out|    1|  ap_ctrl_hs|  mha_norm_forward_Pipeline_MHA_RESID|  return value|
+|ap_ready          |  out|    1|  ap_ctrl_hs|  mha_norm_forward_Pipeline_MHA_RESID|  return value|
+|t_2               |   in|    5|     ap_none|                                  t_2|        scalar|
+|input_0_address0  |  out|   10|   ap_memory|                              input_0|         array|
+|input_0_ce0       |  out|    1|   ap_memory|                              input_0|         array|
+|input_0_q0        |   in|   12|   ap_memory|                              input_0|         array|
+|input_1_address0  |  out|   10|   ap_memory|                              input_1|         array|
+|input_1_ce0       |  out|    1|   ap_memory|                              input_1|         array|
+|input_1_q0        |   in|   12|   ap_memory|                              input_1|         array|
+|input_2_address0  |  out|   10|   ap_memory|                              input_2|         array|
+|input_2_ce0       |  out|    1|   ap_memory|                              input_2|         array|
+|input_2_q0        |   in|   12|   ap_memory|                              input_2|         array|
+|input_3_address0  |  out|   10|   ap_memory|                              input_3|         array|
+|input_3_ce0       |  out|    1|   ap_memory|                              input_3|         array|
+|input_3_q0        |   in|   12|   ap_memory|                              input_3|         array|
+|o_tok_address0    |  out|    7|   ap_memory|                                o_tok|         array|
+|o_tok_ce0         |  out|    1|   ap_memory|                                o_tok|         array|
+|o_tok_q0          |   in|   16|   ap_memory|                                o_tok|         array|
+|ln_in_address0    |  out|    7|   ap_memory|                                ln_in|         array|
+|ln_in_ce0         |  out|    1|   ap_memory|                                ln_in|         array|
+|ln_in_we0         |  out|    1|   ap_memory|                                ln_in|         array|
+|ln_in_d0          |  out|   16|   ap_memory|                                ln_in|         array|
++------------------+-----+-----+------------+-------------------------------------+--------------+
+

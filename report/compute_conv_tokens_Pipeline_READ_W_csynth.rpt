@@ -1,0 +1,719 @@
+
+
+================================================================
+== Vitis HLS Report for 'compute_conv_tokens_Pipeline_READ_W'
+================================================================
+* Date:           Mon Oct 26 01:52:19 2026
+
+* Version:        2025.2 (Build 6295257 on Nov 14 2025)
+* Project:        roformer_hls
+* Solution:       sol1 (Vivado IP Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg484-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  |  10.00 ns|  5.091 ns|     1.25 ns|
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+-------------------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval |      Pipeline     |
+    |   min   |   max   |    min   |    max   | min | max |        Type       |
+    +---------+---------+----------+----------+-----+-----+-------------------+
+    |      194|      194|  1.940 us|  1.940 us|    0|    0|  loop pipeline stp|
+    +---------+---------+----------+----------+-----+-----+-------------------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |          |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        | Loop Name|   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |- READ_W  |      192|      192|         2|          1|          1|   192|       yes|
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|     34|    -|
+|FIFO             |        -|    -|       -|      -|    -|
+|Instance         |        -|    -|       -|      -|    -|
+|Memory           |        -|    -|       -|      -|    -|
+|Multiplexer      |        -|    -|       0|     45|    -|
+|Register         |        -|    -|    1555|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |        0|    0|    1555|     79|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        0|    0|       1|     ~0|    0|
++-----------------+---------+-----+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    N/A
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +--------------------------------+----------+----+---+----+------------+------------+
+    |          Variable Name         | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +--------------------------------+----------+----+---+----+------------+------------+
+    |add_ln150_fu_2932_p2            |         +|   0|  0|  15|           8|           1|
+    |ap_block_pp0_stage0_01001_grp1  |       and|   0|  0|   2|           1|           1|
+    |icmp_ln150_fu_2926_p2           |      icmp|   0|  0|  15|           8|           8|
+    |ap_enable_pp0                   |       xor|   0|  0|   2|           1|           2|
+    +--------------------------------+----------+----+---+----+------------+------------+
+    |Total                           |          |   0|  0|  34|          18|          12|
+    +--------------------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +-------------------------+----+-----------+-----+-----------+
+    |           Name          | LUT| Input Size| Bits| Total Bits|
+    +-------------------------+----+-----------+-----+-----------+
+    |ap_done_int              |   9|          2|    1|          2|
+    |ap_enable_reg_pp0_iter1  |   9|          2|    1|          2|
+    |ap_sig_allocacmp_i_13    |   9|          2|    8|         16|
+    |i_fu_796                 |   9|          2|    8|         16|
+    |weight_fifo_blk_n        |   9|          2|    1|          2|
+    +-------------------------+----+-----------+-----+-----------+
+    |Total                    |  45|         10|   19|         38|
+    +-------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +-----------------------------+----+----+-----+-----------+
+    |             Name            | FF | LUT| Bits| Const Bits|
+    +-----------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                    |   1|   0|    1|          0|
+    |ap_done_reg                  |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter1      |   1|   0|    1|          0|
+    |channel_weights_100_fu_1200  |   8|   0|    8|          0|
+    |channel_weights_101_fu_1204  |   8|   0|    8|          0|
+    |channel_weights_102_fu_1208  |   8|   0|    8|          0|
+    |channel_weights_103_fu_1212  |   8|   0|    8|          0|
+    |channel_weights_104_fu_1216  |   8|   0|    8|          0|
+    |channel_weights_105_fu_1220  |   8|   0|    8|          0|
+    |channel_weights_106_fu_1224  |   8|   0|    8|          0|
+    |channel_weights_107_fu_1228  |   8|   0|    8|          0|
+    |channel_weights_108_fu_1232  |   8|   0|    8|          0|
+    |channel_weights_109_fu_1236  |   8|   0|    8|          0|
+    |channel_weights_10_fu_840    |   8|   0|    8|          0|
+    |channel_weights_110_fu_1240  |   8|   0|    8|          0|
+    |channel_weights_111_fu_1244  |   8|   0|    8|          0|
+    |channel_weights_112_fu_1248  |   8|   0|    8|          0|
+    |channel_weights_113_fu_1252  |   8|   0|    8|          0|
+    |channel_weights_114_fu_1256  |   8|   0|    8|          0|
+    |channel_weights_115_fu_1260  |   8|   0|    8|          0|
+    |channel_weights_116_fu_1264  |   8|   0|    8|          0|
+    |channel_weights_117_fu_1268  |   8|   0|    8|          0|
+    |channel_weights_118_fu_1272  |   8|   0|    8|          0|
+    |channel_weights_119_fu_1276  |   8|   0|    8|          0|
+    |channel_weights_11_fu_844    |   8|   0|    8|          0|
+    |channel_weights_120_fu_1280  |   8|   0|    8|          0|
+    |channel_weights_121_fu_1284  |   8|   0|    8|          0|
+    |channel_weights_122_fu_1288  |   8|   0|    8|          0|
+    |channel_weights_123_fu_1292  |   8|   0|    8|          0|
+    |channel_weights_124_fu_1296  |   8|   0|    8|          0|
+    |channel_weights_125_fu_1300  |   8|   0|    8|          0|
+    |channel_weights_126_fu_1304  |   8|   0|    8|          0|
+    |channel_weights_127_fu_1308  |   8|   0|    8|          0|
+    |channel_weights_128_fu_1312  |   8|   0|    8|          0|
+    |channel_weights_129_fu_1316  |   8|   0|    8|          0|
+    |channel_weights_12_fu_848    |   8|   0|    8|          0|
+    |channel_weights_130_fu_1320  |   8|   0|    8|          0|
+    |channel_weights_131_fu_1324  |   8|   0|    8|          0|
+    |channel_weights_132_fu_1328  |   8|   0|    8|          0|
+    |channel_weights_133_fu_1332  |   8|   0|    8|          0|
+    |channel_weights_134_fu_1336  |   8|   0|    8|          0|
+    |channel_weights_135_fu_1340  |   8|   0|    8|          0|
+    |channel_weights_136_fu_1344  |   8|   0|    8|          0|
+    |channel_weights_137_fu_1348  |   8|   0|    8|          0|
+    |channel_weights_138_fu_1352  |   8|   0|    8|          0|
+    |channel_weights_139_fu_1356  |   8|   0|    8|          0|
+    |channel_weights_13_fu_852    |   8|   0|    8|          0|
+    |channel_weights_140_fu_1360  |   8|   0|    8|          0|
+    |channel_weights_141_fu_1364  |   8|   0|    8|          0|
+    |channel_weights_142_fu_1368  |   8|   0|    8|          0|
+    |channel_weights_143_fu_1372  |   8|   0|    8|          0|
+    |channel_weights_144_fu_1376  |   8|   0|    8|          0|
+    |channel_weights_145_fu_1380  |   8|   0|    8|          0|
+    |channel_weights_146_fu_1384  |   8|   0|    8|          0|
+    |channel_weights_147_fu_1388  |   8|   0|    8|          0|
+    |channel_weights_148_fu_1392  |   8|   0|    8|          0|
+    |channel_weights_149_fu_1396  |   8|   0|    8|          0|
+    |channel_weights_14_fu_856    |   8|   0|    8|          0|
+    |channel_weights_150_fu_1400  |   8|   0|    8|          0|
+    |channel_weights_151_fu_1404  |   8|   0|    8|          0|
+    |channel_weights_152_fu_1408  |   8|   0|    8|          0|
+    |channel_weights_153_fu_1412  |   8|   0|    8|          0|
+    |channel_weights_154_fu_1416  |   8|   0|    8|          0|
+    |channel_weights_155_fu_1420  |   8|   0|    8|          0|
+    |channel_weights_156_fu_1424  |   8|   0|    8|          0|
+    |channel_weights_157_fu_1428  |   8|   0|    8|          0|
+    |channel_weights_158_fu_1432  |   8|   0|    8|          0|
+    |channel_weights_159_fu_1436  |   8|   0|    8|          0|
+    |channel_weights_15_fu_860    |   8|   0|    8|          0|
+    |channel_weights_160_fu_1440  |   8|   0|    8|          0|
+    |channel_weights_161_fu_1444  |   8|   0|    8|          0|
+    |channel_weights_162_fu_1448  |   8|   0|    8|          0|
+    |channel_weights_163_fu_1452  |   8|   0|    8|          0|
+    |channel_weights_164_fu_1456  |   8|   0|    8|          0|
+    |channel_weights_165_fu_1460  |   8|   0|    8|          0|
+    |channel_weights_166_fu_1464  |   8|   0|    8|          0|
+    |channel_weights_167_fu_1468  |   8|   0|    8|          0|
+    |channel_weights_168_fu_1472  |   8|   0|    8|          0|
+    |channel_weights_169_fu_1476  |   8|   0|    8|          0|
+    |channel_weights_16_fu_864    |   8|   0|    8|          0|
+    |channel_weights_170_fu_1480  |   8|   0|    8|          0|
+    |channel_weights_171_fu_1484  |   8|   0|    8|          0|
+    |channel_weights_172_fu_1488  |   8|   0|    8|          0|
+    |channel_weights_173_fu_1492  |   8|   0|    8|          0|
+    |channel_weights_174_fu_1496  |   8|   0|    8|          0|
+    |channel_weights_175_fu_1500  |   8|   0|    8|          0|
+    |channel_weights_176_fu_1504  |   8|   0|    8|          0|
+    |channel_weights_177_fu_1508  |   8|   0|    8|          0|
+    |channel_weights_178_fu_1512  |   8|   0|    8|          0|
+    |channel_weights_179_fu_1516  |   8|   0|    8|          0|
+    |channel_weights_17_fu_868    |   8|   0|    8|          0|
+    |channel_weights_180_fu_1520  |   8|   0|    8|          0|
+    |channel_weights_181_fu_1524  |   8|   0|    8|          0|
+    |channel_weights_182_fu_1528  |   8|   0|    8|          0|
+    |channel_weights_183_fu_1532  |   8|   0|    8|          0|
+    |channel_weights_184_fu_1536  |   8|   0|    8|          0|
+    |channel_weights_185_fu_1540  |   8|   0|    8|          0|
+    |channel_weights_186_fu_1544  |   8|   0|    8|          0|
+    |channel_weights_187_fu_1548  |   8|   0|    8|          0|
+    |channel_weights_188_fu_1552  |   8|   0|    8|          0|
+    |channel_weights_189_fu_1556  |   8|   0|    8|          0|
+    |channel_weights_18_fu_872    |   8|   0|    8|          0|
+    |channel_weights_190_fu_1560  |   8|   0|    8|          0|
+    |channel_weights_191_fu_1564  |   8|   0|    8|          0|
+    |channel_weights_19_fu_876    |   8|   0|    8|          0|
+    |channel_weights_1_fu_804     |   8|   0|    8|          0|
+    |channel_weights_20_fu_880    |   8|   0|    8|          0|
+    |channel_weights_21_fu_884    |   8|   0|    8|          0|
+    |channel_weights_22_fu_888    |   8|   0|    8|          0|
+    |channel_weights_23_fu_892    |   8|   0|    8|          0|
+    |channel_weights_24_fu_896    |   8|   0|    8|          0|
+    |channel_weights_25_fu_900    |   8|   0|    8|          0|
+    |channel_weights_26_fu_904    |   8|   0|    8|          0|
+    |channel_weights_27_fu_908    |   8|   0|    8|          0|
+    |channel_weights_28_fu_912    |   8|   0|    8|          0|
+    |channel_weights_29_fu_916    |   8|   0|    8|          0|
+    |channel_weights_2_fu_808     |   8|   0|    8|          0|
+    |channel_weights_30_fu_920    |   8|   0|    8|          0|
+    |channel_weights_31_fu_924    |   8|   0|    8|          0|
+    |channel_weights_32_fu_928    |   8|   0|    8|          0|
+    |channel_weights_33_fu_932    |   8|   0|    8|          0|
+    |channel_weights_34_fu_936    |   8|   0|    8|          0|
+    |channel_weights_35_fu_940    |   8|   0|    8|          0|
+    |channel_weights_36_fu_944    |   8|   0|    8|          0|
+    |channel_weights_37_fu_948    |   8|   0|    8|          0|
+    |channel_weights_38_fu_952    |   8|   0|    8|          0|
+    |channel_weights_39_fu_956    |   8|   0|    8|          0|
+    |channel_weights_3_fu_812     |   8|   0|    8|          0|
+    |channel_weights_40_fu_960    |   8|   0|    8|          0|
+    |channel_weights_41_fu_964    |   8|   0|    8|          0|
+    |channel_weights_42_fu_968    |   8|   0|    8|          0|
+    |channel_weights_43_fu_972    |   8|   0|    8|          0|
+    |channel_weights_44_fu_976    |   8|   0|    8|          0|
+    |channel_weights_45_fu_980    |   8|   0|    8|          0|
+    |channel_weights_46_fu_984    |   8|   0|    8|          0|
+    |channel_weights_47_fu_988    |   8|   0|    8|          0|
+    |channel_weights_48_fu_992    |   8|   0|    8|          0|
+    |channel_weights_49_fu_996    |   8|   0|    8|          0|
+    |channel_weights_4_fu_816     |   8|   0|    8|          0|
+    |channel_weights_50_fu_1000   |   8|   0|    8|          0|
+    |channel_weights_51_fu_1004   |   8|   0|    8|          0|
+    |channel_weights_52_fu_1008   |   8|   0|    8|          0|
+    |channel_weights_53_fu_1012   |   8|   0|    8|          0|
+    |channel_weights_54_fu_1016   |   8|   0|    8|          0|
+    |channel_weights_55_fu_1020   |   8|   0|    8|          0|
+    |channel_weights_56_fu_1024   |   8|   0|    8|          0|
+    |channel_weights_57_fu_1028   |   8|   0|    8|          0|
+    |channel_weights_58_fu_1032   |   8|   0|    8|          0|
+    |channel_weights_59_fu_1036   |   8|   0|    8|          0|
+    |channel_weights_5_fu_820     |   8|   0|    8|          0|
+    |channel_weights_60_fu_1040   |   8|   0|    8|          0|
+    |channel_weights_61_fu_1044   |   8|   0|    8|          0|
+    |channel_weights_62_fu_1048   |   8|   0|    8|          0|
+    |channel_weights_63_fu_1052   |   8|   0|    8|          0|
+    |channel_weights_64_fu_1056   |   8|   0|    8|          0|
+    |channel_weights_65_fu_1060   |   8|   0|    8|          0|
+    |channel_weights_66_fu_1064   |   8|   0|    8|          0|
+    |channel_weights_67_fu_1068   |   8|   0|    8|          0|
+    |channel_weights_68_fu_1072   |   8|   0|    8|          0|
+    |channel_weights_69_fu_1076   |   8|   0|    8|          0|
+    |channel_weights_6_fu_824     |   8|   0|    8|          0|
+    |channel_weights_70_fu_1080   |   8|   0|    8|          0|
+    |channel_weights_71_fu_1084   |   8|   0|    8|          0|
+    |channel_weights_72_fu_1088   |   8|   0|    8|          0|
+    |channel_weights_73_fu_1092   |   8|   0|    8|          0|
+    |channel_weights_74_fu_1096   |   8|   0|    8|          0|
+    |channel_weights_75_fu_1100   |   8|   0|    8|          0|
+    |channel_weights_76_fu_1104   |   8|   0|    8|          0|
+    |channel_weights_77_fu_1108   |   8|   0|    8|          0|
+    |channel_weights_78_fu_1112   |   8|   0|    8|          0|
+    |channel_weights_79_fu_1116   |   8|   0|    8|          0|
+    |channel_weights_7_fu_828     |   8|   0|    8|          0|
+    |channel_weights_80_fu_1120   |   8|   0|    8|          0|
+    |channel_weights_81_fu_1124   |   8|   0|    8|          0|
+    |channel_weights_82_fu_1128   |   8|   0|    8|          0|
+    |channel_weights_83_fu_1132   |   8|   0|    8|          0|
+    |channel_weights_84_fu_1136   |   8|   0|    8|          0|
+    |channel_weights_85_fu_1140   |   8|   0|    8|          0|
+    |channel_weights_86_fu_1144   |   8|   0|    8|          0|
+    |channel_weights_87_fu_1148   |   8|   0|    8|          0|
+    |channel_weights_88_fu_1152   |   8|   0|    8|          0|
+    |channel_weights_89_fu_1156   |   8|   0|    8|          0|
+    |channel_weights_8_fu_832     |   8|   0|    8|          0|
+    |channel_weights_90_fu_1160   |   8|   0|    8|          0|
+    |channel_weights_91_fu_1164   |   8|   0|    8|          0|
+    |channel_weights_92_fu_1168   |   8|   0|    8|          0|
+    |channel_weights_93_fu_1172   |   8|   0|    8|          0|
+    |channel_weights_94_fu_1176   |   8|   0|    8|          0|
+    |channel_weights_95_fu_1180   |   8|   0|    8|          0|
+    |channel_weights_96_fu_1184   |   8|   0|    8|          0|
+    |channel_weights_97_fu_1188   |   8|   0|    8|          0|
+    |channel_weights_98_fu_1192   |   8|   0|    8|          0|
+    |channel_weights_99_fu_1196   |   8|   0|    8|          0|
+    |channel_weights_9_fu_836     |   8|   0|    8|          0|
+    |channel_weights_fu_800       |   8|   0|    8|          0|
+    |i_13_reg_6216                |   8|   0|    8|          0|
+    |i_fu_796                     |   8|   0|    8|          0|
+    +-----------------------------+----+----+-----+-----------+
+    |Total                        |1555|   0| 1555|          0|
+    +-----------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++--------------------------------+-----+-----+------------+-------------------------------------+--------------+
+|            RTL Ports           | Dir | Bits|  Protocol  |            Source Object            |    C Type    |
++--------------------------------+-----+-----+------------+-------------------------------------+--------------+
+|ap_clk                          |   in|    1|  ap_ctrl_hs|  compute_conv_tokens_Pipeline_READ_W|  return value|
+|ap_rst                          |   in|    1|  ap_ctrl_hs|  compute_conv_tokens_Pipeline_READ_W|  return value|
+|ap_start                        |   in|    1|  ap_ctrl_hs|  compute_conv_tokens_Pipeline_READ_W|  return value|
+|ap_done                         |  out|    1|  ap_ctrl_hs|  compute_conv_tokens_Pipeline_READ_W|  return value|
+|ap_idle                         |  out|    1|  ap_ctrl_hs|  compute_conv_tokens_Pipeline_READ_W|  return value|
+|ap_ready                        |  out|    1|  ap_ctrl_hs|  compute_conv_tokens_Pipeline_READ_W|  return value|
+|weight_fifo_dout                |   in|    8|     ap_fifo|                          weight_fifo|       pointer|
+|weight_fifo_empty_n             |   in|    1|     ap_fifo|                          weight_fifo|       pointer|
+|weight_fifo_read                |  out|    1|     ap_fifo|                          weight_fifo|       pointer|
+|weight_fifo_num_data_valid      |   in|    9|     ap_fifo|                          weight_fifo|       pointer|
+|weight_fifo_fifo_cap            |   in|    9|     ap_fifo|                          weight_fifo|       pointer|
+|channel_weights_191_out         |  out|    8|      ap_vld|              channel_weights_191_out|       pointer|
+|channel_weights_191_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_191_out|       pointer|
+|channel_weights_190_out         |  out|    8|      ap_vld|              channel_weights_190_out|       pointer|
+|channel_weights_190_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_190_out|       pointer|
+|channel_weights_189_out         |  out|    8|      ap_vld|              channel_weights_189_out|       pointer|
+|channel_weights_189_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_189_out|       pointer|
+|channel_weights_188_out         |  out|    8|      ap_vld|              channel_weights_188_out|       pointer|
+|channel_weights_188_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_188_out|       pointer|
+|channel_weights_187_out         |  out|    8|      ap_vld|              channel_weights_187_out|       pointer|
+|channel_weights_187_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_187_out|       pointer|
+|channel_weights_186_out         |  out|    8|      ap_vld|              channel_weights_186_out|       pointer|
+|channel_weights_186_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_186_out|       pointer|
+|channel_weights_185_out         |  out|    8|      ap_vld|              channel_weights_185_out|       pointer|
+|channel_weights_185_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_185_out|       pointer|
+|channel_weights_184_out         |  out|    8|      ap_vld|              channel_weights_184_out|       pointer|
+|channel_weights_184_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_184_out|       pointer|
+|channel_weights_183_out         |  out|    8|      ap_vld|              channel_weights_183_out|       pointer|
+|channel_weights_183_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_183_out|       pointer|
+|channel_weights_182_out         |  out|    8|      ap_vld|              channel_weights_182_out|       pointer|
+|channel_weights_182_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_182_out|       pointer|
+|channel_weights_181_out         |  out|    8|      ap_vld|              channel_weights_181_out|       pointer|
+|channel_weights_181_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_181_out|       pointer|
+|channel_weights_180_out         |  out|    8|      ap_vld|              channel_weights_180_out|       pointer|
+|channel_weights_180_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_180_out|       pointer|
+|channel_weights_179_out         |  out|    8|      ap_vld|              channel_weights_179_out|       pointer|
+|channel_weights_179_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_179_out|       pointer|
+|channel_weights_178_out         |  out|    8|      ap_vld|              channel_weights_178_out|       pointer|
+|channel_weights_178_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_178_out|       pointer|
+|channel_weights_177_out         |  out|    8|      ap_vld|              channel_weights_177_out|       pointer|
+|channel_weights_177_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_177_out|       pointer|
+|channel_weights_176_out         |  out|    8|      ap_vld|              channel_weights_176_out|       pointer|
+|channel_weights_176_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_176_out|       pointer|
+|channel_weights_175_out         |  out|    8|      ap_vld|              channel_weights_175_out|       pointer|
+|channel_weights_175_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_175_out|       pointer|
+|channel_weights_174_out         |  out|    8|      ap_vld|              channel_weights_174_out|       pointer|
+|channel_weights_174_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_174_out|       pointer|
+|channel_weights_173_out         |  out|    8|      ap_vld|              channel_weights_173_out|       pointer|
+|channel_weights_173_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_173_out|       pointer|
+|channel_weights_172_out         |  out|    8|      ap_vld|              channel_weights_172_out|       pointer|
+|channel_weights_172_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_172_out|       pointer|
+|channel_weights_171_out         |  out|    8|      ap_vld|              channel_weights_171_out|       pointer|
+|channel_weights_171_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_171_out|       pointer|
+|channel_weights_170_out         |  out|    8|      ap_vld|              channel_weights_170_out|       pointer|
+|channel_weights_170_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_170_out|       pointer|
+|channel_weights_169_out         |  out|    8|      ap_vld|              channel_weights_169_out|       pointer|
+|channel_weights_169_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_169_out|       pointer|
+|channel_weights_168_out         |  out|    8|      ap_vld|              channel_weights_168_out|       pointer|
+|channel_weights_168_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_168_out|       pointer|
+|channel_weights_167_out         |  out|    8|      ap_vld|              channel_weights_167_out|       pointer|
+|channel_weights_167_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_167_out|       pointer|
+|channel_weights_166_out         |  out|    8|      ap_vld|              channel_weights_166_out|       pointer|
+|channel_weights_166_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_166_out|       pointer|
+|channel_weights_165_out         |  out|    8|      ap_vld|              channel_weights_165_out|       pointer|
+|channel_weights_165_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_165_out|       pointer|
+|channel_weights_164_out         |  out|    8|      ap_vld|              channel_weights_164_out|       pointer|
+|channel_weights_164_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_164_out|       pointer|
+|channel_weights_163_out         |  out|    8|      ap_vld|              channel_weights_163_out|       pointer|
+|channel_weights_163_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_163_out|       pointer|
+|channel_weights_162_out         |  out|    8|      ap_vld|              channel_weights_162_out|       pointer|
+|channel_weights_162_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_162_out|       pointer|
+|channel_weights_161_out         |  out|    8|      ap_vld|              channel_weights_161_out|       pointer|
+|channel_weights_161_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_161_out|       pointer|
+|channel_weights_160_out         |  out|    8|      ap_vld|              channel_weights_160_out|       pointer|
+|channel_weights_160_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_160_out|       pointer|
+|channel_weights_159_out         |  out|    8|      ap_vld|              channel_weights_159_out|       pointer|
+|channel_weights_159_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_159_out|       pointer|
+|channel_weights_158_out         |  out|    8|      ap_vld|              channel_weights_158_out|       pointer|
+|channel_weights_158_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_158_out|       pointer|
+|channel_weights_157_out         |  out|    8|      ap_vld|              channel_weights_157_out|       pointer|
+|channel_weights_157_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_157_out|       pointer|
+|channel_weights_156_out         |  out|    8|      ap_vld|              channel_weights_156_out|       pointer|
+|channel_weights_156_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_156_out|       pointer|
+|channel_weights_155_out         |  out|    8|      ap_vld|              channel_weights_155_out|       pointer|
+|channel_weights_155_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_155_out|       pointer|
+|channel_weights_154_out         |  out|    8|      ap_vld|              channel_weights_154_out|       pointer|
+|channel_weights_154_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_154_out|       pointer|
+|channel_weights_153_out         |  out|    8|      ap_vld|              channel_weights_153_out|       pointer|
+|channel_weights_153_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_153_out|       pointer|
+|channel_weights_152_out         |  out|    8|      ap_vld|              channel_weights_152_out|       pointer|
+|channel_weights_152_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_152_out|       pointer|
+|channel_weights_151_out         |  out|    8|      ap_vld|              channel_weights_151_out|       pointer|
+|channel_weights_151_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_151_out|       pointer|
+|channel_weights_150_out         |  out|    8|      ap_vld|              channel_weights_150_out|       pointer|
+|channel_weights_150_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_150_out|       pointer|
+|channel_weights_149_out         |  out|    8|      ap_vld|              channel_weights_149_out|       pointer|
+|channel_weights_149_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_149_out|       pointer|
+|channel_weights_148_out         |  out|    8|      ap_vld|              channel_weights_148_out|       pointer|
+|channel_weights_148_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_148_out|       pointer|
+|channel_weights_147_out         |  out|    8|      ap_vld|              channel_weights_147_out|       pointer|
+|channel_weights_147_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_147_out|       pointer|
+|channel_weights_146_out         |  out|    8|      ap_vld|              channel_weights_146_out|       pointer|
+|channel_weights_146_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_146_out|       pointer|
+|channel_weights_145_out         |  out|    8|      ap_vld|              channel_weights_145_out|       pointer|
+|channel_weights_145_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_145_out|       pointer|
+|channel_weights_144_out         |  out|    8|      ap_vld|              channel_weights_144_out|       pointer|
+|channel_weights_144_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_144_out|       pointer|
+|channel_weights_143_out         |  out|    8|      ap_vld|              channel_weights_143_out|       pointer|
+|channel_weights_143_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_143_out|       pointer|
+|channel_weights_142_out         |  out|    8|      ap_vld|              channel_weights_142_out|       pointer|
+|channel_weights_142_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_142_out|       pointer|
+|channel_weights_141_out         |  out|    8|      ap_vld|              channel_weights_141_out|       pointer|
+|channel_weights_141_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_141_out|       pointer|
+|channel_weights_140_out         |  out|    8|      ap_vld|              channel_weights_140_out|       pointer|
+|channel_weights_140_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_140_out|       pointer|
+|channel_weights_139_out         |  out|    8|      ap_vld|              channel_weights_139_out|       pointer|
+|channel_weights_139_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_139_out|       pointer|
+|channel_weights_138_out         |  out|    8|      ap_vld|              channel_weights_138_out|       pointer|
+|channel_weights_138_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_138_out|       pointer|
+|channel_weights_137_out         |  out|    8|      ap_vld|              channel_weights_137_out|       pointer|
+|channel_weights_137_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_137_out|       pointer|
+|channel_weights_136_out         |  out|    8|      ap_vld|              channel_weights_136_out|       pointer|
+|channel_weights_136_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_136_out|       pointer|
+|channel_weights_135_out         |  out|    8|      ap_vld|              channel_weights_135_out|       pointer|
+|channel_weights_135_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_135_out|       pointer|
+|channel_weights_134_out         |  out|    8|      ap_vld|              channel_weights_134_out|       pointer|
+|channel_weights_134_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_134_out|       pointer|
+|channel_weights_133_out         |  out|    8|      ap_vld|              channel_weights_133_out|       pointer|
+|channel_weights_133_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_133_out|       pointer|
+|channel_weights_132_out         |  out|    8|      ap_vld|              channel_weights_132_out|       pointer|
+|channel_weights_132_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_132_out|       pointer|
+|channel_weights_131_out         |  out|    8|      ap_vld|              channel_weights_131_out|       pointer|
+|channel_weights_131_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_131_out|       pointer|
+|channel_weights_130_out         |  out|    8|      ap_vld|              channel_weights_130_out|       pointer|
+|channel_weights_130_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_130_out|       pointer|
+|channel_weights_129_out         |  out|    8|      ap_vld|              channel_weights_129_out|       pointer|
+|channel_weights_129_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_129_out|       pointer|
+|channel_weights_128_out         |  out|    8|      ap_vld|              channel_weights_128_out|       pointer|
+|channel_weights_128_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_128_out|       pointer|
+|channel_weights_127_out         |  out|    8|      ap_vld|              channel_weights_127_out|       pointer|
+|channel_weights_127_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_127_out|       pointer|
+|channel_weights_126_out         |  out|    8|      ap_vld|              channel_weights_126_out|       pointer|
+|channel_weights_126_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_126_out|       pointer|
+|channel_weights_125_out         |  out|    8|      ap_vld|              channel_weights_125_out|       pointer|
+|channel_weights_125_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_125_out|       pointer|
+|channel_weights_124_out         |  out|    8|      ap_vld|              channel_weights_124_out|       pointer|
+|channel_weights_124_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_124_out|       pointer|
+|channel_weights_123_out         |  out|    8|      ap_vld|              channel_weights_123_out|       pointer|
+|channel_weights_123_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_123_out|       pointer|
+|channel_weights_122_out         |  out|    8|      ap_vld|              channel_weights_122_out|       pointer|
+|channel_weights_122_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_122_out|       pointer|
+|channel_weights_121_out         |  out|    8|      ap_vld|              channel_weights_121_out|       pointer|
+|channel_weights_121_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_121_out|       pointer|
+|channel_weights_120_out         |  out|    8|      ap_vld|              channel_weights_120_out|       pointer|
+|channel_weights_120_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_120_out|       pointer|
+|channel_weights_119_out         |  out|    8|      ap_vld|              channel_weights_119_out|       pointer|
+|channel_weights_119_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_119_out|       pointer|
+|channel_weights_118_out         |  out|    8|      ap_vld|              channel_weights_118_out|       pointer|
+|channel_weights_118_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_118_out|       pointer|
+|channel_weights_117_out         |  out|    8|      ap_vld|              channel_weights_117_out|       pointer|
+|channel_weights_117_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_117_out|       pointer|
+|channel_weights_116_out         |  out|    8|      ap_vld|              channel_weights_116_out|       pointer|
+|channel_weights_116_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_116_out|       pointer|
+|channel_weights_115_out         |  out|    8|      ap_vld|              channel_weights_115_out|       pointer|
+|channel_weights_115_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_115_out|       pointer|
+|channel_weights_114_out         |  out|    8|      ap_vld|              channel_weights_114_out|       pointer|
+|channel_weights_114_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_114_out|       pointer|
+|channel_weights_113_out         |  out|    8|      ap_vld|              channel_weights_113_out|       pointer|
+|channel_weights_113_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_113_out|       pointer|
+|channel_weights_112_out         |  out|    8|      ap_vld|              channel_weights_112_out|       pointer|
+|channel_weights_112_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_112_out|       pointer|
+|channel_weights_111_out         |  out|    8|      ap_vld|              channel_weights_111_out|       pointer|
+|channel_weights_111_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_111_out|       pointer|
+|channel_weights_110_out         |  out|    8|      ap_vld|              channel_weights_110_out|       pointer|
+|channel_weights_110_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_110_out|       pointer|
+|channel_weights_109_out         |  out|    8|      ap_vld|              channel_weights_109_out|       pointer|
+|channel_weights_109_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_109_out|       pointer|
+|channel_weights_108_out         |  out|    8|      ap_vld|              channel_weights_108_out|       pointer|
+|channel_weights_108_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_108_out|       pointer|
+|channel_weights_107_out         |  out|    8|      ap_vld|              channel_weights_107_out|       pointer|
+|channel_weights_107_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_107_out|       pointer|
+|channel_weights_106_out         |  out|    8|      ap_vld|              channel_weights_106_out|       pointer|
+|channel_weights_106_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_106_out|       pointer|
+|channel_weights_105_out         |  out|    8|      ap_vld|              channel_weights_105_out|       pointer|
+|channel_weights_105_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_105_out|       pointer|
+|channel_weights_104_out         |  out|    8|      ap_vld|              channel_weights_104_out|       pointer|
+|channel_weights_104_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_104_out|       pointer|
+|channel_weights_103_out         |  out|    8|      ap_vld|              channel_weights_103_out|       pointer|
+|channel_weights_103_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_103_out|       pointer|
+|channel_weights_102_out         |  out|    8|      ap_vld|              channel_weights_102_out|       pointer|
+|channel_weights_102_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_102_out|       pointer|
+|channel_weights_101_out         |  out|    8|      ap_vld|              channel_weights_101_out|       pointer|
+|channel_weights_101_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_101_out|       pointer|
+|channel_weights_100_out         |  out|    8|      ap_vld|              channel_weights_100_out|       pointer|
+|channel_weights_100_out_ap_vld  |  out|    1|      ap_vld|              channel_weights_100_out|       pointer|
+|channel_weights_99_out          |  out|    8|      ap_vld|               channel_weights_99_out|       pointer|
+|channel_weights_99_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_99_out|       pointer|
+|channel_weights_98_out          |  out|    8|      ap_vld|               channel_weights_98_out|       pointer|
+|channel_weights_98_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_98_out|       pointer|
+|channel_weights_97_out          |  out|    8|      ap_vld|               channel_weights_97_out|       pointer|
+|channel_weights_97_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_97_out|       pointer|
+|channel_weights_96_out          |  out|    8|      ap_vld|               channel_weights_96_out|       pointer|
+|channel_weights_96_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_96_out|       pointer|
+|channel_weights_95_out          |  out|    8|      ap_vld|               channel_weights_95_out|       pointer|
+|channel_weights_95_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_95_out|       pointer|
+|channel_weights_94_out          |  out|    8|      ap_vld|               channel_weights_94_out|       pointer|
+|channel_weights_94_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_94_out|       pointer|
+|channel_weights_93_out          |  out|    8|      ap_vld|               channel_weights_93_out|       pointer|
+|channel_weights_93_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_93_out|       pointer|
+|channel_weights_92_out          |  out|    8|      ap_vld|               channel_weights_92_out|       pointer|
+|channel_weights_92_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_92_out|       pointer|
+|channel_weights_91_out          |  out|    8|      ap_vld|               channel_weights_91_out|       pointer|
+|channel_weights_91_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_91_out|       pointer|
+|channel_weights_90_out          |  out|    8|      ap_vld|               channel_weights_90_out|       pointer|
+|channel_weights_90_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_90_out|       pointer|
+|channel_weights_89_out          |  out|    8|      ap_vld|               channel_weights_89_out|       pointer|
+|channel_weights_89_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_89_out|       pointer|
+|channel_weights_88_out          |  out|    8|      ap_vld|               channel_weights_88_out|       pointer|
+|channel_weights_88_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_88_out|       pointer|
+|channel_weights_87_out          |  out|    8|      ap_vld|               channel_weights_87_out|       pointer|
+|channel_weights_87_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_87_out|       pointer|
+|channel_weights_86_out          |  out|    8|      ap_vld|               channel_weights_86_out|       pointer|
+|channel_weights_86_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_86_out|       pointer|
+|channel_weights_85_out          |  out|    8|      ap_vld|               channel_weights_85_out|       pointer|
+|channel_weights_85_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_85_out|       pointer|
+|channel_weights_84_out          |  out|    8|      ap_vld|               channel_weights_84_out|       pointer|
+|channel_weights_84_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_84_out|       pointer|
+|channel_weights_83_out          |  out|    8|      ap_vld|               channel_weights_83_out|       pointer|
+|channel_weights_83_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_83_out|       pointer|
+|channel_weights_82_out          |  out|    8|      ap_vld|               channel_weights_82_out|       pointer|
+|channel_weights_82_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_82_out|       pointer|
+|channel_weights_81_out          |  out|    8|      ap_vld|               channel_weights_81_out|       pointer|
+|channel_weights_81_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_81_out|       pointer|
+|channel_weights_80_out          |  out|    8|      ap_vld|               channel_weights_80_out|       pointer|
+|channel_weights_80_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_80_out|       pointer|
+|channel_weights_79_out          |  out|    8|      ap_vld|               channel_weights_79_out|       pointer|
+|channel_weights_79_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_79_out|       pointer|
+|channel_weights_78_out          |  out|    8|      ap_vld|               channel_weights_78_out|       pointer|
+|channel_weights_78_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_78_out|       pointer|
+|channel_weights_77_out          |  out|    8|      ap_vld|               channel_weights_77_out|       pointer|
+|channel_weights_77_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_77_out|       pointer|
+|channel_weights_76_out          |  out|    8|      ap_vld|               channel_weights_76_out|       pointer|
+|channel_weights_76_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_76_out|       pointer|
+|channel_weights_75_out          |  out|    8|      ap_vld|               channel_weights_75_out|       pointer|
+|channel_weights_75_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_75_out|       pointer|
+|channel_weights_74_out          |  out|    8|      ap_vld|               channel_weights_74_out|       pointer|
+|channel_weights_74_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_74_out|       pointer|
+|channel_weights_73_out          |  out|    8|      ap_vld|               channel_weights_73_out|       pointer|
+|channel_weights_73_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_73_out|       pointer|
+|channel_weights_72_out          |  out|    8|      ap_vld|               channel_weights_72_out|       pointer|
+|channel_weights_72_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_72_out|       pointer|
+|channel_weights_71_out          |  out|    8|      ap_vld|               channel_weights_71_out|       pointer|
+|channel_weights_71_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_71_out|       pointer|
+|channel_weights_70_out          |  out|    8|      ap_vld|               channel_weights_70_out|       pointer|
+|channel_weights_70_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_70_out|       pointer|
+|channel_weights_69_out          |  out|    8|      ap_vld|               channel_weights_69_out|       pointer|
+|channel_weights_69_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_69_out|       pointer|
+|channel_weights_68_out          |  out|    8|      ap_vld|               channel_weights_68_out|       pointer|
+|channel_weights_68_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_68_out|       pointer|
+|channel_weights_67_out          |  out|    8|      ap_vld|               channel_weights_67_out|       pointer|
+|channel_weights_67_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_67_out|       pointer|
+|channel_weights_66_out          |  out|    8|      ap_vld|               channel_weights_66_out|       pointer|
+|channel_weights_66_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_66_out|       pointer|
+|channel_weights_65_out          |  out|    8|      ap_vld|               channel_weights_65_out|       pointer|
+|channel_weights_65_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_65_out|       pointer|
+|channel_weights_64_out          |  out|    8|      ap_vld|               channel_weights_64_out|       pointer|
+|channel_weights_64_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_64_out|       pointer|
+|channel_weights_63_out          |  out|    8|      ap_vld|               channel_weights_63_out|       pointer|
+|channel_weights_63_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_63_out|       pointer|
+|channel_weights_62_out          |  out|    8|      ap_vld|               channel_weights_62_out|       pointer|
+|channel_weights_62_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_62_out|       pointer|
+|channel_weights_61_out          |  out|    8|      ap_vld|               channel_weights_61_out|       pointer|
+|channel_weights_61_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_61_out|       pointer|
+|channel_weights_60_out          |  out|    8|      ap_vld|               channel_weights_60_out|       pointer|
+|channel_weights_60_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_60_out|       pointer|
+|channel_weights_59_out          |  out|    8|      ap_vld|               channel_weights_59_out|       pointer|
+|channel_weights_59_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_59_out|       pointer|
+|channel_weights_58_out          |  out|    8|      ap_vld|               channel_weights_58_out|       pointer|
+|channel_weights_58_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_58_out|       pointer|
+|channel_weights_57_out          |  out|    8|      ap_vld|               channel_weights_57_out|       pointer|
+|channel_weights_57_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_57_out|       pointer|
+|channel_weights_56_out          |  out|    8|      ap_vld|               channel_weights_56_out|       pointer|
+|channel_weights_56_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_56_out|       pointer|
+|channel_weights_55_out          |  out|    8|      ap_vld|               channel_weights_55_out|       pointer|
+|channel_weights_55_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_55_out|       pointer|
+|channel_weights_54_out          |  out|    8|      ap_vld|               channel_weights_54_out|       pointer|
+|channel_weights_54_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_54_out|       pointer|
+|channel_weights_53_out          |  out|    8|      ap_vld|               channel_weights_53_out|       pointer|
+|channel_weights_53_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_53_out|       pointer|
+|channel_weights_52_out          |  out|    8|      ap_vld|               channel_weights_52_out|       pointer|
+|channel_weights_52_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_52_out|       pointer|
+|channel_weights_51_out          |  out|    8|      ap_vld|               channel_weights_51_out|       pointer|
+|channel_weights_51_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_51_out|       pointer|
+|channel_weights_50_out          |  out|    8|      ap_vld|               channel_weights_50_out|       pointer|
+|channel_weights_50_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_50_out|       pointer|
+|channel_weights_49_out          |  out|    8|      ap_vld|               channel_weights_49_out|       pointer|
+|channel_weights_49_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_49_out|       pointer|
+|channel_weights_48_out          |  out|    8|      ap_vld|               channel_weights_48_out|       pointer|
+|channel_weights_48_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_48_out|       pointer|
+|channel_weights_47_out          |  out|    8|      ap_vld|               channel_weights_47_out|       pointer|
+|channel_weights_47_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_47_out|       pointer|
+|channel_weights_46_out          |  out|    8|      ap_vld|               channel_weights_46_out|       pointer|
+|channel_weights_46_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_46_out|       pointer|
+|channel_weights_45_out          |  out|    8|      ap_vld|               channel_weights_45_out|       pointer|
+|channel_weights_45_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_45_out|       pointer|
+|channel_weights_44_out          |  out|    8|      ap_vld|               channel_weights_44_out|       pointer|
+|channel_weights_44_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_44_out|       pointer|
+|channel_weights_43_out          |  out|    8|      ap_vld|               channel_weights_43_out|       pointer|
+|channel_weights_43_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_43_out|       pointer|
+|channel_weights_42_out          |  out|    8|      ap_vld|               channel_weights_42_out|       pointer|
+|channel_weights_42_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_42_out|       pointer|
+|channel_weights_41_out          |  out|    8|      ap_vld|               channel_weights_41_out|       pointer|
+|channel_weights_41_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_41_out|       pointer|
+|channel_weights_40_out          |  out|    8|      ap_vld|               channel_weights_40_out|       pointer|
+|channel_weights_40_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_40_out|       pointer|
+|channel_weights_39_out          |  out|    8|      ap_vld|               channel_weights_39_out|       pointer|
+|channel_weights_39_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_39_out|       pointer|
+|channel_weights_38_out          |  out|    8|      ap_vld|               channel_weights_38_out|       pointer|
+|channel_weights_38_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_38_out|       pointer|
+|channel_weights_37_out          |  out|    8|      ap_vld|               channel_weights_37_out|       pointer|
+|channel_weights_37_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_37_out|       pointer|
+|channel_weights_36_out          |  out|    8|      ap_vld|               channel_weights_36_out|       pointer|
+|channel_weights_36_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_36_out|       pointer|
+|channel_weights_35_out          |  out|    8|      ap_vld|               channel_weights_35_out|       pointer|
+|channel_weights_35_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_35_out|       pointer|
+|channel_weights_34_out          |  out|    8|      ap_vld|               channel_weights_34_out|       pointer|
+|channel_weights_34_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_34_out|       pointer|
+|channel_weights_33_out          |  out|    8|      ap_vld|               channel_weights_33_out|       pointer|
+|channel_weights_33_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_33_out|       pointer|
+|channel_weights_32_out          |  out|    8|      ap_vld|               channel_weights_32_out|       pointer|
+|channel_weights_32_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_32_out|       pointer|
+|channel_weights_31_out          |  out|    8|      ap_vld|               channel_weights_31_out|       pointer|
+|channel_weights_31_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_31_out|       pointer|
+|channel_weights_30_out          |  out|    8|      ap_vld|               channel_weights_30_out|       pointer|
+|channel_weights_30_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_30_out|       pointer|
+|channel_weights_29_out          |  out|    8|      ap_vld|               channel_weights_29_out|       pointer|
+|channel_weights_29_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_29_out|       pointer|
+|channel_weights_28_out          |  out|    8|      ap_vld|               channel_weights_28_out|       pointer|
+|channel_weights_28_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_28_out|       pointer|
+|channel_weights_27_out          |  out|    8|      ap_vld|               channel_weights_27_out|       pointer|
+|channel_weights_27_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_27_out|       pointer|
+|channel_weights_26_out          |  out|    8|      ap_vld|               channel_weights_26_out|       pointer|
+|channel_weights_26_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_26_out|       pointer|
+|channel_weights_25_out          |  out|    8|      ap_vld|               channel_weights_25_out|       pointer|
+|channel_weights_25_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_25_out|       pointer|
+|channel_weights_24_out          |  out|    8|      ap_vld|               channel_weights_24_out|       pointer|
+|channel_weights_24_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_24_out|       pointer|
+|channel_weights_23_out          |  out|    8|      ap_vld|               channel_weights_23_out|       pointer|
+|channel_weights_23_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_23_out|       pointer|
+|channel_weights_22_out          |  out|    8|      ap_vld|               channel_weights_22_out|       pointer|
+|channel_weights_22_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_22_out|       pointer|
+|channel_weights_21_out          |  out|    8|      ap_vld|               channel_weights_21_out|       pointer|
+|channel_weights_21_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_21_out|       pointer|
+|channel_weights_20_out          |  out|    8|      ap_vld|               channel_weights_20_out|       pointer|
+|channel_weights_20_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_20_out|       pointer|
+|channel_weights_19_out          |  out|    8|      ap_vld|               channel_weights_19_out|       pointer|
+|channel_weights_19_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_19_out|       pointer|
+|channel_weights_18_out          |  out|    8|      ap_vld|               channel_weights_18_out|       pointer|
+|channel_weights_18_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_18_out|       pointer|
+|channel_weights_17_out          |  out|    8|      ap_vld|               channel_weights_17_out|       pointer|
+|channel_weights_17_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_17_out|       pointer|
+|channel_weights_16_out          |  out|    8|      ap_vld|               channel_weights_16_out|       pointer|
+|channel_weights_16_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_16_out|       pointer|
+|channel_weights_15_out          |  out|    8|      ap_vld|               channel_weights_15_out|       pointer|
+|channel_weights_15_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_15_out|       pointer|
+|channel_weights_14_out          |  out|    8|      ap_vld|               channel_weights_14_out|       pointer|
+|channel_weights_14_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_14_out|       pointer|
+|channel_weights_13_out          |  out|    8|      ap_vld|               channel_weights_13_out|       pointer|
+|channel_weights_13_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_13_out|       pointer|
+|channel_weights_12_out          |  out|    8|      ap_vld|               channel_weights_12_out|       pointer|
+|channel_weights_12_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_12_out|       pointer|
+|channel_weights_11_out          |  out|    8|      ap_vld|               channel_weights_11_out|       pointer|
+|channel_weights_11_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_11_out|       pointer|
+|channel_weights_10_out          |  out|    8|      ap_vld|               channel_weights_10_out|       pointer|
+|channel_weights_10_out_ap_vld   |  out|    1|      ap_vld|               channel_weights_10_out|       pointer|
+|channel_weights_9_out           |  out|    8|      ap_vld|                channel_weights_9_out|       pointer|
+|channel_weights_9_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_9_out|       pointer|
+|channel_weights_8_out           |  out|    8|      ap_vld|                channel_weights_8_out|       pointer|
+|channel_weights_8_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_8_out|       pointer|
+|channel_weights_7_out           |  out|    8|      ap_vld|                channel_weights_7_out|       pointer|
+|channel_weights_7_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_7_out|       pointer|
+|channel_weights_6_out           |  out|    8|      ap_vld|                channel_weights_6_out|       pointer|
+|channel_weights_6_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_6_out|       pointer|
+|channel_weights_5_out           |  out|    8|      ap_vld|                channel_weights_5_out|       pointer|
+|channel_weights_5_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_5_out|       pointer|
+|channel_weights_4_out           |  out|    8|      ap_vld|                channel_weights_4_out|       pointer|
+|channel_weights_4_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_4_out|       pointer|
+|channel_weights_3_out           |  out|    8|      ap_vld|                channel_weights_3_out|       pointer|
+|channel_weights_3_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_3_out|       pointer|
+|channel_weights_2_out           |  out|    8|      ap_vld|                channel_weights_2_out|       pointer|
+|channel_weights_2_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_2_out|       pointer|
+|channel_weights_1_out           |  out|    8|      ap_vld|                channel_weights_1_out|       pointer|
+|channel_weights_1_out_ap_vld    |  out|    1|      ap_vld|                channel_weights_1_out|       pointer|
+|channel_weights_out             |  out|    8|      ap_vld|                  channel_weights_out|       pointer|
+|channel_weights_out_ap_vld      |  out|    1|      ap_vld|                  channel_weights_out|       pointer|
++--------------------------------+-----+-----+------------+-------------------------------------+--------------+
+

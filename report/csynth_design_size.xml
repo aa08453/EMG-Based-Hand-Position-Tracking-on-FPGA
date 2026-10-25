@@ -1,0 +1,84 @@
+<design_size title="Design Size Report">
+    <item name="Total Instructions per Compilation Phase">
+        <table>
+            <keys size="4">Phase, Step, Instructions, Description</keys>
+            <column name="Compile/Link">, 28063, After all functions are compiled and linked into a single design</column>
+            <column name="">, , </column>
+            <column name="Unroll/Inline">, , After user unroll and inline pragmas are applied</column>
+            <column name="">(1) unroll, 38754, user unroll pragmas are applied</column>
+            <column name="">(2) simplification, 15306, simplification of applied user unroll pragmas</column>
+            <column name="">(3) inline, 13707, user inline pragmas are applied</column>
+            <column name="">(4) simplification, 13164, simplification of applied user inline pragmas</column>
+            <column name="">, , </column>
+            <column name="Array/Struct">, , After user array partition and struct aggregate/disaggregate pragmas are applied</column>
+            <column name="">(1) array partition, 66573, user array partition pragmas are applied</column>
+            <column name="">(2) simplification, 21080, simplification of applied user array partition &amp; struct aggregate/disaggregate pragmas</column>
+            <column name="">(3) aggregate/disaggregate, 21080, user struct aggregate/disaggregate pragmas are applied</column>
+            <column name="">(4) array reshape, 21080, apply array reshape pragmas</column>
+            <column name="">(5) access patterns, 21308, array access pattern optmizations</column>
+            <column name="">, , </column>
+            <column name="Performance">, , After transformations are applied to meet performance pragma targets</column>
+            <column name="">(1) loop simplification, 21308, loop and instruction simplification</column>
+            <column name="">(2) parallelization, 21047, loops are unrolled or pipelined to meet performance targets</column>
+            <column name="">(3) array partition, 21039, arrays are partitioned to meet performance targets</column>
+            <column name="">(4) simplification, 21039, simplification of design after performance transformations</column>
+            <column name="">, , </column>
+            <column name="HW Transforms">, , After hardware transfomations</column>
+            <column name="">(1) lowering, 21045, initial conversion to HW specific instructions</column>
+            <column name="">(2) optimizations, 21738, high level synthesis optimizations</column>
+        </table>
+    </item>
+    <item name="Instructions per Function for each Compilation Phase">
+        <hiertable>
+            <header size="7" col0="Function" col1="Location" col2="Compile/Link" col3="Unroll/Inline" col4="Array/Struct" col5="Performance" col6="HW Transforms"/>
+            <rows>
+                <row id="0" col0="RoFormer_Top" col1="RoFormer_Top.cpp:157" col2="28063" col3="13164" col4="21308" col5="21039" col6="21738">
+                    <row id="5" col0="stream_to_conv" col1="RoFormer_Top.cpp:67" col2="26" col3="9" col4="780" col5="780" col6="788"/>
+                    <row id="3" col0="conv_stage" col1="RoFormer_Top.cpp:77" col2="1654" col3="4331" col4="8340" col5="8148" col6="8558">
+                        <row id="15" col0="conv1d_forward" col1="Conv1dLayer.h:196" col2="1651" col3="4329" col4="8338" col5="8146" col6="8555">
+                            <row id="22" col0="load_conv_weights" col1="Conv1dLayer.h:119" col2="104" col3="782" col4="782" col5="782" col6="1173"/>
+                            <row id="19" col0="compute_conv_tokens" col1="Conv1dLayer.h:137" col2="1528" col3="3538" col4="7547" col5="7355" col6="7371"/>
+                        </row>
+                    </row>
+                    <row id="21" col0="encoder_pipeline" col1="RoFormer_Top.cpp:96" col2="22464" col3="8454" col4="11138" col5="11061" col6="11305">
+                        <row id="16" col0="encoder_layer_proc" col1="RoFormer_Top.cpp:84" col2="22405" col3="8421" col3_disp="8,421 (3 calls)" col4="10956" col4_disp="10,956 (3 calls)" col5="10887" col5_disp="10,887 (3 calls)" col6="11115" col6_disp="11,115 (3 calls)">
+                            <row id="13" col0="mha_norm_forward" col1="MHANorm.h:14" col2="15035" col3="6870" col3_disp="6,870 (3 calls)" col4="9045" col4_disp="9,045 (3 calls)" col5="8982" col5_disp="8,982 (3 calls)" col6="9159" col6_disp="9,159 (3 calls)">
+                                <row id="11" col0="rope_forward" col1="RotaryEmbedding.h:9" col2="1738" col3="" col4="" col5="" col6=""/>
+                                <row id="17" col0="dense&lt;128, 128, false, ap_fixed&lt;12, 4, (ap_q_mode)0, (ap_o_mode)0, 0&gt;, ap_fixed&lt;18, 5, (ap_q_mode)0, (ap_o_mode)0, 0&gt; &gt;" col1="FCLayer.h:14" col2="3822" col2_disp="3,822 (3 calls)" col3="" col4="" col5="" col6=""/>
+                                <row id="20" col0="softmax_row" col1="Softmax.h:9" col2="2277" col3="" col4="" col5="" col6="">
+                                    <row id="8" col0="exp" col1="expfloat.cpp:15" col2="4" col3="" col4="" col5="" col6="">
+                                        <row id="7" col0="exp" col1="hls_exp_float.cpp:15" col2="2" col3="" col4="" col5="" col6=""/>
+                                    </row>
+                                </row>
+                                <row id="14" col0="dense&lt;128, 128, false, ap_fixed&lt;12, 4, (ap_q_mode)0, (ap_o_mode)0, 0&gt;, ap_fixed&lt;16, 8, (ap_q_mode)0, (ap_o_mode)0, 0&gt; &gt;" col1="FCLayer.h:14" col2="1274" col3="" col4="" col5="" col6=""/>
+                                <row id="1" col0="ln_forward&lt;ap_fixed&lt;16, 8, (ap_q_mode)0, (ap_o_mode)0, 0&gt; &gt;" col1="LayerNorm.h:11" col2="3793" col3="" col4="" col5="" col6="">
+                                    <row id="6" col0="rsqrt" col1="rsqrtfloat.cpp:15" col2="2" col3="" col4="" col5="" col6=""/>
+                                </row>
+                            </row>
+                            <row id="9" col0="ffn_norm_forward" col1="FFNorm.h:10" col2="7357" col3="1533" col3_disp="1,533 (3 calls)" col4="1866" col4_disp="1,866 (3 calls)" col5="1860" col5_disp="1,860 (3 calls)" col6="1908" col6_disp="1,908 (3 calls)">
+                                <row id="18" col0="ff_forward" col1="FeedForward.h:9" col2="3193" col3="" col4="" col5="" col6="">
+                                    <row id="4" col0="dense&lt;128, 256, true, ap_fixed&lt;12, 4, (ap_q_mode)0, (ap_o_mode)0, 0&gt;, ap_fixed&lt;12, 4, (ap_q_mode)0, (ap_o_mode)0, 0&gt; &gt;" col1="FCLayer.h:14" col2="1908" col3="" col4="" col5="" col6=""/>
+                                    <row id="12" col0="dense&lt;256, 128, false, ap_fixed&lt;12, 4, (ap_q_mode)0, (ap_o_mode)0, 0&gt;, ap_fixed&lt;16, 8, (ap_q_mode)0, (ap_o_mode)0, 0&gt; &gt;" col1="FCLayer.h:14" col2="1274" col3="" col4="" col5="" col6=""/>
+                                </row>
+                                <row id="1" col0="ln_forward&lt;ap_fixed&lt;16, 8, (ap_q_mode)0, (ap_o_mode)0, 0&gt; &gt;" col1="LayerNorm.h:11" col2="3793" col3="" col4="" col5="" col6="">
+                                    <row id="6" col0="rsqrt" col1="rsqrtfloat.cpp:15" col2="2" col3="" col4="" col5="" col6=""/>
+                                </row>
+                            </row>
+                        </row>
+                    </row>
+                    <row id="23" col0="run_pooling_and_fc" col1="RoFormer_Top.cpp:131" col2="3883" col3="349" col4="402" col5="402" col6="434">
+                        <row id="10" col0="pooling" col1="Pooling.h:7" col2="1298" col3="84" col4="112" col5="112" col6="128"/>
+                        <row id="2" col0="dense&lt;128, 10, false, ap_fixed&lt;12, 4, (ap_q_mode)0, (ap_o_mode)0, 0&gt;, ap_fixed&lt;12, 4, (ap_q_mode)0, (ap_o_mode)0, 0&gt; &gt;" col1="FCLayer.h:14" col2="2548" col2_disp="2,548 (2 calls)" col3="" col4="" col5="" col6=""/>
+                    </row>
+                </row>
+            </rows>
+            <notes/>
+        </hiertable>
+    </item>
+    <item name="Design Size Message Settings">
+        <table>
+            <keys size="3">Message Setting, Value, Description</keys>
+            <column name="config_compile -design_size_maximum_warning">100000, Show a warning when total design instructions exceeds this value</column>
+        </table>
+    </item>
+</design_size>
