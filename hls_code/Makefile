@@ -1,14 +1,14 @@
 # Bit-accurate C simulation of the RoFormer (any number of encoder layers) without Vitis.
-# third_party/ap_types holds Xilinx's open-source ap_fixed headers (Apache-2.0); sim/ shims hls_math.h.
+# third_party/ap_types holds Xilinx's open-source ap_fixed headers (Apache-2.0); sim/ shims hls_math.h and hls_stream.h.
 # The installed model (model_config.h, weights/) comes from scripts/install_export.py.
 # Weight arrays are float in C simulation (wrom_t, types.h), so a build takes seconds; -O0 keeps it that way.
 #   make              build both tests
-#   make run          run them (layer-by-layer + 40 HIL windows, then the Vitis testbench)
+#   make run          run them (layer-by-layer + 40 HIL windows, then the Vitis testbench: golden + 40 HIL windows)
 #   make MAC_UNROLL=8 build with a different parallelism setting (results must be identical)
 CXX      ?= g++
 MAC_UNROLL ?= 4
 CXXFLAGS = -std=c++14 -O0 -w -Isim -Ithird_party/ap_types/include -I. -DMAC_UNROLL=$(MAC_UNROLL)
-SRCS     = $(wildcard *.h) $(wildcard weights/*.h) RoFormer_Top.cpp tests/check.h
+SRCS     = $(wildcard *.h) $(wildcard weights/*.h) RoFormer_Top.cpp $(wildcard tests/*.h)
 
 all: test_layers test_top
 

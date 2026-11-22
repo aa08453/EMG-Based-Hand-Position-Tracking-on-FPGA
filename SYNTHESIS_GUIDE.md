@@ -6,7 +6,28 @@ How to take the installed model from C code to the ZedBoard. The model is L3_w8:
 - 8-bit weights, 12-bit activations
 - fused R² 0.775 in notebook 09
 
-The HLS code in `hls_code/` already holds this model and passes the bit-accurate C simulation (`make run`). See PROJECT_REPORT.md section 10.5.
+The HLS code in `hls_code/` already holds this model and passes the bit-accurate C simulation (`make run`) on 40 real windows. See PROJECT_REPORT.md sections 10.5 to 10.7.
+
+## Which top level
+
+Two versions of `hls_code/RoFormer_Top.cpp` exist. This guide's Vivado and firmware steps (sections 2 and 3) are written for the **layer-loop** design.
+
+| | Layer loop (commit 1f97687) | Dataflow (commit a5db8f0, head of `dev`) |
+|---|---|---|
+| Ports | `m_axi` input and output, AXI-Lite control | AXI-Stream input and output, AXI-Lite control |
+| HLS synthesis | fits: BRAM 97 %, DSP 50 %, LUT 58 %, 23.95 ms | does not fit: BRAM 276 %, DSP 301 %, LUT 225 % |
+| Block design and firmware in this repo | match (no changes needed) | need an AXI DMA and a rewritten `helloworld.c` |
+| `TOP_AXIS_STREAM` in `hls_code/config.h` | `0` | `1` |
+
+To build the layer-loop version, restore its top level and convolution and set the interface switch:
+
+```bash
+git checkout 1f97687 -- hls_code/RoFormer_Top.cpp hls_code/Conv1dLayer.h
+# in hls_code/config.h: #define TOP_AXIS_STREAM 0, and MAC_UNROLL 4 (the dataflow commit set 16)
+cd hls_code && make clean && make run          # must end with ALL PASS and PASS
+```
+
+The 1f97687 versions of those two files predate `TOP_AXIS_STREAM` and the 40-window testbench but need no changes for them.
 
 ## 0. Requirements
 
@@ -39,7 +60,7 @@ vitis-run --mode hls --tcl <repo>/hls_code/scripts/run_hls.tcl
 
 The script `hls_code/scripts/run_hls.tcl` runs three steps, in roughly 15 to 40 minutes:
 
-1. **C simulation**, which must end with `PASS`.
+1. **C simulation**, which must end with `PASS`. The testbench (`hls_code/tests/test_vitis_roformer.cpp`) runs the golden window and all 40 real test windows in `weights/hil_windows.h`, and compares all 20 outputs of each with the numpy fixed-point reference. It prints one line per window.
 2. **C synthesis.**
 3. **IP export** to `~/hls_runs/RoFormer_Top_ip.zip`.
 
@@ -49,6 +70,8 @@ Optional settings, set as environment variables before the command:
 |---|---|---|
 | `MAC_UNROLL` | `4` | Multiply-accumulates per cycle in each dense layer. `8` cuts the estimated latency from 27 ms to 15 ms at the cost of more DSPs. Either fits the 50 ms step |
 | `HLS_STEPS` | `"csim csynth export"` | Add `cosim` for C/RTL co-simulation, which is slow (30 minutes or more) |
+| `CSIM_WINDOWS` | all (40) | HIL windows checked in C simulation |
+| `COSIM_WINDOWS` | `3` | HIL windows checked in co-simulation, after the golden window. Each is about 2.4 M simulated cycles, so 40 would take hours |
 | `LUTRAM_ATTN_BUFFERS` | `1` | Keeps the Q/K/V and attention-output buffers in LUT-RAM so the block RAM is left for the weights. Set to `0` if LUTs run short instead |
 | `HLS_CLOCK_NS` | `10` | Clock period. 100 MHz matches FCLK0 in the block design |
 
@@ -85,7 +108,7 @@ If you see any of these, save the log and the report and stop here.
    cd <repo>
    source roformer.tcl
    ```
-3. **Upgrade the IP.** Tools → Report IP Status → select `RoFormer_Top_0` → Upgrade Selected. The interface is unchanged:
+3. **Upgrade the IP.** Tools → Report IP Status → select `RoFormer_Top_0` → Upgrade Selected. For the layer-loop design the interface is unchanged:
    - `s_axi_control` at 0x4000_0000
    - `m_axi_gmem0` and `m_axi_gmem1` to the HP ports
 

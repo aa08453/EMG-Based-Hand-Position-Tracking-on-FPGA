@@ -1,6 +1,6 @@
 # sEMG-to-Finger-Angle Estimation on FPGA: Project Report
 
-Status as of 15 October 2026, including sessions 4 and 5. This document records every approach tried so far, how data is processed, how the models are built and evaluated, what each costs in compute and memory, and what remains. It is written for someone joining the project with no prior context.
+Status as of 22 November 2026: all Kaggle sessions up to notebook 09, HLS synthesis of the deployed model, and a PC/Unity demo. This document records every approach tried so far, how data is processed, how the models are built and evaluated, what each costs in compute and memory, and what remains. It is written for someone joining the project with no prior context.
 
 ---
 
@@ -10,14 +10,16 @@ The project estimates 10 finger-joint angles from 12 channels of surface EMG (sE
 
 | Item | Current state |
 |---|---|
-| Chosen model | Patch-embedding RoFormer, 1 encoder layer, absolute-angle head plus angle-delta head, 147,476 parameters |
-| Compute per inference | 3.75 M multiply-accumulates (MACs), 10× fewer than the original design |
+| Chosen model | **L3_w8**: patch-embedding RoFormer, 3 encoder layers, 200 ms window every 50 ms, absolute-angle head plus angle-delta head, 424,724 parameters, quantisation-aware trained with 8-bit weights and 12-bit activations |
+| Compute per inference | 10.9 M multiply-accumulates (MACs); the original 200-token design needed 37.4 M for one layer |
 | Post-processing | Per-joint constant-gain Kalman filter fusing the two heads |
-| Deployable accuracy | Pooled over 10 subjects: R² 0.668 [0.650, 0.683], RMSE 0.103 (normalised units), repetition-held-out split. Per subject: R² 0.44 to 0.62, mean 0.52 |
+| Deployable accuracy | Fixed point, pooled over 10 subjects: R² 0.775 [0.758, 0.789], RMSE 0.084 (normalised units), repetition-held-out split. Per subject: R² 0.55 to 0.74, mean 0.67. The first deployable model (1 layer, 100 ms) scored 0.668, per-subject mean 0.52 |
 | New users | Not supported yet: leave-subjects-out RMSE doubles to 0.21 and R² is negative for 9 of 10 subjects |
 | Longer window | 200 ms windows give a small, consistent gain over 100 ms at the same 50 ms step: RMSE −0.0023, better in 9 of 10 subjects |
-| Fixed-point export | Verified: existing HLS layer functions reproduce the golden model at cosine ≥ 0.997 |
-| Hardware | HLS rewritten for the chosen model and verified bit-accurately in C simulation (all layers cosine ≥ 0.998). Estimated 9.3 ms per inference against a 25 ms budget. Not yet synthesised |
+| More layers | Depth is what helps: 2 layers R² 0.757, 3 layers 0.783 (float), better in all 10 subjects. Wider models do not help |
+| Fixed-point export | Verified: the C model matches the numpy fixed-point simulation within 1–3 LSB at every layer, and on 40 real windows to a mean error of 0.0002 (absolute head) |
+| Hardware | Synthesised with Vitis HLS 2025.2. The layer-loop design fits the Zynq-7020 (BRAM 97 %, DSP 50 %, LUT 58 %) and takes 23.95 ms per window against the 50 ms step. A later dataflow version does not fit. Vivado implementation and the board test are pending |
+| PC demo | `unity_bridge/` runs the same model (ONNX) with streaming preprocessing and Kalman fusion, and drives a Unity hand over UDP |
 
 The single most important lesson so far: two early results that looked excellent (R² 0.71 and R² 0.99) were artefacts of the evaluation, not real skill. Section 9 explains both, so they are not repeated.
 
@@ -60,7 +62,11 @@ All accuracy figures are in **normalised angle units**: each joint is scaled to 
 | 9. Session 5 (Oct 15) | Notebook 07: 200 ms windows with a 50 ms step, against a 100 ms control scored on the same test windows | 200 ms with 25 tokens: R² 0.688 against 0.678 for the control. 200 ms with 50 tokens: no gain |
 | 10. Session 6 (Oct 20) | Notebook 08: model size on the chosen 200 ms, 25-token setup, with a second-seed baseline as the noise reference | Depth helps: 2 layers R² 0.757, 3 layers 0.783, against 0.688, better in all 10 subjects. Wider models do not help. All float |
 | 11. Multi-layer HLS (Oct 20) | HLS loops over N encoder layers with stacked weights; fixed-point formats and dimensions come from the export (`model_config.h`); install script; per-layer checks against a fixed-point reference | 1-, 2- and 3-layer models (incl. 8-bit weights, 12-bit activations) match the numpy fixed-point simulation within 1–3 LSB at every layer |
-| 12. Session 7 (prepared) | Notebook 09: QAT of the deep models, deployable evaluation, export of the best model that fits; schedule check | Not yet run |
+| 12. Session 7 (Oct 22) | Notebook 09: QAT of the deep models, deployable evaluation, export of the best model that fits; schedule check | L3_w8 R² 0.775 in fixed point, exported. QAT costs L2 nothing; without QAT it loses 0.018. Longer training does not change the depth result |
+| 13. HLS synthesis (Oct 24) | Vitis HLS 2025.2, layer-loop design with L3_w8, `MAC_UNROLL` 4 | Fits: BRAM 273/280, DSP 110/220, LUT 31 k/53 k. 23.95 ms. All loops at their target initiation interval |
+| 14. Dataflow variant (Oct 26) | AXI-Stream ports, DATAFLOW over the stages, encoder layers unrolled into three copies, faster convolution | Same 23.9 ms latency, a new window every 7.8 ms, but BRAM 276 %, DSP 301 %, LUT 225 %: does not fit |
+| 15. Unity bridge (Nov 11) | `unity_bridge/`: ONNX export of L3_w8, streaming preprocessing, Kalman fusion, UDP to a Unity hand | Self-test passes; constants match the firmware |
+| 16. Testbench (Nov 22) | Vitis testbench runs all 40 real windows; works with either top-level interface; local `make run` builds the stream design | Dataflow design passes on all 40 windows in C simulation |
 
 ---
 
@@ -416,6 +422,31 @@ Conclusions:
   is checked in notebook 09 by retraining base and L2 with patience 12.
 - **Evaluation was slow** (55 minutes per model, 7.3 of 9.6 hours) because `ordered_runs` decompressed whole arrays once per window. Fixed.
 
+### 9.9 Session 7: quantisation-aware training of the deep models
+
+Notebook 09. QAT fine-tunes start from the notebook 08 float checkpoints and fake-quantise weights and activations at the HLS
+quantisation points, so their scores include the fixed-point error. The Kalman filter was re-tuned per model over a finer range of
+gains than in notebook 08. All models use 200 ms windows, a 50 ms step and 25 tokens.
+
+| Model | Layers | Formats (activation / weight) | Weights | Fused R² [95 % CI] | Per-subject mean | Weakest subject |
+|---|---|---|---|---|---|---|
+| base (float) | 1 | float | 1.6 Mbit | 0.688 [0.669, 0.704] | 0.544 | 0.44 |
+| base, patience 12 (float) | 1 | float | 1.6 | 0.677 | 0.525 | 0.36 |
+| L2 (float) | 2 | float | 2.9 | 0.758 | 0.636 | 0.47 |
+| L2, patience 12 (float) | 2 | float | 2.9 | 0.755 | 0.635 | 0.50 |
+| L2, no QAT (`L2_ptq10`) | 2 | 10,3 / 10,3 | 2.9 | 0.740 | 0.592 | 0.33 |
+| `L2_q10` (QAT) | 2 | 10,3 / 10,3 | 2.9 | 0.766 [0.749, 0.780] | 0.650 | 0.47 |
+| `L2_q12` (QAT) | 2 | 12,4 / 10,3 | 2.9 | 0.762 | 0.647 | 0.51 |
+| L3 (float) | 3 | float | 4.2 | 0.783 | 0.682 | 0.58 |
+| **`L3_w8` (QAT, deployed)** | 3 | 12,4 / 8,2 | **3.4** | **0.775 [0.758, 0.789]** | **0.672** | **0.55** |
+
+Conclusions:
+
+- **The depth gain is real.** Training longer (patience 12) changed neither the 1-layer nor the 2-layer result, so the schedule caveat of section 9.8 does not explain it.
+- **QAT is required, and then free.** Quantising L2 without retraining costs 0.018 R²; after QAT, L2 is slightly better than in float. 12-bit activations do not help L2.
+- **8-bit weights cost L3 little**: 0.008 R² against float, and they bring its weights under the on-chip budget.
+- **L3_w8 against L2_q10**, subject by subject: 0.0021 lower RMSE in 7 of 10 subjects, just under the seed noise of 0.0023, but per-subject mean R² +0.023 and the largest gains in the hardest subjects (s14 0.47 → 0.55, s11 0.60 → 0.66). L3_w8 was exported automatically as the lowest-error model that fits; L2_q10 is the fallback if it does not fit in hardware.
+
 ---
 
 ## 10. Hardware
@@ -566,6 +597,39 @@ Latency estimate at 25 tokens from 400 samples, 100 MHz (`scripts/estimate_cycle
 All are inside the 50 ms step. Weight memory is the binding limit: 2.9 Mbit for L2 at 10 bits, 3.4 Mbit for L3 at 8 bits, of 4.9 Mbit block RAM.
 Synthesis will show whether the ROM packing and the activation buffers fit alongside.
 
+### 10.6 Synthesis results (Vitis HLS 2025.2, xc7z020-1, 100 MHz)
+
+Two versions of the top level were synthesised with L3_w8 and `MAC_UNROLL` 4. The reports are in [report_layer_loop/report/](report_layer_loop/report/) (from commit 1f97687) and [report/](report/) (commit a5db8f0).
+
+| | Layer loop | Dataflow |
+|---|---|---|
+| Structure | One encoder block reused for the 3 layers; memory-mapped AXI (`m_axi`) | AXI-Stream ports, DATAFLOW over the stages, the 3 layers as 3 hardware copies |
+| BRAM_18K | 273 / 280 (97 %) | 774 (276 %) |
+| DSP | 110 / 220 (50 %) | 663 (301 %) |
+| LUT | 31,290 / 53,200 (58 %) | 119,848 (225 %) |
+| FF | 15,314 (14 %) | 58,917 (55 %) |
+| Latency per window | 2,395,444 cycles = 23.95 ms | 2,390,955 cycles = 23.91 ms |
+| Next window can start after | 23.95 ms | 7.81 ms |
+| Estimated clock | 8.75 ns (limit 8.75 ns) | 8.74 ns |
+| Loops at target initiation interval | all | all except the convolution weight load (II 192 instead of 1) |
+
+**Layer loop: fits.** The weights take about 255 of the 273 block RAMs. The three layers run strictly one after another on shared hardware: the `ENCODER` loop is not pipelined, each block finishes before the next starts, and the layers read and write separate ping-pong buffers. The estimated latency of 23.95 ms is below the 27 ms estimated in section 10.5 and leaves 26 ms of the 50 ms step unused. The estimated clock sits exactly at the limit, so the Vivado timing report decides.
+
+**Dataflow: does not fit, and gains nothing here.** Each layer copy holds the weights of all three layers (235 block RAMs each) and its own multipliers, and the convolution uses 368 DSPs to save 0.1 ms. Dataflow lets a new window start every 7.8 ms, but each result still takes 23.9 ms, and a new window arrives only every 50 ms. It would pay off only below a 24 ms step, and then only with weights split between the layer copies.
+
+**Number formats.** Storage and arithmetic are fixed point (`ap_fixed`, rounding and saturation): activations `ap_fixed<12,4>`, weights `ap_fixed<8,2>`, residual stream `ap_fixed<16,8>`, Q/K/V `ap_fixed<18,5>`, accumulators `ap_fixed<34,14>`, RoPE tables `ap_fixed<8,2>`. Three operations are still single-precision float, converting from fixed point and back: softmax `exp`, the softmax reciprocal and the LayerNorm `1/sqrt` (the `fexp`, `fdiv` and `frsqrt` cores in the report). In C simulation only, the weight arrays are stored as `float` holding the same grid values (`wrom_t`, `types.h`); synthesis stores `weight_t`.
+
+### 10.7 Verification coverage
+
+| Test | Runs in | Windows | Compares |
+|---|---|---|---|
+| `test_layers`, per layer | `make run` (g++) | 1 | Convolution, each layer's RoPE, attention + LayerNorm and FFN + LayerNorm outputs, pooling, both heads, against the numpy fixed-point reference (pass/fail) and the float model (information) |
+| `test_layers`, HIL | `make run` | 40 | All 20 outputs per window against both references |
+| `test_vitis_roformer.cpp` | `make run`, Vitis C simulation | 1 golden + 40 | All 20 outputs per window; one line per window |
+| Same testbench | Vitis C/RTL co-simulation | 1 golden + 3 (`COSIM_WINDOWS`) | Generated RTL; about 2.4 M simulated cycles per window |
+
+The 40 windows are real test windows of subject 1 (repetitions 2 and 5), spread evenly, with float and fixed-point outputs written by the export (`hil_verification_samples/`, packed into `hls_code/weights/hil_windows.h`). Both designs pass all 40: mean error against the fixed-point reference 0.0002 (absolute head) and 0.002 (delta head); against the float model 0.039 and 0.083, the cost of quantisation. The testbench works with either top level through `TOP_AXIS_STREAM` in `config.h`. The PyTorch model is compared directly only at export (final output, one window); the per-layer references are numpy.
+
 ---
 
 ## 11. Resource consumption overview
@@ -577,7 +641,9 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | Original RoFormer, 200 tokens | 138,506 | 37.4 M | 374 ms | 1.39 Mbit | 133 s |
 | patch, absolute head | 146,186 | 3.75 M | 37 ms | 1.46 Mbit | 62 s |
 | noattn, absolute head | 79,882 | 1.95 M | 19 ms | 0.80 Mbit | 53 s |
-| **patch, both heads (chosen)** | **147,476** | **3.75 M** | **37 ms** | **1.47 Mbit** | **83 s float, 135 s QAT** |
+| patch, both heads (100 ms, first deployed) | 147,476 | 3.75 M | 37 ms | 1.47 Mbit | 83 s float, 135 s QAT |
+| L2_q10 (200 ms, 2 layers) | 292,244 | 7.49 M | 75 ms | 2.92 Mbit | 50 s float |
+| **L3_w8 (200 ms, 3 layers, deployed)** | **424,724** | **10.9 M** | **109 ms (synthesised: 23.95 ms at 4 MACs/cycle)** | **3.40 Mbit at 8 bits** | **58 s float, about 100 s QAT** |
 | Unrolled K=8 variants | 82 k–149 k | 1.95–3.75 M | | | 290–516 s |
 
 **Activation buffers** shrink 8× with the patch model: 25 × 128 values per buffer instead of 200 × 128.
@@ -589,6 +655,8 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | Session 1, preprocessing plus 8 runs | 11.9 h, exceeded the Kaggle 12 h limit once |
 | Session 2, one run plus evaluation and export | 3.3 h |
 | Session 3, evaluation only | 2.2 h |
+| Session 6, notebook 08, 7 trainings and 8 evaluations | 9.6 h, 7.3 h of it evaluation before the `ordered_runs` fix |
+| Session 7, notebook 09, 5 trainings and 9 evaluations | 1.6 h |
 
 ---
 
@@ -604,7 +672,9 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 8. **Report per-subject metrics beside pooled ones.** Pooled R² over several subjects counts between-subject differences as explained variance. Here it read 0.67 while the per-subject mean was 0.52.
 9. **Check the accelerator before a long run.** Session 4 ran on the CPU because the GPU was not switched on. It finished, but took 9.3 hours instead of about 3.
 10. **Do not index a compressed `.npz` inside a loop.** `np.load` returns a lazy archive that decompresses the whole array on every access; this made evaluation 20 times slower than training.
-11. **Secrets.** The original baseline notebook contains a plaintext Weights & Biases API key. It should be revoked. The new scripts read the key from a Kaggle secret named `wandb_key`.
+11. **Dataflow is not free.** DATAFLOW with the encoder layers unrolled built three copies of the hardware, each with all the weights, and tripled resource use. It raises throughput, not latency, and the 50 ms step does not need more throughput.
+12. **Test both top-level interfaces.** After the switch to AXI-Stream, only the Vitis testbench was updated and the local tests stopped building; `tests/top_call.h` now serves both.
+13. **Secrets.** The original baseline notebook contains a plaintext Weights & Biases API key. It should be revoked. The new scripts read the key from a Kaggle secret named `wandb_key`.
 
 ---
 
@@ -612,8 +682,9 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 
 | Priority | Task |
 |---|---|
-| 1 | Synthesise the v2 HLS in Vitis (`vitis_workspace/transformer`), commit the utilisation and timing reports, run co-simulation, then rebuild the block design and measure latency on the board |
-| 2 | Run notebook 09: QAT of L2 (10- and 12-bit activations) and L3 (8-bit weights), deployable evaluation, export of the best model that fits; install it with `install_export.py` and run `make run` |
+| 1 | Choose the top level for implementation. The layer-loop design fits; the dataflow design at the head of `dev` does not. With the layer loop, keep `TOP_AXIS_STREAM 0` in `config.h` and the `m_axi` block design; an AXI-Stream interface without the layer DATAFLOW would need an AXI DMA in the block design and firmware changes |
+| 1b | Vivado implementation (utilisation within 140 BRAM tiles, WNS ≥ 0), co-simulation, bitstream, platform and firmware rebuild, board test against the C simulation (SYNTHESIS_GUIDE.md). Fallback if L3_w8 does not fit or meet timing: L2_q10 |
+| 2 | Replace the float `exp`, reciprocal and `rsqrt` with fixed-point tables, if DSPs or timing are short |
 | 2b | New-user calibration: fine-tune a leave-subjects-out model on 1 to 4 training repetitions of the held-out subject, and measure how much within-subject accuracy is recovered |
 | 3 | Convert normalised RMSE to degrees using glove calibration |
 | 4 | Port the causal filter and μ-law normalisation to the ARM firmware using `normalization_constants.h`. The fusion update is already in the firmware |
@@ -633,8 +704,11 @@ Latency is the lower bound at one MAC per cycle and 100 MHz, ignoring nonlinear 
 | [kaggle_scripts/09_qat_export_deep.ipynb](kaggle_scripts/09_qat_export_deep.ipynb) | QAT and export of the deep model, schedule check |
 | `kaggle_scripts/01_` … `05_*.ipynb` | Stand-alone notebooks for each stage |
 | [kaggle_scripts/README.md](kaggle_scripts/README.md) | Kaggle setup and configuration options |
-| [notebook_outputs/](notebook_outputs/) | Results of every session: `roformer_output/` (session 1), `roformer_output_v2/` (session 2, chosen checkpoint and export), `roformer_output_v3/` (session 3), `notebook_06_outputs/` … `notebook_08_outputs/` |
-| [hls_code/](hls_code/) | Multi-layer HLS, bit-accurate tests (`make run`), `scripts/install_export.py`, latency estimator; currently holds the session-2 model. Old artefacts in `hls_code/legacy/` |
+| [notebook_outputs/](notebook_outputs/) | Results of every session: `roformer_output/` (session 1), `roformer_output_v2/` (session 2, chosen checkpoint and export), `roformer_output_v3/` (session 3), `notebook_06_outputs/` … `notebook_09_outputs/` (notebook 09 holds the L3_w8 export) |
+| [hls_code/](hls_code/) | HLS (currently the dataflow top level), bit-accurate tests (`make run`), `scripts/install_export.py`, `scripts/run_hls.tcl`, `scripts/gen_hil_header.py`, latency estimator; holds the L3_w8 model. Old artefacts in `hls_code/legacy/` |
+| [SYNTHESIS_GUIDE.md](SYNTHESIS_GUIDE.md) | Steps from HLS to the board test |
+| [report_layer_loop/report/](report_layer_loop/report/), [report/](report/) | Vitis HLS synthesis reports: layer-loop and dataflow designs |
+| [unity_bridge/](unity_bridge/) | Self-contained PC runtime (ONNX model, streaming preprocessing, Kalman fusion) and Unity scripts; `verify.py` self-test |
 | [ip_repo/](ip_repo/), `roformer.tcl`, `transformer_wrapper.xsa`, [vitis_workspace/](vitis_workspace/) | Vivado IP, project script, platform, firmware |
 | [notebooks/](notebooks/), [kaggle_scripts/roformer.ipynb](kaggle_scripts/roformer.ipynb), [kaggle_scripts/baseline-models-joint-angles.ipynb](kaggle_scripts/baseline-models-joint-angles.ipynb) | Original notebooks, legacy pipeline |
 | [IMPROVEMENTS.md](IMPROVEMENTS.md) | Review findings and the original roadmap |

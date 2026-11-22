@@ -100,4 +100,7 @@ The machine-learning side of section 2 is implemented in `kaggle_scripts/` (see 
 | 2.4 Kalman fusion, integration-in-the-loop, rest anchoring, delta standardisation, drift evaluation | `04_sequential_eval_fusion.ipynb`, `emg_common.kalman_fuse`, `_loss_unrolled`, `fixed_point_integrate` |
 | 2.3 HLS changes | implemented and verified bit-accurately in C simulation (Oct 15); synthesis pending. See PROJECT_REPORT.md section 10.4 |
 | Multi-layer encoder in HLS, formats from the export, install script | Oct 20: `hls_code/RoFormer_Top.cpp` layer loop, `model_config.h`, `scripts/install_export.py`; 1-, 2- and 3-layer models verified against the fixed-point reference. PROJECT_REPORT.md section 10.5 |
-| QAT and export of the deep model | `09_qat_export_deep.ipynb` (prepared, not yet run on Kaggle) |
+| QAT and export of the deep model | `09_qat_export_deep.ipynb`, run Oct 22: L3_w8, fused R² 0.775 in fixed point. PROJECT_REPORT.md section 9.9 |
+| HLS synthesis | Oct 24: layer-loop design fits the Zynq-7020 (BRAM 97 %, DSP 50 %, LUT 58 %), 23.95 ms per window. The later dataflow version does not fit. PROJECT_REPORT.md section 10.6 |
+| Testbench on real windows | Nov 22: the Vitis testbench runs all 40 HIL windows, for either top-level interface. PROJECT_REPORT.md section 10.7 |
+| Vivado implementation, board test | pending; steps in SYNTHESIS_GUIDE.md |

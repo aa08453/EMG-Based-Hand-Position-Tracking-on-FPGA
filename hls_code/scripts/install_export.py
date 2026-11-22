@@ -9,6 +9,7 @@ from that one export, so nothing from an older model can be left behind.
   hls_code/weights/*.h                                      weights, golden results, test input
   hls_code/verification_data/                               golden intermediates, fixed-point expectation
   hil_verification_samples/                                 real windows with float and fixed-point outputs
+  hls_code/weights/hil_windows.h                            the same windows for the Vitis testbench (gen_hil_header.py)
   vitis_workspace/uart_app/src/normalization_constants.h    firmware constants (EMG scale, filter, I/O sizes)
 
 Usage (from the repository root or anywhere):
@@ -78,6 +79,9 @@ def main():
             shutil.copy2(os.path.join(ex, f), vd)
     if os.path.isdir(os.path.join(ex, 'hil_verification_samples')):
         replace_dir_files(os.path.join(ex, 'hil_verification_samples'), hil)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from gen_hil_header import generate                # the Vitis testbench runs these windows from a header
+    n_hil = generate(hil, os.path.join(hls, 'weights', 'hil_windows.h'))
     if not a.no_firmware and os.path.exists(os.path.join(ex, 'normalization_constants.h')):
         shutil.copy2(os.path.join(ex, 'normalization_constants.h'), a.firmware)
 
@@ -87,7 +91,7 @@ def main():
     print(f'  layers {get("NUM_LAYERS")}, window {get("RAW_SEQ_LEN")} samples -> {get("SEQ_LEN")} tokens (kernel/stride {get("KERNEL_SIZE")}), '
           f'D_FF {get("D_FF")}, delta head {get("HAS_DELTA_HEAD")}')
     print(f'  formats: act ({get("ACT_W")},{get("ACT_I")}) weight ({get("WEIGHT_W")},{get("WEIGHT_I")}) resid ({get("RESID_W")},{get("RESID_I")})')
-    print(f'  HIL samples -> {hil}' + ('' if a.no_firmware else f'\n  firmware constants -> {a.firmware}'))
+    print(f'  HIL samples -> {hil} ({n_hil} windows, also packed into weights/hil_windows.h)' + ('' if a.no_firmware else f'\n  firmware constants -> {a.firmware}'))
     print(f'next: cd {hls} && make clean && make run')
 
 

@@ -10,6 +10,8 @@
 #   HLS_STEPS="csim csynth export"   add "cosim" for C/RTL co-simulation (slow: tens of minutes)
 #   LUTRAM_ATTN_BUFFERS=0 keep the attention buffers in block RAM
 #   HLS_CLOCK_NS=10       clock period (100 MHz, the ZedBoard design's FCLK0)
+#   CSIM_WINDOWS=40       HIL windows run by the testbench in C simulation (default: all, weights/hil_windows.h)
+#   COSIM_WINDOWS=3       HIL windows run in co-simulation (about 2.4 M simulated cycles each, minutes per window)
 # Outputs: ./roformer_hls/sol1/syn/report/RoFormer_Top_csynth.rpt and ./RoFormer_Top_ip.zip
 set here [file normalize [file dirname [info script]]]
 set src  [file normalize "$here/.."]
@@ -18,6 +20,8 @@ set unroll [envor MAC_UNROLL 4]
 set steps  [envor HLS_STEPS "csim csynth export"]
 set lutram [envor LUTRAM_ATTN_BUFFERS 1]
 set period [envor HLS_CLOCK_NS 10]
+set csim_win  [envor CSIM_WINDOWS 1000]
+set cosim_win [envor COSIM_WINDOWS 3]
 set cflags "-I$src -DMAC_UNROLL=$unroll -DLUTRAM_ATTN_BUFFERS=$lutram"
 puts "RoFormer_Top from $src | MAC_UNROLL=$unroll LUTRAM_ATTN_BUFFERS=$lutram clock ${period} ns | steps: $steps"
 
@@ -30,8 +34,8 @@ set_part xc7z020clg484-1
 create_clock -period $period -name default
 set_clock_uncertainty 12.5%
 
-if {[lsearch $steps csim]   >= 0} { csim_design -clean }
+if {[lsearch $steps csim]   >= 0} { csim_design -clean -argv $csim_win }
 if {[lsearch $steps csynth] >= 0} { csynth_design }
-if {[lsearch $steps cosim]  >= 0} { cosim_design -trace_level none }
+if {[lsearch $steps cosim]  >= 0} { cosim_design -trace_level none -argv $cosim_win }
 if {[lsearch $steps export] >= 0} { export_design -format ip_catalog -output [file normalize "./RoFormer_Top_ip.zip"] }
 exit

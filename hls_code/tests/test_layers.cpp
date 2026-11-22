@@ -7,6 +7,7 @@
 #include "../weights/input_output.h"
 #include "../weights/results.h"
 #include "check.h"
+#include "top_call.h"                   // run_top(): array in/out for either top-level interface
 #include <fstream>
 #include <string>
 #include <vector>
@@ -50,7 +51,7 @@ int main(int argc, char** argv) {
 
     std::printf("Top level RoFormer_Top on the same window\n");
     data_t top[NUM_OUTPUTS];
-    RoFormer_Top(input, top);
+    run_top(input, top);
     ok &= check_fx("top abs", top, fx_full_output, ref_full_output, OUT_DIM);
 #if HAS_DELTA_HEAD
     ok &= check_fx("top delta", top + OUT_DIM, fx_delta_output, ref_delta_output, OUT_DIM, 0.02);
@@ -71,7 +72,7 @@ int main(int argc, char** argv) {
             auto ya = load(dir + nm + "output.txt"); auto yd = load(dir + nm + "delta.txt");
             auto yf = load(dir + nm + "fixed.txt");
             static data_t xin[IN_WORDS]; for (int k = 0; k < IN_WORDS; ++k) xin[k] = x[k];
-            RoFormer_Top(xin, top);
+            run_top(xin, top);
             if (argc > 2) {   // optional dump: one line per window, NUM_OUTPUTS values
                 static std::ofstream dump(argv[2]);
                 for (int k = 0; k < NUM_OUTPUTS; ++k) dump << top[k].to_double() << (k + 1 < NUM_OUTPUTS ? ' ' : '\n');

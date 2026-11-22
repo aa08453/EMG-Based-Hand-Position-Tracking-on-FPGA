@@ -17,6 +17,12 @@
 #define LUTRAM_ATTN_BUFFERS 1
 #endif
 
+// Top-level interface, used by the testbenches (tests/top_call.h). Must match RoFormer_Top.cpp:
+// 1 = AXI-Stream ports (current dataflow design), 0 = memory-mapped m_axi ports (layer-loop design).
+#ifndef TOP_AXIS_STREAM
+#define TOP_AXIS_STREAM 1
+#endif
+
 #define NUM_OUTPUTS (OUT_DIM * (1 + HAS_DELTA_HEAD))   // [abs(10) | delta_std(10)]
 #define IN_WORDS (IN_CHANNELS * RAW_SEQ_LEN)
 
